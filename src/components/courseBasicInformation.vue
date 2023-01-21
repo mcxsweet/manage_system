@@ -5,6 +5,7 @@
                 <el-button plain @click="isShow = !isShow">添加</el-button>
                 <el-button type="danger" plain>删除</el-button>
                 <el-button type="success" plain>搜索</el-button>
+                 <input type="text" plain placeholder="请输入搜索内容" class="sousuo" v-model="sousuo" @keyup.enter:>
             </el-row>
         </el-header>
 
@@ -12,6 +13,7 @@
             <el-table :data="tableData" stripe height="80vh">
                 <el-table-column align="left" width="200">
                     <template slot-scope="scope">
+                        <el-button size="mini" type="primary" round @click="goto('classInformation')">设置</el-button>
                         <el-button size="mini" type="info"
                             @click="handleExport(scope.$index, scope.row)">Export</el-button>
                         <el-button size="mini" type="danger"
@@ -195,5 +197,9 @@ export default {
 </script>
 
 <style>
-
+     .sousuo{
+        padding: 10px;
+        margin: 20px;
+        width: 300px;
+    }
 </style>
