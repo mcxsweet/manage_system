@@ -16,7 +16,7 @@
             <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
                 <el-menu>
                     <el-submenu index="1">
-                        <template slot="title"><i class="el-icon-message"></i>导航一</template>
+                        <template slot="title"><i class="el-icon-message"></i>学生考核成绩记录</template>
                         <el-menu-item-group>
                             <template slot="title">分组一</template>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
