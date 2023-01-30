@@ -5,7 +5,7 @@
                 <el-button plain @click="isShow = !isShow">添加</el-button>
                 <el-button type="danger" plain>删除</el-button>
                 <el-button type="success" plain>搜索</el-button>
-                 <input type="text" plain placeholder="请输入搜索内容" class="sousuo" v-model="sousuo" @keyup.enter:>
+                <input type="text" plain placeholder="请输入搜索内容" class="sousuo" v-model="sousuo" @keyup.enter:>
             </el-row>
         </el-header>
 
@@ -126,6 +126,9 @@ export default {
         }
     },
     methods: {
+        goto(url) {
+            this.$router.push({ path: '/MainPage/' + url });
+        },
         getMessage() {
             api.get("/courseInfo", "", (resp) => {
                 this.tableData = resp.data.data;
@@ -197,9 +200,9 @@ export default {
 </script>
 
 <style>
-     .sousuo{
-        padding: 10px;
-        margin: 20px;
-        width: 300px;
-    }
+.sousuo {
+    padding: 10px;
+    margin: 20px;
+    width: 300px;
+}
 </style>
