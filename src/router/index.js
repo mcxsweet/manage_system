@@ -8,6 +8,7 @@ import courseBasicInformation from '@/components/courseBasicInformation'
 import welcome from '@/components/welcome'
 import classInformation from '@/components/classInformation'
 import programObjective from '@/components/programObjective'
+import attendanceManagement from '@/components/attendanceManagement'
 
 export default new VueRouter({
     routes: [
@@ -28,10 +29,10 @@ export default new VueRouter({
                     component: courseBasicInformation
                 },
 
-                // {
-                //     path: 'attendanceManagement', //  平时成绩管理
-                //     component: attendanceManagement
-                // },
+                {
+                    path: 'attendanceManagement', //  平时成绩管理
+                    component: attendanceManagement
+                },
                 {
                     path: 'classInformation', //  平时成绩管理
                     component: classInformation,
