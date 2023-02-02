@@ -49,7 +49,7 @@
           <template slot-scope="scope">
             <el-button type="warning" size="mini" @click="editta(scope.row,scope)">编辑</el-button>
             <el-button type="danger" size="mini" @click="saveta(scope.row)">保存</el-button>
-            <el-button @click="delect" size="mini">删除</el-button>
+            <el-button size="mini"  @click="delect(scope.row,scope)">删除</el-button>
           </template>
         </el-table-column>
     </el-table>
@@ -109,6 +109,10 @@ export default {
         },
         saveta(row,index){
           row.ised = false
+        },
+        delect(row,index){
+          this.js--
+          this.tableData.pop((this.index))
         },
         add(){
           this.tableData.push(JSON.parse(JSON.stringify(this.obj)))
