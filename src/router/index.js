@@ -9,6 +9,7 @@ import welcome from '@/components/welcome'
 import classInformation from '@/components/classInformation'
 import programObjective from '@/components/programObjective'
 import attendanceManagement from '@/components/attendanceManagement'
+import basicInformationTable from '@/components/classTables/basicInformationTable'
 
 export default new VueRouter({
     routes: [
@@ -20,6 +21,10 @@ export default new VueRouter({
             path: "/MainPage",
             component: MainPage,
             children: [
+                {
+                    path:'basicInformationTable',
+                    component:basicInformationTable
+                },
                 {
                     path: 'welcome', //  课程基本信息
                     component: welcome
