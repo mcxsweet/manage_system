@@ -49,7 +49,7 @@
         </el-table-column>
     </el-table>
     <el-button icon="el-icon-plus" type="primary" @click="add">添加课程目标</el-button>
-    <div style="margin-top: 5%;">
+    <-- <div style="margin-top: 5%;">
         <p1>成绩评定法：期末总成绩=</p1>
         <div v-for="(m,index) in this.score" :key="index">
           <p1 v-show="m=='平时成绩'">{{ m+'('+totalScore[0].usual[0].resultNum+'%)' }}</p1>
@@ -63,7 +63,7 @@
           <p1 v-if="m1=='作业成绩'">+{{ m1+'('+totalScore[0].usual[0].optionvalue[0].assignment[0].Numd+'%)' }}</p1>
           <p1 v-if="m1=='期中测试成绩'">+{{ m1+'('+totalScore[0].usual[0].optionvalue[0].midterm[0].Numd+'%)' }}</p1>
         </div>
-    </div>
+    </div> -->
     <el-form style="margin-top: 5%;">
       <span>成绩评定法：</span>
       <el-form-item label="期末总成绩" v-show="!isdiv">
@@ -202,7 +202,7 @@ export default {
         savaoption2(obj){
           let i=this.totalScore[0].usual[0].resultNum+this.totalScore[0].elt[0].eltNum+this.totalScore[0].testPaper[0].testPaperNum
           if(i!=100){
-            alert('总百分比不能超过一百或者为0')
+            alert('总百分比必须为一百')
           }
           else{
             this.isdiv2 = !this.isdiv2
