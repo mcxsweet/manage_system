@@ -14,9 +14,9 @@
                 <el-table-column align="left" width="300">
                     <template slot-scope="scope">
                         <!-- <router-link tag="el-button" :to="{path:'/MainPage/classInformation',scope.$index,}">11</router-link> -->
-                        <el-button size="mini" type="primary" round @click="goto('classInformation'),handleSetting(scope.$index,scope.row)">设置</el-button>
-                        <el-button size="mini" type="info"
-                            @click="handleExport(scope.$index, scope.row)">导出</el-button>
+                        <el-button size="mini" type="primary" round
+                            @click="goto('classInformation', scope.row.id)">设置</el-button>
+                        <el-button size="mini" type="info" @click="handleExport(scope.$index, scope.row)">导出</el-button>
                         <el-button size="mini" type="danger"
                             @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
@@ -47,6 +47,8 @@
                 <!-- </el-table-column> -->
             </el-table>
         </el-main>
+
+        <!-- 添加弹出框 -->
         <el-dialog title="添加" :visible.sync="isShow">
             <el-form :model="FormData" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="课程名称" prop="courseName">
@@ -92,15 +94,15 @@
                     <el-input v-model="FormData.indicatorPoints"></el-input>
                 </el-form-item> -->
             </el-form>
-
             <div slot="footer" class="dialog-footer">
                 <el-button @click="isShow = false">取 消</el-button>
                 <el-button type="primary" @click="submit">确 定</el-button>
             </div>
         </el-dialog>
+
         <el-footer>
-           <span>总共有{{ tableData.length }}条课程</span>
-    </el-footer>
+            <span>总共有{{ tableData.length }}条课程</span>
+        </el-footer>
     </el-container>
 </template>
 
@@ -121,26 +123,26 @@ export default {
                 courseType: "专业必修课",
             },
             isShow: false,
-            sousuo:''
+            sousuo: ''
         }
     },
-    mounted(){
-        this.gettableData();
-    },
     methods: {
-        gettableData(){
+        gettableData() {
             axios.get('http://localhost:8080/data/query')
-            .then(res=>{
-                this.tableData = res.data;
-            })
+                .then(res => {
+                    this.tableData = res.data;
+                })
         },
-        goto(url) {
-            this.$router.push({ 
-                path: '/MainPage/' + url ,
+        goto(url, data) {
+            this.$router.push({
+                path: '/MainPage/' + url,
+                query: {
+                    id: data
+                }
             });
         },
         //点击搜索内容
-        hunt(){
+        hunt() {
             setTimeout(() => {
                 this.$router.push({ path: '/welcome' });
             }, 2000);
@@ -153,10 +155,11 @@ export default {
         handleExport(index, object) {
             window.location.href = "http://localhost:8080/courseInfo/export/" + object.id;
         },
-         handleSetting(index,object){
-            classdata:[] = object
-            this.$emit('childClick',classdata)
-         },
+        handleSetting(index, object) {
+            classdata: [] = object;
+            this.$emit('childClick', classdata);
+            this.$bus.$emit("sendCourseID", object.id);
+        },
         submit() {
             this.$confirm('是否提交 ?', '提示', {
                 confirmButtonText: '确定',
@@ -188,14 +191,15 @@ export default {
     },
     mounted() {
         this.getMessage();
+        this.gettableData();
     },
 }
 </script>
 
 <style>
-   .sousuo{
-        padding: 10px;
-        margin: 20px;
-        width: 300px;
-    }
+.sousuo {
+    padding: 10px;
+    margin: 20px;
+    width: 300px;
+}
 </style>
