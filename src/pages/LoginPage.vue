@@ -3,34 +3,52 @@
         <div class="container" v-bind:class="success">
             <h1>Welcome</h1>
             <div class="form">
-                <input type="text" placeholder="您的账号" v-model="formData.username">
+                <input type="text" placeholder="您的账号" v-model="formData.name">
                 <input type="password" placeholder="您的密码" v-model="formData.password">
                 <!-- <router-link to="/MainPage"> -->
                 <button class="btn-login" @click="submit()">登录</button>
+                <button class="btn-login" @click="jump()">跳过登录</button>
             </div>
         </div>
     </div>
-
 </template>
 
 <script>
+import api from '@/api/api';
 export default {
     name: " LoginPage",
     data() {
         return {
             success: "",
             formData: {
-                username: '',
+                name: '',
                 password: ''
             },
         }
     },
     methods: {
-        submit() {
+        //跳过登录
+        jump() {
             this.success = "success"
             setTimeout(() => {
                 this.$router.push({ path: '/MainPage' });
             }, 2000);
+        },
+        submit() {
+            api.post("/user", this.formData, (resp) => {
+                if (resp.data.flag == true) {
+                    this.success = "success"
+                    setTimeout(() => {
+                        this.$router.push({ path: '/MainPage' });
+                    }, 2000);
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '用户名或密码错误!'
+                    });
+                }
+            })
+
         }
     },
 }
