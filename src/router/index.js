@@ -10,6 +10,12 @@ import classInformation from '@/components/classInformation'
 import programObjective from '@/components/programObjective'
 import attendanceManagement from '@/components/attendanceManagement'
 import basicInformationTable from '@/components/classTables/basicInformationTable'
+import finalTable from '@/components/classTables/finalTable'
+import usualPreformanceTable from '@/components/classTables/usualPreformanceTable'
+import finalStatisticsTable from '@/components/classTables/finalStatisticsTable'
+import finalComprehensiveTable from '@/components/classTables/finalComprehensiveTable'
+import analysisTable from '@/components/classTables/analysisTable'
+import programTable from '@/components/classTables/programTable'
 
 export default new VueRouter({
     routes: [
@@ -21,6 +27,31 @@ export default new VueRouter({
             path: "/MainPage",
             component: MainPage,
             children: [
+                 {
+                    path:'analysisTable',
+                    component:analysisTable
+                },
+                {
+                    path:'programTable',
+                    component:programTable
+                },
+                {
+                    path:'finalStatisticsTable',
+                    component:finalStatisticsTable
+                },
+                
+                {
+                    path:'finalComprehensiveTable',
+                    component:finalComprehensiveTable
+                },
+                {
+                    path:'finalTable',
+                    component:finalTable
+                },
+                {
+                    path:'usualPreformanceTable',
+                    component:usualPreformanceTable
+                },
                 {
                     path:'basicInformationTable',
                     component:basicInformationTable
