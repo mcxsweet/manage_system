@@ -21,8 +21,8 @@
                 <el-form-item label="学期" prop="term">
                     <el-input v-model="FormData.term"></el-input>
                     <!-- <el-date-picker v-model="FormData.term" type="year"></el-date-picker>
-                    <span style="margin: auto 20px;">至</span>
-                    <el-date-picker v-model="FormData.term" type="year"></el-date-picker> -->
+                                            <span style="margin: auto 20px;">至</span>
+                                            <el-date-picker v-model="FormData.term" type="year"></el-date-picker> -->
                 </el-form-item>
                 <el-form-item label="学生人数" prop="studentsNum">
                     <el-input v-model="FormData.studentsNum"></el-input>
@@ -43,7 +43,8 @@
                         <router-link :to="{
                             path: '/MainPage/classInformation/programObjective/',
                             query: {
-                                id: FormData.courseTargetNum
+                                courseId: FormData.id,
+                                courseName:FormData.courseName
                             }
                         }" tag="el-button" @click.native="settingbegain">设置课程目标</router-link>
                         <el-button type="primary" v-show="showbt" @click="settingOver">设置完毕</el-button>
@@ -51,9 +52,9 @@
                     </template>
                 </el-form-item>
                 <!-- <el-form-item label="课程目标数量" prop="courseTargetNum" >
-                    <el-input v-model="FormData.courseTargetNum"></el-input>
-                    <el-form-item><el-button>设置课程目标</el-button></el-form-item>
-                </el-form-item> -->
+                                            <el-input v-model="FormData.courseTargetNum"></el-input>
+                                            <el-form-item><el-button>设置课程目标</el-button></el-form-item>
+                                        </el-form-item> -->
                 <el-form-item label="指标点数量" prop="indicatorPointsNum">
                     <el-input v-model="FormData.indicatorPointsNum"></el-input>
                 </el-form-item>
@@ -66,12 +67,10 @@
         <el-footer>
             <el-row style="margin-left: 40%;">
                 <el-button type="primary" @click="goto('courseBasicInformation')">返回</el-button>
-                <el-button type="danger">保存</el-button>
+                <el-button type="danger" @click="modifyMessage()">保存</el-button>
             </el-row>
         </el-footer>
-    </el-container>
-
-
+</el-container>
 </template>
 
 <script>
@@ -128,18 +127,18 @@ export default {
                 }
             ],
             FormData: {
-                className: "计算,机科学与技术2020",
-                classroomTeacher: "阳老师",
-                courseName: "高数",
-                courseNature: "必修",
-                courseTargetNum: 5,
-                courseType: "专业必修课",
-                indicatorPoints: "指标1,指标2",
-                indicatorPointsNum: 2,
-                labHours: 4,
-                studentsNum: 80,
-                term: "2022-2023.1",
-                theoreticalHours: 16,
+                // className: "计算,机科学与技术2020",
+                // classroomTeacher: "阳老师",
+                // courseName: "高数",
+                // courseNature: "必修",
+                // courseTargetNum: 5,
+                // courseType: "专业必修课",
+                // indicatorPoints: "指标1,指标2",
+                // indicatorPointsNum: 2,
+                // labHours: 4,
+                // studentsNum: 80,
+                // term: "2022-2023.1",
+                // theoreticalHours: 16,
             },
             props: {
                 courseTargetNum: {
@@ -170,6 +169,33 @@ export default {
                 this.FormData = resp.data.data;
             })
         },
+        modifyMessage() {
+            this.$confirm('是否提交 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                api.put("/courseInfo", this.FormData, (resp) => {
+                    if (resp.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '成功!'
+                        });
+                        this.goto('courseBasicInformation');
+                    } else if (resp.status != 200) {
+                        this.$message({
+                            type: 'error',
+                            message: '失败!'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
+        }
 
     },
     components: {
@@ -184,6 +210,4 @@ export default {
 }
 </script>
    
-<style>
-
-</style>
+<style></style>
