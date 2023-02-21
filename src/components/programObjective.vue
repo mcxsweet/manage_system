@@ -73,6 +73,7 @@ export default {
       kecheng: '课程目标',
       obj: {
         index: 0,
+        ised: true,
 
         //课程Id
         courseId: '',
@@ -87,8 +88,6 @@ export default {
         //评价依据
         evaluationMethod: [],
 
-
-        ised: true
       },
       tableData1: [],
       options: [{
@@ -112,6 +111,19 @@ export default {
     }
   },
   methods: {
+    //初始化表格
+    init() {
+      api.get("/courseInfo/courseTarget/" + this.obj.courseId, "", (resp) => {
+        for (let index = 0; index < resp.data.data.length; index++) {
+          resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
+          resp.data.data[index].evaluationMethod = JSON.parse(resp.data.data[index].evaluationMethod);
+          // this.tableData1[index] = resp.data.data[index];
+          resp.data.data[index].index = index;
+          resp.data.data[index].ised = false;
+        }
+        this.tableData1 = resp.data.data;
+      })
+    },
     editta(row, index) {
       row.ised = true;
     },
@@ -120,42 +132,89 @@ export default {
       this.tableData1[row.index].indicatorPoints = JSON.stringify(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.stringify(this.tableData1[row.index].evaluationMethod);
 
-      api.post("/courseInfo/courseTarget", this.tableData1[row.index], (resp) => {
-        if (resp.data.flag) {
-          this.$message({
-            type: 'success',
-            message: '成功!'
-          });
-        } else {
-          this.$message({
-            type: 'error',
-            message: '失败!'
-          });
-        }
-      })
+      if (row.id == null) {
+        api.post("/courseInfo/courseTarget", this.tableData1[row.index], (resp) => {
+          if (resp.data.flag) {
+            this.$message({
+              type: 'success',
+              message: '成功!'
+            });
+          } else {
+            this.$message({
+              type: 'error',
+              message: '失败!'
+            });
+          }
+        })
+      } else {
+        api.put("/courseInfo/courseTarget", this.tableData1[row.index], (resp) => {
+          if (resp.data.flag) {
+            this.$message({
+              type: 'success',
+              message: '成功!'
+            });
+            this.init();
+          } else {
+            this.$message({
+              type: 'error',
+              message: '失败!'
+            });
+          }
+        })
+      }
 
       this.tableData1[row.index].indicatorPoints = JSON.parse(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.parse(this.tableData1[row.index].evaluationMethod);
     },
     delect(obj) {
-      let j
-      let index = this.tableData1.indexOf(obj);
-      this.tableData1.splice(index, 1)
-      for (let i = 0; i < this.tableData1.length; i++) {
-        j = this.tableData1.indexOf(this.tableData1[i])
-        this.tableData1[i].index = j
-      }
+      // let j
+      // let index = this.tableData1.indexOf(obj);
+      // this.tableData1.splice(index, 1)
+      // for (let i = 0; i < this.tableData1.length; i++) {
+      //   j = this.tableData1.indexOf(this.tableData1[i])
+      //   this.tableData1[i].index = j
+      // }
+
+      this.$confirm('是否删除 ?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        obj.indicatorPoints = JSON.stringify(obj.indicatorPoints);
+        obj.evaluationMethod = JSON.stringify(obj.evaluationMethod);
+        api.del("/courseInfo/courseTarget", obj, (resp) => {
+          if (resp.data.flag) {
+            this.$message({
+              type: 'success',
+              message: '添加成功!'
+            });
+            this.init();
+          } else if (resp.status != 200) {
+            this.$message({
+              type: 'error',
+              message: '添加失败!'
+            });
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        });
+      });
 
     },
     add() {
       this.obj.index = this.tableData1.length
       this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
-
     }
   },
   created() {
     this.obj.courseId = this.$route.query.courseId;
     this.obj.courseName = this.$route.query.courseName;
+  },
+  mounted() {
+    this.init();
   },
 }
 </script>
