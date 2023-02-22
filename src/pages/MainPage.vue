@@ -20,9 +20,9 @@
                         <el-menu-item-group>
                             <template slot="title">分组一</template>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
-                             <el-menu-item index="1-2" @click="goto('basicInformationTable')">课程期末基本信息表</el-menu-item>
-                        </el-menu-item-group>                       
-                            <el-menu-item index="1-3">课程目标</el-menu-item>
+                            <el-menu-item index="1-2" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
+                        </el-menu-item-group>
+                        <el-menu-item index="1-3">课程目标</el-menu-item>
                         <el-submenu index="1-4">
                             <template slot="title">课程目标</template>
                             <el-menu-item index="1-4-1">选项4-1</el-menu-item>
@@ -30,7 +30,7 @@
                     </el-submenu>
                     <el-submenu index="2">
                         <template slot="title"><i class="el-icon-menu"></i>试卷管理</template>
-                        <el-menu-item-group>    
+                        <el-menu-item-group>
                             <el-menu-item index="2-1" @click="goto('finalTable')">课程期末考试命题与课程目标、指标点分数对应表</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
