@@ -5,7 +5,7 @@
                 <el-button plain @click="isShow = !isShow">添加</el-button>
                 <el-button type="danger" plain>删除</el-button>
                 <el-button type="success" plain @click="hunt">搜索</el-button>
-                <input type="text" plain placeholder="请输入搜索内容" class="sousuo" v-model="sousuo" @keyup.enter:>
+                <input type="text" plain placeholder="请输入搜索内容" class="sousuo" v-model="sousuo">
             </el-row>
         </el-header>
 
@@ -17,8 +17,7 @@
                         <el-button size="mini" type="primary" round
                             @click="goto('classInformation', scope.row.id)">设置</el-button>
                         <el-button size="mini" type="info" @click="handleExport(scope.$index, scope.row)">导出</el-button>
-                        <el-button size="mini" type="danger"
-                            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column prop="courseName" label="课程名称" width="200">
@@ -54,9 +53,9 @@
                 <el-form-item label="课程名称" prop="courseName">
                     <el-input v-model="FormData.courseName"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="任课教师" prop="classroomTeacher">
+                <el-form-item label="任课教师" prop="classroomTeacher">
                     <el-input v-model="FormData.classroomTeacher"></el-input>
-                </el-form-item> -->
+                </el-form-item>
                 <el-form-item label="理论学时" prop="theoreticalHours">
                     <el-input v-model="FormData.theoreticalHours"></el-input>
                 </el-form-item>
@@ -68,9 +67,6 @@
                 </el-form-item>
                 <el-form-item label="学期" prop="term">
                     <el-input v-model="FormData.term"></el-input>
-                    <!-- <el-date-picker v-model="FormData.term" type="year"></el-date-picker>
-                    <span style="margin: auto 20px;">至</span>
-                    <el-date-picker v-model="FormData.term" type="year"></el-date-picker> -->
                 </el-form-item>
                 <el-form-item label="学生人数" prop="studentsNum">
                     <el-input v-model="FormData.studentsNum"></el-input>
@@ -84,7 +80,7 @@
                 <el-form-item label="课程类别" prop="courseType">
                     <el-input v-model="FormData.courseType"></el-input>
                 </el-form-item>
-                <!-- <el-form-item label="课程目标数量" prop="courseTargetNum">
+                <el-form-item label="课程目标数量" prop="courseTargetNum">
                     <el-input v-model="FormData.courseTargetNum"></el-input>
                 </el-form-item>
                 <el-form-item label="指标点数量" prop="indicatorPointsNum">
@@ -92,7 +88,7 @@
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
                     <el-input v-model="FormData.indicatorPoints"></el-input>
-                </el-form-item> -->
+                </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
                 <el-button @click="isShow = false">取 消</el-button>
@@ -115,12 +111,12 @@ export default {
         return {
             tableData: [],
             FormData: {
-                className: "计算,机科学与技术2020",
-                classroomTeacher: "阳老师",
-                courseName: "高数",
-                courseNature: "必修",
-                courseTargetNum: 5,
-                courseType: "专业必修课",
+                // className: "计算,机科学与技术2020",
+                // classroomTeacher: "阳老师",
+                // courseName: "高数",
+                // courseNature: "必修",
+                // courseTargetNum: 5,
+                // courseType: "专业必修课",
             },
             isShow: false,
             sousuo: ''
