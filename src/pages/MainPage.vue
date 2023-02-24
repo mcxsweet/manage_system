@@ -2,14 +2,14 @@
     <el-container style="height: 100vh; border: 1px solid #eee">
 
         <el-header style="text-align: right; font-size: 20px">
-            <el-dropdown>
+            <el-dropdown @command="handleCommand">
                 <i class="el-icon-setting" style="margin-right: 15px"></i>
                 <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>个人信息</el-dropdown-item>
-                    <el-dropdown-item>退出</el-dropdown-item>
+                    <el-dropdown-item command="signOut">退出</el-dropdown-item>
                 </el-dropdown-menu>
             </el-dropdown>
-            <span>username</span>
+            <span>{{ username }}</span>
         </el-header>
 
         <el-container>
@@ -66,16 +66,27 @@ export default {
     name: "MainPage",
     data() {
         return {
+            username: '',
 
         }
     },
     methods: {
         goto(url) {
             this.$router.push({ path: '/MainPage/' + url });
+        },
+        signOut() {
+            localStorage.clear();
+            this.$router.push({ path: '/' });
+        },
+        handleCommand(command) {
+            if (command == "signOut") {
+                this.signOut();
+            }
         }
     },
     mounted() {
-        this.$router.push({ path: '/MainPage/welcome' });
+        this.username = localStorage.getItem("name");
+        // this.$router.push({ path: '/MainPage/welcome' });
     },
 
 }

@@ -104,7 +104,6 @@
 
 <script>
 import api from '@/api/api'
-import axios from 'axios'
 export default {
     name: "courseBasicInformation",
     data() {
@@ -123,12 +122,7 @@ export default {
         }
     },
     methods: {
-        gettableData() {
-            axios.get('http://localhost:8080/data/query')
-                .then(res => {
-                    this.tableData = res.data;
-                })
-        },
+
         goto(url, data) {
             this.$router.push({
                 path: '/MainPage/' + url,
@@ -144,7 +138,7 @@ export default {
             }, 2000);
         },
         getMessage() {
-            api.get("/courseInfo", "", (resp) => {
+            api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
                 this.tableData = resp.data.data;
             })
         },
@@ -163,6 +157,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 this.isShow = !this.isShow;
+                this.FormData.teacherId = localStorage.getItem("UserId");
                 api.post("/courseInfo", this.FormData, (resp) => {
                     if (resp.data.flag) {
                         this.$message({
@@ -187,7 +182,7 @@ export default {
     },
     mounted() {
         this.getMessage();
-        this.gettableData();
+        this.FormData.classroomTeacher = localStorage.getItem("name");
     },
 }
 </script>

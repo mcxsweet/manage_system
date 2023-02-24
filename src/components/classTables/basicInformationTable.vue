@@ -29,47 +29,31 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="考核子项目" width="280">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.childData" multiple placeholder="请选择" style="width:50%" v-show="scope.row.ised2"
-              ref="ad">
-              <el-option value="项目1"></el-option>
-              <el-option value="项目2"></el-option>
-              <el-option value="项目3"></el-option>
-              <el-option value="项目4"></el-option>
-            </el-select>
-            <div v-for="(i, index) in scope.row.childData" :key="index" v-show="!scope.row.ised2">
-              <span style="width: 100px;" boder>{{ i + ":" }}</span>
-            </div>
-            <el-button icon="el-icon-plus" type="success" @click="addChild(scope.row, index)"
-              v-show="scope.row.ised2">确定</el-button>
-            <el-button icon="el-icon-plus" type="success" @click="setChild(scope.row, index)"
-              v-show="!scope.row.ised2">设置</el-button>
-            <!-- <el-button icon="el-icon-plus" type="success" @click="saveChild" flex="right" >设置</el-button>            -->
-          </template>
+        <!-- 考核子项目 -->
+        <el-table-column label="考核子项目">
+          <el-table :data="tableData1" stripe>
+            <el-table-column prop="number2" label="子项目名称" width="170">
+              <template slot-scope="scope">
+                <el-select v-model="scope.row.name2" placeholder="请选择" style="width:100%" v-show="scope.row.ised1">
+                  <el-option value="平时考核成绩"></el-option>
+                  <el-option value="实验考核成绩"></el-option>
+                  <el-option value="期末考核成绩"></el-option>
+                </el-select>
+              </template>
+            </el-table-column>
+
+            <el-table-column prop="number2" label="项目百分比" width="">
+              <template slot-scope="scope">
+                <el-button type="warning" size="mini" @click="editta(scope.row)">编辑</el-button>
+                <el-button type="danger" size="mini" @click="saveta(scope.row)">保存</el-button>
+                <el-button type="primary" size="mini" @click="delect(scope.row)">删除</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
 
         </el-table-column>
-        <el-table-column label="课程子目标百分比" width="193">
-          <template slot-scope="scope">
-            <div v-for="(k, index) in scope.row.childnum" :key="index" v-show="!scope.row.ised3">
-              <el-input-number v-model="k.cnum"></el-input-number>
-            </div>
-            <div v-show="scope.row.ised3" v-for="(j, index) in scope.row.childnum" :key="index">
-              <p>{{ j.cnum + '%' }}</p>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column :label="classData.className" width="170">
-          <template slot-scope="scope">
-            <div v-for="(c, index) in scope.row.isclass" :key="index" v-show="!scope.row.ised3">
-              <el-checkbox type="name" v-model="c.isClass" size="medium" style="margin-top:10px"
-                border="true"></el-checkbox>
-            </div>
-            <div v-show="scope.row.ised3" v-for="(a, index) in scope.row.isclass" :key="index">
-              <i class="el-icon-check" v-show="!a.ised3"></i>
-            </div>
-          </template>
-        </el-table-column>
+
+
         <el-table-column label="操作" width="220">
           <template slot-scope="scope">
             <el-button type="warning" size="mini" @click="editta(scope.row)">编辑</el-button>
@@ -344,9 +328,9 @@ export default {
 
     //获取课程列表
     getMessage() {
-      api.get("/courseInfo", "", (resp) => {
+      api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
         this.courseList = resp.data.data;
-      });
+      })
     },
 
     //选择框值选择后

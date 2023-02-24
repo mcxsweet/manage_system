@@ -38,6 +38,9 @@ export default {
             api.post("/user", this.formData, (resp) => {
                 if (resp.data.flag == true) {
                     this.success = "success"
+                    localStorage.setItem("name", this.formData.name);
+                    localStorage.setItem("password", this.formData.password);
+                    localStorage.setItem("UserId", resp.data.data.id);
                     setTimeout(() => {
                         this.$router.push({ path: '/MainPage' });
                     }, 2000);
@@ -51,6 +54,11 @@ export default {
 
         }
     },
+    mounted() {
+        if (localStorage.getItem("name")) {
+            this.$router.push({ path: '/MainPage' });
+        }
+    }
 }
 
 </script>
