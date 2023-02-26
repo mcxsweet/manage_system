@@ -187,6 +187,7 @@ export default {
 
     //初始化表格数据
     init() {
+      
       // this.examItemArray = [];
       api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
