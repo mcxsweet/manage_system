@@ -10,7 +10,7 @@
     </el-header>
 
     <el-main v-show="ischoose">
-      <el-table :data="examItemArray" border="true" style="width: 100%" default-expand-all="true">
+      <el-table :data="examItemArray" border="true" style="width: 100%" default-expand-all="true" :header-cell-style="tableHeader">
         <el-table-column label="考核项目" width="200px">
           <template slot-scope="scope">
             <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%"
@@ -40,9 +40,7 @@
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.examineChildItem" v-show="!scope.row.isExamineChildItem" placeholder="请选择"
                     style="width:100%">
-                    <el-option value="平时考核成绩"></el-option>
-                    <el-option value="实验考核成绩"></el-option>
-                    <el-option value="期末考核成绩"></el-option>
+                     <el-option :value="op" v-for="(op,index) in options" :key="index"></el-option>
                   </el-select>
                   <p v-show="scope.row.isExamineChildItem">{{ scope.row.examineChildItem }}</p>
                 </template>
@@ -145,12 +143,8 @@ export default {
   name: "basicInformationTable",
   data() {
     return {
-      //子目标选项
-      // childoptions:[
-      //      a:[{name:''}],
-      //      b:[{name:''}],
-      //      c:[{name:''}]
-      //  ],
+    //子项目选项
+     options:{name1:'考勤',name2:'课题提问',name3:'作业',name4:'期中测试',name5:'实验项目完成分',name6:'实验报告',name7:'试卷',name8:'大报告',name9:'答辩'},
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -162,7 +156,7 @@ export default {
       examItemArray: [],
 
       text: '',
-
+      
       //实例对象
       examItem: {
         //考核项目名
@@ -202,7 +196,10 @@ export default {
 
     //初始化表格数据
     init() {
-
+       //表头字体居中
+     tableHeader({row,column,rowIndex,columnIndex}){
+            return 'text-align:center'
+        },
       // this.examItemArray = [];
       api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
