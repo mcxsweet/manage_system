@@ -283,7 +283,7 @@ export default {
                 type: 'success',
                 message: '成功!'
               });
-              this.init();
+              this.examItemArray.splice(index, 1);
             } else if (resp.status != 200) {
               this.$message({
                 type: 'error',
