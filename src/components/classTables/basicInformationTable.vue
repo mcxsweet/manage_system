@@ -106,7 +106,7 @@
             </el-table>
 
             <el-tooltip content="添加子项目" placement="bottom" effect="light">
-              <el-button type="primary" icon="el-icon-plus" circle @click="addExamChildItem(scope.$index)"></el-button>
+              <el-button type="primary" icon="el-icon-plus" circle @click="addExamChildItem(scope.row,scope.$index)"></el-button>
             </el-tooltip>
           </template>
 
@@ -144,6 +144,12 @@ export default {
   name: "basicInformationTable",
   data() {
     return {
+      //子目标选项
+      childoptions:[
+           a:[{name:''}],
+           b:[{name:''}],
+           c:[{name:''}]
+       ],
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -160,6 +166,7 @@ export default {
       examItem: {
         //考核项目名
         examineItem: "",
+        childoptionId:0, //用于区别子项目选项
         isExamineItem: false,
 
         //考核项目百分比
@@ -293,8 +300,9 @@ export default {
     },
 
     //添加考核子项目
-    addExamChildItem(index) {
+    addExamChildItem(obj,index) {
       this.examItemArray[index].examChildItemArray.push(JSON.parse(JSON.stringify(this.examChildItem)));
+      
     },
 
     //编辑考核子项目
