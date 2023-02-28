@@ -22,10 +22,10 @@
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
                             <el-menu-item index="1-2" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                         </el-menu-item-group>
-                        <el-menu-item index="1-3">课程目标</el-menu-item>
+                        <el-menu-item index="1-3">导航栏</el-menu-item>
                         <el-submenu index="1-4">
-                            <template slot="title">课程目标</template>
-                            <el-menu-item index="1-4-1">选项4-1</el-menu-item>
+                            <template slot="title">导航栏</template>
+                            <el-menu-item index="1-4-1">导航栏-1</el-menu-item>
                         </el-submenu>
                     </el-submenu>
                     <el-submenu index="2">

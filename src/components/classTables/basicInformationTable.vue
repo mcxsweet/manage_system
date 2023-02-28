@@ -126,8 +126,11 @@
       <el-button icon="el-icon-plus" type="primary" @click="addExamItem()">添加考核方式</el-button>
       <el-divider></el-divider>
       <div style="margin-top: 5%;">
-        <h1>考核评定法: 期末总成绩=<span v-for="(a,index) in examItemArray" :key="index"><span v-if="index!=0">+</span>{{ a.examineItem+'('+a.percentage+'%)' }} </span> </h1>
-        <h1 v-for="(b,index) in examItemArray" :key="index">{{ b.examineItem +'='}}<span v-for="(ch,index1) in b.examChildItemArray" :key="index1"><span v-if="index1!=0">+</span>{{ ch.examineChildItem+'('+ch.childPercentage+'%)' }}</span></h1>
+        <h1>考核评定法: 期末总成绩=<span v-for="(a, index) in examItemArray" :key="index"><span v-if="index != 0">+</span>{{
+          a.examineItem + '(' + a.percentage + '%)' }} </span> </h1>
+        <h1 v-for="(b, index) in examItemArray" :key="index">{{ b.examineItem + '=' }}<span
+            v-for="(ch, index1) in b.examChildItemArray" :key="index1"><span v-if="index1 != 0">+</span>{{
+              ch.examineChildItem + '(' + ch.childPercentage + '%)' }}</span></h1>
       </div>
     </el-main>
 
@@ -191,7 +194,7 @@ export default {
 
     //初始化表格数据
     init() {
-      
+
       // this.examItemArray = [];
       api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
@@ -202,8 +205,11 @@ export default {
             for (let j = 0; j < resp2.data.data.length; j++) {
               resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
               resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
-              resp2.data.data[j].isCourseTarget = false;
-              resp2.data.data[j].isIndicatorPointsDetail = false;
+
+              resp2.data.data[j].isExamineChildItem = true;
+              resp2.data.data[j].isChildPercentage = true;
+              resp2.data.data[j].isCourseTarget = true;
+              resp2.data.data[j].isIndicatorPointsDetail = true;
             }
             resp.data.data[index].examChildItemArray = resp2.data.data;
           })
@@ -312,7 +318,6 @@ export default {
         this.examItemArray[index].examChildItemArray[childIndex].isCourseTarget = true;
         this.examItemArray[index].examChildItemArray[childIndex].isIndicatorPointsDetail = true;
 
-
         this.examItemArray[index].examChildItemArray[childIndex].courseTarget = JSON.stringify(this.examItemArray[index].examChildItemArray[childIndex].courseTarget);
         this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail = JSON.stringify(this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail);
         this.examItemArray[index].examChildItemArray[childIndex].courseExamineMethodsId = this.examItemArray[index].id;
@@ -330,7 +335,14 @@ export default {
         }
         //修改
         else {
-
+          api.put("/courseExam/courseExamineChildMethods", this.examItemArray[index].examChildItemArray[childIndex], (resp) => {
+            if (resp.data.flag) {
+              this.$message({
+                type: 'success',
+                message: '成功!'
+              });
+            }
+          })
         }
         this.examItemArray[index].examChildItemArray[childIndex].courseTarget = JSON.parse(this.examItemArray[index].examChildItemArray[childIndex].courseTarget);
         this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail = JSON.parse(this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail);
