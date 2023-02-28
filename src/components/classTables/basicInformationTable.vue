@@ -106,7 +106,8 @@
             </el-table>
 
             <el-tooltip content="添加子项目" placement="bottom" effect="light">
-              <el-button type="primary" icon="el-icon-plus" circle @click="addExamChildItem(scope.row,scope.$index)"></el-button>
+              <el-button type="primary" icon="el-icon-plus" circle
+                @click="addExamChildItem(scope.row, scope.$index)"></el-button>
             </el-tooltip>
           </template>
 
@@ -145,11 +146,11 @@ export default {
   data() {
     return {
       //子目标选项
-      childoptions:[
-           a:[{name:''}],
-           b:[{name:''}],
-           c:[{name:''}]
-       ],
+      // childoptions:[
+      //      a:[{name:''}],
+      //      b:[{name:''}],
+      //      c:[{name:''}]
+      //  ],
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -166,7 +167,7 @@ export default {
       examItem: {
         //考核项目名
         examineItem: "",
-        childoptionId:0, //用于区别子项目选项
+        childoptionId: 0, //用于区别子项目选项
         isExamineItem: false,
 
         //考核项目百分比
@@ -300,9 +301,8 @@ export default {
     },
 
     //添加考核子项目
-    addExamChildItem(obj,index) {
+    addExamChildItem(obj, index) {
       this.examItemArray[index].examChildItemArray.push(JSON.parse(JSON.stringify(this.examChildItem)));
-      
     },
 
     //编辑考核子项目
@@ -354,15 +354,45 @@ export default {
         }
         this.examItemArray[index].examChildItemArray[childIndex].courseTarget = JSON.parse(this.examItemArray[index].examChildItemArray[childIndex].courseTarget);
         this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail = JSON.parse(this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail);
-
       }
     },
 
-    deleteChildItem() {
-
+    //删除考核子项目
+    deleteChildItem(index, childIndex) {
+      var id = this.examItemArray[index].examChildItemArray[childIndex].id;
+      if (!id) {
+        //删除本地
+        this.examItemArray[index].examChildItemArray.splice(childIndex, 1);
+      }
+      else {
+        //删除云端
+        this.$confirm('是否提交 ?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          api.del("/courseExam/courseExamineChildMethods/" + id, "", (resp) => {
+            if (resp.data.flag) {
+              this.$message({
+                type: 'success',
+                message: '成功!'
+              });
+              this.examItemArray[index].examChildItemArray.splice(childIndex, 1);
+            } else if (resp.status != 200) {
+              this.$message({
+                type: 'error',
+                message: '失败!'
+              });
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });
+        });
+      }
     },
-
-
 
     //获取课程列表
     getMessage() {
