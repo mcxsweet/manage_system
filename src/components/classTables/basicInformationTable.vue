@@ -40,7 +40,8 @@
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.examineChildItem" v-show="!scope.row.isExamineChildItem" placeholder="请选择"
                     style="width:100%">
-                     <el-option :value="op" v-for="(op,index) in options" :key="index"></el-option>
+                     <el-option-group v-for="group in childOptions" :key="group.label" :label="group.label">
+                    <el-option :value="op.value" v-for="(op,index) in group.options" :key="index" ></el-option>
                   </el-select>
                   <p v-show="scope.row.isExamineChildItem">{{ scope.row.examineChildItem }}</p>
                 </template>
@@ -144,7 +145,9 @@ export default {
   data() {
     return {
     //子项目选项
-     options:{name1:'考勤',name2:'课题提问',name3:'作业',name4:'期中测试',name5:'实验项目完成分',name6:'实验报告',name7:'试卷',name8:'大报告',name9:'答辩'},
+    childOptions:[{label:'平时成绩考核项目',options:[{value:'考勤'},{value:'课题提问'},{value:'作业'},{value:'期中测试'}]},
+                    {label:'实验考核项目',options:[{value:'实验项目完成分'},{value:'实验报告'}]},
+                    {label:'期末考核项目',options:[{value:'试卷'},{value:'大报告'},{value:'答辩'}]}],
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
