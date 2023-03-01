@@ -1,8 +1,21 @@
 <template>
     <el-container>
+        <p style="margin-top: 20px;margin-left: 20px;">请先选择课程</p>
+    <el-header style="background-color: #fff;height: 50px;">
+        <el-select placeholder="请选择学期">
+        <el-option value="第一学期"></el-option>
+        <el-option value="第二学期"></el-option>
+      </el-select>
+      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false" style="margin-left: 2%;">
+        <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
+        </el-option>
+      </el-select>
+      
+      <el-button icon="el-icon-search" circle style="margin-left: 10px" @click="getCurrentCourseExam()"></el-button>
+    </el-header>
         <el-main>
-            <div v-show="!showtable" style="margin: auto;">
-                <el-table :header-cell-style="tableHeader" style="width: 100%" boder :row-class-name="tableRowclassName" :data="tableData" size="mini" v-show="tableshow">
+            <div style="margin: auto;">
+                <el-table :header-cell-style="tableHeader" style="width: 100%" boder :row-class-name="tableRowclassName" :data="tableData" size="mini">
                     <el-table-column label="指标点" prop="name">   
                     </el-table-column>
                     <el-table-column label="支撑程度"></el-table-column>
@@ -57,64 +70,46 @@
                     <el-button v-show="tableshow">编辑</el-button>
                     <el-button v-show="tableshow" @click="showdiv1=true">试卷编辑</el-button>
                     <el-button v-show="tableshow" @click="goto('finalStatisticsTable', answer,compute,choice,gap,choiceGarde,gapGarde)">跳往课程期末试卷成绩表</el-button>
-             </div>
-   
-    <div v-show="showdiv1">
-        <el-form :inline="true">
-        <el-form-item label="请选择选择题数：" size="mini">
-            <el-input-number v-model="choiceNum" :min="0"></el-input-number>
-        </el-form-item>
-        <el-form-item label="请选择选择题分数：" size="mini">
-            <el-input-number v-model="choiceGarde" :min="0"></el-input-number>
-        </el-form-item>
-    </el-form>
-    <el-form :inline="true">
-        <el-form-item label="请选择填空题数：" size="mini">
-            <el-input-number v-model="gapNum" :min="0"></el-input-number>
-        </el-form-item>
-        <el-form-item label="请选择填空题分数：" size="mini">
-            <el-input-number v-model="gapGarde" :min="0"></el-input-number>
-        </el-form-item>
-    </el-form>
-    <el-form :inline="true">
-        <el-form-item label="请选择简答题数：" size="mini">
-            <el-input-number v-model="answerNum" :min="0"></el-input-number>
-        </el-form-item>
-    </el-form>
-    <el-form :inline="true">
-        <el-form-item label="请选择计算题数：" size="mini">
-            <el-input-number v-model="computeNum" :min="0"></el-input-number>
-        </el-form-item>
-    </el-form>
-    <el-button size="mini" @click="showdiv1 = !showdiv1,showdiv2=!showdiv2,saveNum(answerNum,computeNum,choiceNum,gapNum)">确定</el-button>
-    </div>
-    <div v-show="showdiv2">
-        <span>选择题总分：{{choiceNum*choiceGarde}}</span>
-        <br>
-        <span>填空题总分：{{ gapNum*gapGarde }}</span>
-        <br>
-        <span>简答题总分：{{ answerGardes }}</span>
-        <br>
-        <span>计算题总分：{{ computeGardes }}</span>
-        <el-form :inline="true">   
-            <el-form> <el-form-item v-for="(item) in answer" :key="item.answerId">
-               <el-form-item :label="'简答题'+item.answerId+':'"><el-input-number v-model="item.answerGarde" size="mini" :min="0"></el-input-number></el-form-item>
-            </el-form-item>
-            <el-form-item>
-                <el-button>确定</el-button>
-            </el-form-item>
-        </el-form>
-           <el-form :inline="true">
-                <el-form-item v-for="(item1) in compute" :key="item1.computeId">
-                    <el-form-item :label="'计算题'+item1.computeId+':'"><el-input-number v-model="item1.comGarde" size="mini" :min="0"></el-input-number></el-form-item>
-                </el-form-item>
-           </el-form>
-            <el-form-item> <el-button size="mini" @click="showdiv2=!showdiv2,tableshow=true,saved">确定</el-button></el-form-item> 
-        </el-form>
-    </div>
+            </div>
+    <div>
+            <el-table :data="examinations" :header-cell-style="tableHeader" border="true" style="width: 660px;">
+                <el-table-column label="题型选择"  width="150px">
+                    <template slot-scope="scope" >
+                        <el-select v-model="scope.row.examinationName" placeholder="请选择">
+                            <el-option value="选择题"></el-option>
+                            <el-option value="填空题"></el-option>
+                            <el-option value="简答题"></el-option>
+                            <el-option value="计算题"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+                <el-table-column label="题数选择"  width="150px">
+                    <template slot-scope="scope">
+                        <el-input type="number" v-model="scope.row.examinationNum" :min="0" :max="100"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column label="分数设置" width="200px">
+                    <template slot-scope="scope" >
+                           <el-button @click="selectGarde(scope.row),scope.row.showSelect=false" v-show="scope.row.showSelect">设置</el-button>
+                           <div v-for="g in scope.row.examinationGardes" :key="g.id">
+                               {{ g.examination+g.id+':' }}<el-input type="number" size="mini" v-model="g.garde"></el-input>
+                           </div>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="160px">
+                    <template slot-scope="scope">
+                        <el-button type="danger" size="mini" @click="delectEx(scope.row)">删除</el-button> 
+                    <el-button type="primary" size="mini" @click="reSelectEx(scope.row.examinationId)">重置</el-button>
+                    </template>
+                    
+                </el-table-column>
+            </el-table>
+            <el-button icon="el-icon-plus" type="primary" @click="addExamination">添加题目类型</el-button>
+            <el-button icon="el-icon-check" type="danger" @click="savaExamnation">保存</el-button>
+        </div>
+
         </el-main>
     </el-container>
-    
    
 </template>
 <script>
@@ -122,6 +117,23 @@ export default {
     name:"finalTable",
     data(){
         return{
+            //试卷设置数组
+            examinations:[],
+            //题目类型项
+            examinationObj:{
+                showSelect:true,
+                examinationId:0,    //类型id
+                examinationName:'', //类型名
+                examinationNum:0,   //题目数
+                exam:'',
+                examinationGardes:[] //各题目分数
+            },
+            //小题
+            gardesObj:{
+                id:0, //小题序号
+                examination:'', //小题名称
+                garde:0, //小题分数
+            },                                                                                           
             tableData:[{
                 name:'111',
             },
@@ -138,40 +150,7 @@ export default {
             {
                 name:'111'
             }],
-            tableshow:false,
-            showdiv1:true,
-            showdiv2:false,
-            showtable:false,
-            choiceNum:0,
-            choiceGarde:0,
-            gapNum:0,
-            gapGarde:0,
-            answerNum:0,
-            answerGardes:0,
-            computeGardes:0,
-            computeNum:0,
-            answer:[],
-            compute:[],
-            choice:[],
-            gap:[],
-            ansobj:{
-                answerId:0,
-                answerGarde:0,
-                checked:false
-            },
-            comobj:{
-                computeId:0,
-                comGarde:0,
-                checked:false,
-            },
-            choiceobj:{
-                choiceId:0,
-                checked:false,
-            },
-            gapobj:{
-                gapId:0,
-                checked:false,
-            }
+            
         }
     },
     methods:{
@@ -182,52 +161,41 @@ export default {
             }
             return 'text-align:center'
         },
-        saveNum(obj1,obj2,obj3,obj4){
-            for(let i =0;i<obj1;i++){
-                this.ansobj.answerId++
-                this.answer.push(JSON.parse(JSON.stringify(this.ansobj)))
-            }
-            for(let j =0;j<obj2;j++){
-                this.comobj.computeId++
-                this.compute.push(JSON.parse(JSON.stringify(this.comobj)))
-            }
-            for(let k =0;k<obj3;k++){
-                this.choiceobj.choiceId++
-                this.choice.push(JSON.parse(JSON.stringify(this.choiceobj)))
-            }
-            for(let y=0;y<obj4;y++){
-                this.gapobj.gapId++
-                this.gap.push(JSON.parse(JSON.stringify(this.gapobj)))
-            }
+        //添加题目类型
+        addExamination(){
+            this.examinations.push(JSON.parse(JSON.stringify(this.examinationObj)))
+            this.examinationObj.examinationId++
         },
-        saved(){
-            let num1 = 0
-            let num2 = 0
-            for(let i=0;this.answer.length;i++){
-                num1 = this.answer[i].answerGarde+num1
+        selectGarde(obj){
+            this.gardesObj.examination=obj.examinationName
+            for(let i=0;i<obj.examinationNum;i++){
+                this.examinations[obj.examinationId].examinationGardes.push(JSON.parse(JSON.stringify(this.gardesObj)))
+                this.gardesObj.id++
             }
-            for(i=0;i<this.compute.length;i++){
-                num2 = this.compute[i].comGarde+num2
-            }
-            this.answerGardes = num1
-            this.computeGardes = num2
-            if(num1+num2+(this.choiceNum*this.choiceGarde)+(this.gapNum*this.gapGarde)!=100){
-                return this.$message('试卷总分不为一百！')
-            }
+            console.log(this.examinations[obj.examinationId].examinationGardes) 
         },
-        goto(url, data1,data2,data3,data4,data5,data6) {
-             this.$router.push({
-                path: '/MainPage/' + url,
-                query: {
-                    an:data1,
-                    co:data2,
-                    ch:data3,
-                    ga:data4,
-                    chgarde:data5,
-                    gapgarde:data6
-                }
-            });
-        },
+        //删除当前行
+       delectEx(obj){
+        console.log(this.examinations)
+        let j
+        let index = this.examinations.indexOf(obj);
+        this.examinations.splice(index, 1)
+        for (let i = 0; i < this.examinations.length; i++) {
+            j = this.examinations.indexOf(this.examinations[i])
+            console.log("j="+j)
+            this.examinations[i].index = j
+            this.examinations[i].examinationId=j
+        }
+        console.log(this.examinations)
+       },
+       //重置当前行数据
+       reSelectEx(obj){
+        this.examinations[obj].examinationGardes.length=0
+        this.examinations[obj].examinationName=''
+        this.examinations[obj].examinationNum=0
+        this.examinations[obj].showSelect = true
+        console.log(this.examinations[obj])
+       }
     }
 }
 </script>
