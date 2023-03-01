@@ -10,7 +10,8 @@
     </el-header>
 
     <el-main v-show="ischoose">
-      <el-table :data="examItemArray" border="true" style="width: 100%" default-expand-all="true" :header-cell-style="tableHeader">
+      <el-table :data="examItemArray" border="true" style="width: 100%" default-expand-all="true"
+        :header-cell-style="tableHeader">
         <el-table-column label="考核项目" width="200px">
           <template slot-scope="scope">
             <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%"
@@ -40,8 +41,9 @@
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.examineChildItem" v-show="!scope.row.isExamineChildItem" placeholder="请选择"
                     style="width:100%">
-                     <el-option-group v-for="group in childOptions" :key="group.label" :label="group.label">
-                    <el-option :value="op.value" v-for="(op,index) in group.options" :key="index" ></el-option>
+                    <el-option-group v-for="group in childOptions" :key="group.label" :label="group.label">
+                      <el-option :value="op.value" v-for="(op, index) in group.options" :key="index"></el-option>
+                    </el-option-group>
                   </el-select>
                   <p v-show="scope.row.isExamineChildItem">{{ scope.row.examineChildItem }}</p>
                 </template>
@@ -144,10 +146,10 @@ export default {
   name: "basicInformationTable",
   data() {
     return {
-    //子项目选项
-    childOptions:[{label:'平时成绩考核项目',options:[{value:'考勤'},{value:'课题提问'},{value:'作业'},{value:'期中测试'}]},
-                    {label:'实验考核项目',options:[{value:'实验项目完成分'},{value:'实验报告'}]},
-                    {label:'期末考核项目',options:[{value:'试卷'},{value:'大报告'},{value:'答辩'}]}],
+      //子项目选项
+      childOptions: [{ label: '平时成绩考核项目', options: [{ value: '考勤' }, { value: '课题提问' }, { value: '作业' }, { value: '期中测试' }] },
+      { label: '实验考核项目', options: [{ value: '实验项目完成分' }, { value: '实验报告' }] },
+      { label: '期末考核项目', options: [{ value: '试卷' }, { value: '大报告' }, { value: '答辩' }] }],
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -159,7 +161,7 @@ export default {
       examItemArray: [],
 
       text: '',
-      
+
       //实例对象
       examItem: {
         //考核项目名
@@ -196,13 +198,14 @@ export default {
     }
   },
   methods: {
+    //表头字体居中
+    tableHeader({ row, column, rowIndex, columnIndex }) {
+      return 'text-align:center'
+    },
 
     //初始化表格数据
     init() {
-       //表头字体居中
-     tableHeader({row,column,rowIndex,columnIndex}){
-            return 'text-align:center'
-        },
+
       // this.examItemArray = [];
       api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
