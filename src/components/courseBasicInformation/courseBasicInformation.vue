@@ -13,7 +13,6 @@
             <el-table :data="tableData" stripe height="73vh" border="true">
                 <el-table-column align="left" width="300">
                     <template slot-scope="scope">
-                        <!-- <router-link tag="el-button" :to="{path:'/MainPage/classInformation',scope.$index,}">11</router-link> -->
                         <el-button size="mini" type="primary" round
                             @click="goto('classInformation', scope.row.id)">设置</el-button>
                         <el-button size="mini" type="info" @click="handleExport(scope.$index, scope.row)">导出</el-button>
@@ -22,8 +21,6 @@
                 </el-table-column>
                 <el-table-column prop="courseName" label="课程名称" width="200">
                 </el-table-column>
-                <!-- <el-table-column prop="classroomTeacher" label="任课教师" width="140">
-                </el-table-column> -->
                 <el-table-column prop="theoreticalHours" label="理论学时" width="100">
                 </el-table-column>
                 <el-table-column prop="labHours" label="实验学时" width="100">
@@ -38,12 +35,6 @@
                 </el-table-column>
                 <el-table-column prop="courseType" label="课程类别" width="140">
                 </el-table-column>
-                <!-- <el-table-column prop="courseTargetNum" label="课程目标数量" width="140">
-                </el-table-column>
-                <el-table-column prop="indicatorPointsNum" label="指标点数量" width="100">
-                </el-table-column> -->
-                <!-- <el-table-column prop="indicatorPoints" label="指标点编号" width="140"> -->
-                <!-- </el-table-column> -->
             </el-table>
         </el-main>
 
@@ -87,7 +78,13 @@
                     <el-input v-model="FormData.indicatorPointsNum"></el-input>
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
-                    <el-input v-model="FormData.indicatorPoints"></el-input>
+                    <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
+                    <el-select v-model="FormData.indicatorPoints" filterable multiple placeholder="请选择指标点"
+                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum">
+                        <el-option v-for="item in indicators" :key="item.indicatorName" :label="item.indicatorName"
+                            :value="item.indicatorName">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -109,16 +106,10 @@ export default {
     data() {
         return {
             tableData: [],
-            FormData: {
-                // className: "计算,机科学与技术2020",
-                // classroomTeacher: "阳老师",
-                // courseName: "高数",
-                // courseNature: "必修",
-                // courseTargetNum: 5,
-                // courseType: "专业必修课",
-            },
+            FormData: {},
             isShow: false,
-            sousuo: ''
+            sousuo: '',
+            indicators: [1, 2, 3]
         }
     },
     methods: {
@@ -158,6 +149,9 @@ export default {
             }).then(() => {
                 this.isShow = !this.isShow;
                 this.FormData.teacherId = localStorage.getItem("UserId");
+
+                this.FormData.indicatorPoints = JSON.stringify(this.FormData.indicatorPoints);
+
                 api.post("/courseInfo", this.FormData, (resp) => {
                     if (resp.data.flag) {
                         this.$message({
@@ -178,9 +172,17 @@ export default {
                     message: '已取消'
                 });
             });
+        },
+
+        //获取指标点列表
+        getIndicators() {
+            api.get("/courseInfo/indicators", "", (resp) => {
+                this.indicators = resp.data.data;
+            })
         }
     },
     mounted() {
+        this.getIndicators();
         this.getMessage();
         this.FormData.classroomTeacher = localStorage.getItem("name");
     },
