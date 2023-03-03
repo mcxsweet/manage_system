@@ -4,10 +4,11 @@ import VueRouter from "vue-router";
 //引入组件
 import MainPage from '@/pages/MainPage'
 import LoginPage from '@/pages/LoginPage'
-import courseBasicInformation from '@/components/courseBasicInformation'
+import courseBasicInformation from '@/components/courseBasicInformation/courseBasicInformation'
+import programObjective from '@/components/courseBasicInformation/programObjective'
+import classInformation from '@/components/courseBasicInformation/classInformation'
+
 import welcome from '@/components/welcome'
-import classInformation from '@/components/classInformation'
-import programObjective from '@/components/programObjective'
 import attendanceManagement from '@/components/attendanceManagement'
 import basicInformationTable from '@/components/classTables/basicInformationTable'
 import finalTable from '@/components/classTables/finalTable'
@@ -27,34 +28,34 @@ export default new VueRouter({
             path: "/MainPage",
             component: MainPage,
             children: [
-                 {
-                    path:'analysisTable',
-                    component:analysisTable
+                {
+                    path: 'analysisTable',
+                    component: analysisTable
                 },
                 {
-                    path:'programTable',
-                    component:programTable
+                    path: 'programTable',
+                    component: programTable
                 },
                 {
-                    path:'finalStatisticsTable',
-                    component:finalStatisticsTable
+                    path: 'finalStatisticsTable',
+                    component: finalStatisticsTable
                 },
-                
+
                 {
-                    path:'finalComprehensiveTable',
-                    component:finalComprehensiveTable
-                },
-                {
-                    path:'finalTable',
-                    component:finalTable
+                    path: 'finalComprehensiveTable',
+                    component: finalComprehensiveTable
                 },
                 {
-                    path:'usualPreformanceTable',
-                    component:usualPreformanceTable
+                    path: 'finalTable',
+                    component: finalTable
                 },
                 {
-                    path:'basicInformationTable',
-                    component:basicInformationTable
+                    path: 'usualPreformanceTable',
+                    component: usualPreformanceTable
+                },
+                {
+                    path: 'basicInformationTable',
+                    component: basicInformationTable
                 },
                 {
                     path: 'welcome', //  课程基本信息

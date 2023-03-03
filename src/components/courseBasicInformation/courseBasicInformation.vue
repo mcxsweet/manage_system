@@ -38,12 +38,6 @@
                 </el-table-column>
                 <el-table-column prop="courseType" label="课程类别" width="140">
                 </el-table-column>
-                <!-- <el-table-column prop="courseTargetNum" label="课程目标数量" width="140">
-                </el-table-column>
-                <el-table-column prop="indicatorPointsNum" label="指标点数量" width="100">
-                </el-table-column> -->
-                <!-- <el-table-column prop="indicatorPoints" label="指标点编号" width="140"> -->
-                <!-- </el-table-column> -->
             </el-table>
         </el-main>
 
@@ -109,14 +103,7 @@ export default {
     data() {
         return {
             tableData: [],
-            FormData: {
-                // className: "计算,机科学与技术2020",
-                // classroomTeacher: "阳老师",
-                // courseName: "高数",
-                // courseNature: "必修",
-                // courseTargetNum: 5,
-                // courseType: "专业必修课",
-            },
+            FormData: {},
             isShow: false,
             sousuo: ''
         }
