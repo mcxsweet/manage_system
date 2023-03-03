@@ -26,7 +26,7 @@
 
         <el-table-column label="项目百分比" width="150">
           <template slot-scope="scope">
-            <el-input type="number" v-model="scope.row.percentage" v-show="!scope.row.isPercentage">
+            <el-input type="number" v-model="scope.row.percentage" v-show="!scope.row.isPercentage" :min="0" :max="100">
               <template slot="append">%</template>
             </el-input>
             <p v-show="scope.row.isPercentage">{{ scope.row.percentage }} %</p>
@@ -84,8 +84,8 @@
                   </div>
                 </template>
               </el-table-column>
-
-              <el-table-column label="子项目操作" width="220">
+              <div v-show="!scope.row.isExamineItem">
+                <el-table-column label="子项目操作" width="220" fixed="right">
                 <template slot-scope="scope2">
                   <el-tooltip content="编辑" placement="bottom" effect="light">
                     <el-button type="primary" icon="el-icon-edit" circle="true"
@@ -104,16 +104,14 @@
 
                 </template>
               </el-table-column>
+              </div>
+              
             </el-table>
-
-            <el-tooltip content="添加子项目" placement="bottom" effect="light">
+            <el-tooltip content="添加子项目" placement="bottom" effect="light" v-show="!scope.row.isExamineItem">
               <el-button type="primary" icon="el-icon-plus" circle
                 @click="addExamChildItem(scope.row, scope.$index)"></el-button>
             </el-tooltip>
           </template>
-
-
-
         </el-table-column>
 
 
@@ -166,7 +164,7 @@ export default {
       examItem: {
         //考核项目名
         examineItem: "",
-        childoptionId: 0, //用于区别子项目选项
+
         isExamineItem: false,
 
         //考核项目百分比
@@ -261,6 +259,7 @@ export default {
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
+        this.examItemArray[index].examChildItemArray[childIndex].isExamineChildItem = true;
         setTimeout(() => {
           this.init();
         }, 1000);
