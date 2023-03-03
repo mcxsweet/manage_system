@@ -44,7 +44,7 @@
                             path: '/MainPage/classInformation/programObjective/',
                             query: {
                                 courseId: FormData.id,
-                                courseName:FormData.courseName
+                                courseName: FormData.courseName
                             }
                         }" tag="el-button" @click.native="settingbegain">设置课程目标</router-link>
                         <el-button type="primary" v-show="showbt" @click="settingOver">设置完毕</el-button>
@@ -59,7 +59,13 @@
                     <el-input v-model="FormData.indicatorPointsNum"></el-input>
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
-                    <el-input v-model="FormData.indicatorPoints"></el-input>
+                    <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
+                    <el-select v-model="FormData.indicatorPoints" filterable multiple placeholder="请选择指标点"
+                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum">
+                        <el-option v-for="item in indicators" :key="item.indicatorName" :label="item.indicatorName"
+                            :value="item.indicatorName">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
 
@@ -70,7 +76,7 @@
                 <el-button type="danger" @click="modifyMessage()">保存</el-button>
             </el-row>
         </el-footer>
-</el-container>
+    </el-container>
 </template>
 
 <script>
@@ -82,50 +88,7 @@ export default {
     data() {
         return {
             id: 0,
-            tableData: [
-                {
-                    className: "计算,机科学与技术2021",
-                    classroomTeacher: "阳老师",
-                    courseName: "高数",
-                    courseNature: "必修",
-                    courseTargetNum: 5,
-                    courseType: "专业必修课",
-                    indicatorPoints: "指标1,指标2",
-                    indicatorPointsNum: 2,
-                    labHours: 4,
-                    studentsNum: 80,
-                    term: "2022-2023.1",
-                    theoreticalHours: 16,
-                },
-                {
-                    className: "计算,机科学与技术2022",
-                    classroomTeacher: "阳老师",
-                    courseName: "高数",
-                    courseNature: "必修",
-                    courseTargetNum: 5,
-                    courseType: "专业必修课",
-                    indicatorPoints: "指标1,指标2",
-                    indicatorPointsNum: 2,
-                    labHours: 4,
-                    studentsNum: 80,
-                    term: "2022-2023.1",
-                    theoreticalHours: 16,
-                },
-                {
-                    className: "计算,机科学与技术2020",
-                    classroomTeacher: "阳老师",
-                    courseName: "高数",
-                    courseNature: "必修",
-                    courseTargetNum: 5,
-                    courseType: "专业必修课",
-                    indicatorPoints: "指标1,指标2",
-                    indicatorPointsNum: 2,
-                    labHours: 4,
-                    studentsNum: 80,
-                    term: "2022-2023.1",
-                    theoreticalHours: 16,
-                }
-            ],
+
             FormData: {
                 // className: "计算,机科学与技术2020",
                 // classroomTeacher: "阳老师",
@@ -147,7 +110,8 @@ export default {
                 }
             },
             showbt: false,
-            showObjective: true
+            showObjective: true,
+            indicators: []
         }
     },
 
@@ -166,6 +130,7 @@ export default {
 
         getMessage() {
             api.get("/courseInfo/" + this.id, "", (resp) => {
+                resp.data.data.indicatorPoints = JSON.parse(resp.data.data.indicatorPoints);
                 this.FormData = resp.data.data;
             })
         },
@@ -175,6 +140,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
+                this.FormData.indicatorPoints = JSON.stringify(this.FormData.indicatorPoints);
+
                 api.put("/courseInfo", this.FormData, (resp) => {
                     if (resp.data.flag) {
                         this.$message({
@@ -195,6 +162,13 @@ export default {
                     message: '已取消'
                 });
             });
+        },
+
+        //获取指标点列表
+        getIndicators() {
+            api.get("/courseInfo/indicators", "", (resp) => {
+                this.indicators = resp.data.data;
+            })
         }
 
     },
@@ -202,6 +176,7 @@ export default {
         programObjection
     },
     mounted() {
+        this.getIndicators();
         this.getMessage();
     },
     created() {
