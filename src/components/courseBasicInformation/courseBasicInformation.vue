@@ -16,7 +16,7 @@
                         <el-button size="mini" type="primary" round
                             @click="goto('classInformation', scope.row.id)">设置</el-button>
                         <el-button size="mini" type="info" @click="handleExport(scope.$index, scope.row)">导出</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
                 <el-table-column prop="courseName" label="课程名称" width="200">
@@ -141,6 +141,36 @@ export default {
             this.$emit('childClick', classdata);
             this.$bus.$emit("sendCourseID", object.id);
         },
+
+        //删除
+        handleDelete(item) {
+            this.$confirm('是否删除 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                api.del("/courseInfo", item, (resp) => {
+                    if (resp.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        this.getMessage();
+                    } else if (resp.status != 200) {
+                        this.$message({
+                            type: 'error',
+                            message: '删除失败!'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
+        },
+        //提交
         submit() {
             this.$confirm('是否提交 ?', '提示', {
                 confirmButtonText: '确定',
