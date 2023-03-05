@@ -6,7 +6,7 @@
         <el-option value="第一学期"></el-option>
         <el-option value="第二学期"></el-option>
       </el-select>
-      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false" style="margin-left: 2%;">
+      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false,examinations.length=0" style="margin-left: 2%;">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
         </el-option>
       </el-select>
@@ -34,7 +34,7 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <el-button @click="ischoose=false">试卷设置</el-button>
+            <el-button @click="ischoose=false,issetfinal=true">试卷设置</el-button>
             </div>
             <!-- <div style="margin: auto;" v-show="fasle">
                 <el-table :header-cell-style="tableHeader" style="width: 100%" boder :row-class-name="tableRowclassName" :data="tableData" size="mini">
@@ -93,7 +93,7 @@
                     <el-button v-show="tableshow" @click="showdiv1=true">试卷编辑</el-button>
                     <el-button v-show="tableshow" @click="goto('finalStatisticsTable', answer,compute,choice,gap,choiceGarde,gapGarde)">跳往课程期末试卷成绩表</el-button>
             </div> -->
-    <div v-show="!ischoose">
+    <div v-show="issetfinal">
             <el-table :data="examinations" :header-cell-style="tableHeader" border="true" style="width: 760px;">
                 <el-table-column label="题型选择"  width="200px">
                     <template slot-scope="scope" >
@@ -141,6 +141,8 @@ export default {
     name:"finalTable",
     data(){
         return{
+            issetfinal:false, 
+            arr:[],
             ischoose: false,
         //当前选择课程索引
             currentCourse: "",
@@ -235,12 +237,22 @@ export default {
                 this.courseList = resp.data.data;
             })
         },
-        getCurrentCourseExam() {
-            this.ischoose = true;
-            console.log(this.currentCourse);
-            this.init();
+        getfinal(){    
+            api.get("/courseExamPaper/"+ this.currentCourse,"",(resp1) =>{
+                this.arr = resp1.data.data
+            })
         },
-        
+        getCurrentCourseExam() {
+            
+            this.ischoose = true;
+            this.examinations.length = 0
+            for(let index=0;index<this.arr.length;index++){
+                    this.examinationObj.examinationName = this.arr[index].itemName
+                    this.examinationObj.examinationGardes = this.arr[index].itemScore
+                    this.examinations.push(JSON.parse(JSON.stringify(this.examinationObj)))
+                }
+                console.log(this.examinations)
+        },
         savaExamnation(){
             for(let j of this.examinations){
                 for(let y of j.examinationGardes){
@@ -248,6 +260,7 @@ export default {
                 }
             }
             this.ischoose = true
+            this.issetfinal=false
             // this.$confirm('是否提交 ?', '提示', {
             //     confirmButtonText: '确定',
             //     cancelButtonText: '取消',
@@ -277,6 +290,7 @@ export default {
         },
     mounted() {
     this.getMessage();
+    this.getfinal();
     }
 }
 </script>
