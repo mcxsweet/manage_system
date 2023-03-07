@@ -27,7 +27,10 @@
                 </el-table-column>
                 <el-table-column prop="className" label="班级名称" width="200">
                 </el-table-column>
-                <el-table-column prop="term" label="学期" width="140">
+                <el-table-column label="学期" width="140">
+                    <template slot-scope="scope">
+                        {{ scope.row.termStart }}-{{ scope.row.termEnd }}.{{ scope.row.term }}
+                    </template>
                 </el-table-column>
                 <el-table-column prop="studentsNum" label="学生人数" width="100">
                 </el-table-column>
@@ -57,7 +60,21 @@
                     <el-input v-model="FormData.className"></el-input>
                 </el-form-item>
                 <el-form-item label="学期" prop="term">
-                    <el-input v-model="FormData.term"></el-input>
+                    <!-- <el-input v-model="FormData.term"></el-input> -->
+                    <el-select v-model="FormData.termStart" placeholder="请选择" style="width: 12vh;">
+                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 1vh;margin-right: 1vh;">至</span>
+                    <el-select v-model="FormData.termEnd" placeholder="请选择" style="width: 12vh;">
+                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 1vh;margin-right: 1vh;"></span>
+                    <el-select v-model="FormData.term" placeholder="请选择课程性质">
+                        <el-option label="第一学期" value="1"></el-option>
+                        <el-option label="第二学期" value="2"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="学生人数" prop="studentsNum">
                     <el-input v-model="FormData.studentsNum"></el-input>
@@ -109,10 +126,16 @@ export default {
             FormData: {},
             isShow: false,
             sousuo: '',
-            indicators: [1, 2, 3]
+            indicators: [1, 2, 3],
+            DataOptions: []
         }
     },
     methods: {
+        initDataOptions() {
+            for (let i = 0; i < 10; i++) {
+                this.DataOptions.push(new Date().getFullYear() - 3 + i);
+            }
+        },
 
         goto(url, data) {
             this.$router.push({
@@ -129,6 +152,7 @@ export default {
             }, 2000);
         },
         getMessage() {
+
             api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
                 this.tableData = resp.data.data;
             })
@@ -214,6 +238,7 @@ export default {
     mounted() {
         this.getIndicators();
         this.getMessage();
+        this.initDataOptions();
         this.FormData.classroomTeacher = localStorage.getItem("name");
     },
 }

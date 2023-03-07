@@ -19,10 +19,21 @@
                     <el-input v-model="FormData.className"></el-input>
                 </el-form-item>
                 <el-form-item label="学期" prop="term">
-                    <el-input v-model="FormData.term"></el-input>
-                    <!-- <el-date-picker v-model="FormData.term" type="year"></el-date-picker>
-                                            <span style="margin: auto 20px;">至</span>
-                                            <el-date-picker v-model="FormData.term" type="year"></el-date-picker> -->
+                    <!-- <el-input v-model="FormData.term"></el-input> -->
+                    <el-select v-model="FormData.termStart" placeholder="请选择" style="width: 12vh;">
+                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 1vh;margin-right: 1vh;">至</span>
+                    <el-select v-model="FormData.termEnd" placeholder="请选择" style="width: 12vh;">
+                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 1vh;margin-right: 1vh;"></span>
+                    <el-select v-model="FormData.term" placeholder="请选择课程性质">
+                        <el-option label="第一学期" value="1"></el-option>
+                        <el-option label="第二学期" value="2"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="学生人数" prop="studentsNum">
                     <el-input v-model="FormData.studentsNum"></el-input>
@@ -111,11 +122,18 @@ export default {
             },
             showbt: false,
             showObjective: true,
-            indicators: []
+            indicators: [],
+            DataOptions: []
+
         }
     },
 
     methods: {
+        initDataOptions() {
+            for (let i = 0; i < 10; i++) {
+                this.DataOptions.push(new Date().getFullYear() - 3 + i);
+            }
+        },
         goto(url) {
             this.$router.push({ path: '/MainPage/' + url });
         },
@@ -176,6 +194,7 @@ export default {
         programObjection
     },
     mounted() {
+        this.initDataOptions();
         this.getIndicators();
         this.getMessage();
     },
