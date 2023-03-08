@@ -4,6 +4,10 @@
     <el-header style="background-color: #fff;height: 50px;">
       <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
+          <span style="float: left">{{ item.courseName }}</span>
+          <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
+            item.termStart }}.{{
+    item.term }}</span>
         </el-option>
       </el-select>
       <el-button icon="el-icon-search" circle style="margin-left: 10px" @click="getCurrentCourseExam()"></el-button>
