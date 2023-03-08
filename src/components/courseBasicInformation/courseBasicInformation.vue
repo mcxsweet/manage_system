@@ -3,9 +3,8 @@
         <el-header style="background-color: #fff;height: 50px;">
             <el-row>
                 <el-button plain @click="isShow = !isShow">添加</el-button>
-                <el-button type="danger" plain>删除</el-button>
-                <el-button type="success" plain @click="hunt">搜索</el-button>
-                <input type="text" plain placeholder="请输入搜索内容" class="sousuo" v-model="sousuo">
+                <!-- <el-button type="danger" plain>删除</el-button> -->
+                <el-button type="success" plain @click="isShowSearch = !isShowSearch">筛选</el-button>
             </el-row>
         </el-header>
 
@@ -110,6 +109,41 @@
             </div>
         </el-dialog>
 
+        <!-- 筛选弹出层 -->
+        <el-dialog title="筛选 (支持单条件和多条件筛选)" :visible.sync="isShowSearch">
+            <el-table :data="searchTable" border="true">
+                <el-table-column label="课程名称" width="200">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.courseName"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column label="班级名称" width="200">
+                    <template slot-scope="scope">
+                        <el-input v-model="scope.row.className"></el-input>
+                    </template>
+                </el-table-column>
+                <el-table-column label="学期" width="200">
+                    <template slot-scope="scope">
+                        <el-select v-model="scope.row.termStart" placeholder="请选择">
+                            <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                            </el-option>
+                        </el-select>
+                        <el-select v-model="scope.row.termEnd" placeholder="请选择">
+                            <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                            </el-option>
+                        </el-select>
+                        <el-select v-model="scope.row.term" placeholder="请选择学期">
+                            <el-option label="第一学期" value="1"></el-option>
+                            <el-option label="第二学期" value="2"></el-option>
+                        </el-select>
+                    </template>
+                </el-table-column>
+                <el-table-column align="center">
+                    <el-button size="mini" type="primary" @click="search()">筛选</el-button>
+                </el-table-column>
+            </el-table>
+        </el-dialog>
+
         <el-footer>
             <span>总共有{{ tableData.length }}条课程</span>
         </el-footer>
@@ -124,10 +158,13 @@ export default {
         return {
             tableData: [],
             FormData: {},
+            isShowSearch: false,
             isShow: false,
             sousuo: '',
             indicators: [1, 2, 3],
-            DataOptions: []
+            DataOptions: [],
+            //筛选条件
+            searchTable: [{}]
         }
     },
     methods: {
@@ -146,13 +183,14 @@ export default {
             });
         },
         //点击搜索内容
-        hunt() {
-            setTimeout(() => {
-                this.$router.push({ path: '/welcome' });
-            }, 2000);
+        search() {
+            this.isShowSearch = !this.isShowSearch;
+            api.post("/courseInfo/currentUser/" + localStorage.getItem("UserId"), this.searchTable[0], (resp) => {
+                this.tableData = resp.data.data;
+                this.searchTable = [{}];
+            })
         },
         getMessage() {
-
             api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
                 this.tableData = resp.data.data;
             })
@@ -233,6 +271,14 @@ export default {
             api.get("/courseInfo/indicators", "", (resp) => {
                 this.indicators = resp.data.data;
             })
+        }
+    },
+    // 监听数据
+    watch: {
+        "FormData.termStart": {
+            handler() {
+                this.FormData.termEnd = this.FormData.termStart + 1;
+            }
         }
     },
     mounted() {
