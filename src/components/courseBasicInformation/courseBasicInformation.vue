@@ -5,6 +5,7 @@
                 <el-button plain @click="isShow = !isShow">添加</el-button>
                 <!-- <el-button type="danger" plain>删除</el-button> -->
                 <el-button type="success" plain @click="isShowSearch = !isShowSearch">筛选</el-button>
+                <el-button type="primary" @click="over()" v-show="isover">筛选完毕</el-button>
             </el-row>
         </el-header>
 
@@ -156,6 +157,7 @@ export default {
     name: "courseBasicInformation",
     data() {
         return {
+            isover:false,
             tableData: [],
             FormData: {},
             isShowSearch: false,
@@ -183,12 +185,18 @@ export default {
             });
         },
         //点击搜索内容
-        search() {
+        search() { 
             this.isShowSearch = !this.isShowSearch;
             api.post("/courseInfo/currentUser/" + localStorage.getItem("UserId"), this.searchTable[0], (resp) => {
                 this.tableData = resp.data.data;
                 this.searchTable = [{}];
             })
+           this.isover = true
+        },
+        over(){
+            
+            this.getMessage();
+            this.isover = false
         },
         getMessage() {
             api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {

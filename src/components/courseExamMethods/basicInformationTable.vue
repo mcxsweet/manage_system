@@ -265,9 +265,9 @@ export default {
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
-        setTimeout(() => {
-          this.init();
-        }, 1000);
+        // setTimeout(() => {
+        //   this.init();
+        // }, 1000);
       }
     },
 

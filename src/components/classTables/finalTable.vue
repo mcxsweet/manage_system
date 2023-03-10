@@ -2,11 +2,12 @@
     <el-container>
         <p style="margin-top: 20px;margin-left: 20px;">请先选择课程</p>
     <el-header style="background-color: #fff;height: 50px;">
+        <!-- <el-select></el-select> -->
         <el-select placeholder="请选择学期">
         <el-option value="第一学期"></el-option>
         <el-option value="第二学期"></el-option>
       </el-select>
-      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false,examinations.length=0" style="margin-left: 2%;">
+      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false,issetfinal=false,examinations.length=0" style="margin-left: 2%;">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
         </el-option>
       </el-select>
@@ -94,7 +95,7 @@
                     <el-button v-show="tableshow" @click="goto('finalStatisticsTable', answer,compute,choice,gap,choiceGarde,gapGarde)">跳往课程期末试卷成绩表</el-button>
             </div> -->
     <div v-show="issetfinal">
-            <el-table :data="examinations" :header-cell-style="tableHeader" border="true" style="width: 760px;">
+            <el-table :data="examinations" :header-cell-style="tableHeader" border="true" style="width: 840px;">
                 <el-table-column label="题型选择"  width="200px">
                     <template slot-scope="scope" >
                         <el-select v-model="scope.row.examinationName" placeholder="请选择">
@@ -112,22 +113,23 @@
                 </el-table-column>
                 <el-table-column label="分数设置" width="200px">
                     <template slot-scope="scope" >
-                           <el-button @click="selectGarde(scope.row),scope.row.showSelect=false" v-show="scope.row.showSelect" >设置</el-button>
+                           <el-button @click="selectGarde(scope.row,scope.$index),scope.row.showSelect=false" v-show="scope.row.showSelect" >设置</el-button>
                            <div v-for="g in scope.row.examinationGardes" :key="g.id">
                                {{ g.examination+g.id+':' }}<el-input type="number" size="mini" v-model="g.garde"></el-input>
                            </div>
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="160px">
+                <el-table-column label="操作" width="240px">
                     <template slot-scope="scope">
                         <el-button type="danger" size="mini" @click="delectEx(scope.row)">删除</el-button> 
-                    <el-button type="primary" size="mini" @click="reSelectEx(scope.row.examinationId)">重置</el-button>
+                        <el-button type="primary" size="mini" @click="reSelectEx(scope.row.examinationId)">重置</el-button>
+                        <el-button size="mini" type="danger" @click="savaExamnation(scope.row,scope.$index)">保存</el-button>
                     </template>
                     
                 </el-table-column>
             </el-table>
             <el-button icon="el-icon-plus" type="primary" @click="addExamination">添加题目类型</el-button>
-            <el-button icon="el-icon-check" type="danger" @click="savaExamnation">保存</el-button>
+            <el-button icon="el-icon-plus" type="primary" @click="ischoose = true,issetfinal=false">完成</el-button>
         </div>
 
         </el-main>
@@ -142,7 +144,6 @@ export default {
     data(){
         return{
             issetfinal:false, 
-            arr:[],
             ischoose: false,
         //当前选择课程索引
             currentCourse: "",
@@ -156,7 +157,7 @@ export default {
                 examinationId:0,    //类型id
                 examinationName:'', //类型名
                 examinationNum:0,   //题目数
-                exam:'',
+               // exam:'',
                 examinationGardes:[], //各题目分数
                 totalGarde:0 //该题型总分
             },
@@ -195,15 +196,19 @@ export default {
         },
         //添加题目类型
         addExamination(){
+            this.examinationObj.examinationName=""
+            this.examinationObj.totalGarde=0
+            this.examinationObj.examinationGardes=[]
+            this.examinationId=0
             this.examinations.push(JSON.parse(JSON.stringify(this.examinationObj)))
             this.examinationObj.examinationId++
         },
         //开始设置小题分数
-        selectGarde(obj){
+        selectGarde(obj,index){
             this.gardesObj.id=1
             this.gardesObj.examination=obj.examinationName
             for(let i=0;i<obj.examinationNum;i++){
-                this.examinations[obj.examinationId].examinationGardes.push(JSON.parse(JSON.stringify(this.gardesObj)))
+                this.examinations[index].examinationGardes.push(JSON.parse(JSON.stringify(this.gardesObj)))
                 this.gardesObj.id++
             }
             console.log(this.examinations[obj.examinationId].examinationGardes) 
@@ -237,60 +242,38 @@ export default {
                 this.courseList = resp.data.data;
             })
         },
-        getfinal(){    
-            api.get("/courseExamPaper/"+ this.currentCourse,"",(resp1) =>{
-                this.arr = resp1.data.data
-            })
-        },
-        getCurrentCourseExam() {
-            
+        init() {
+                 this.examinations = [];
+                api.get("/courseExamPaper/" + this.courseList[this.currentCourse].id, "", (resp) => {
+                 for (let index = 0; index < resp.data.data.length; index++) {
+                       this.examinationObj.examinationName = JSON.parse(JSON.stringify(resp.data.data[index].itemName));
+                       this.examinationObj.totalGarde= JSON.parse(resp.data.data[index].itemScore);
+                       this.examinationObj.examinationId = JSON.parse(resp.data.data[index].id)
+                       this.examinationObj.examinationGardes=[]
+                       this.examinations.push(JSON.parse(JSON.stringify(this.examinationObj)))
+                 }
+                })
+                
+            },
+        getCurrentCourseExam() { 
+            this.init();
             this.ischoose = true;
-            this.examinations.length = 0
-            for(let index=0;index<this.arr.length;index++){
-                    this.examinationObj.examinationName = this.arr[index].itemName
-                    this.examinationObj.examinationGardes = this.arr[index].itemScore
-                    this.examinations.push(JSON.parse(JSON.stringify(this.examinationObj)))
-                }
-                console.log(this.examinations)
+            console.log(this.examinations)
         },
-        savaExamnation(){
-            for(let j of this.examinations){
-                for(let y of j.examinationGardes){
-                    j.totalGarde=j.totalGarde+y.garde*1
+        savaExamnation(obj,index){    
+            console.log(this.courseList[this.currentCourse].id)
+                for(let y of obj.examinationGardes){
+                    obj.totalGarde=obj.totalGarde+y.garde*1
                 }
-            }
-            this.ischoose = true
-            this.issetfinal=false
-            // this.$confirm('是否提交 ?', '提示', {
-            //     confirmButtonText: '确定',
-            //     cancelButtonText: '取消',
-            //     type: 'warning'
-            // }).then(() => {
-            //     api.put("", this.examinations, (resp) => {
-            //         if (resp.data.flag) {
-            //             this.$message({
-            //                 type: 'success',
-            //                 message: '成功!'
-            //             });
-            //             //this.goto('courseBasicInformation');
-            //         } else if (resp.status != 200) {
-            //             this.$message({
-            //                 type: 'error',
-            //                 message: '失败!'
-            //             });
-            //         }
-            //     })
-            // }).catch(() => {
-            //     this.$message({
-            //         type: 'info',
-            //         message: '已取消'
-            //     });
-            // });
+                //添加
+                api.post("courseExamPaper", this.examinations[index], (resp) => {           
+                 })
+                //修改       
+                // api.put("courseExamPaper", this.examinations[index], (resp) => { })
             }
         },
     mounted() {
     this.getMessage();
-    this.getfinal();
     }
 }
 </script>
