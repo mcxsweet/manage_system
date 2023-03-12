@@ -3,7 +3,7 @@ import VueRouter from "vue-router";
 
 //引入组件
 import MainPage from '@/pages/MainPage'
-import LoginPage from '@/pages/LoginPage'
+import LoginPage from '@/pages/LoginPage2'
 import courseBasicInformation from '@/components/courseBasicInformation/courseBasicInformation'
 import programObjective from '@/components/courseBasicInformation/programObjective'
 import classInformation from '@/components/courseBasicInformation/classInformation'
