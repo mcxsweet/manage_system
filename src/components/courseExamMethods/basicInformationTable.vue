@@ -265,9 +265,9 @@ export default {
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
-        setTimeout(() => {
-          this.init();
-        }, 1000);
+        // setTimeout(() => {
+        //   this.init();
+        // }, 1000);
       }
     },
 
@@ -411,6 +411,7 @@ export default {
     //选择框值选择后
     getCurrentCourseExam() {
       this.ischoose = true;
+      console.log(localStorage.getItem("UserId"))
       console.log(this.currentCourse);
       this.init();
     }

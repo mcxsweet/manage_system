@@ -3,12 +3,12 @@
         <el-header style="background-color: #fff;height: 50px;">
             <el-row>
                 <el-button plain @click="isShow = !isShow">添加</el-button>
-                <!-- <el-button type="danger" plain>删除</el-button> -->
-                <el-button type="success" plain @click="isShowSearch = !isShowSearch">筛选</el-button>
-                <el-button type="primary" @click="over()" v-show="isover">筛选完毕</el-button>
+                <el-button type="danger" plain>删除</el-button>
+                <el-button type="success" plain @click="hunt">搜索</el-button>
+                <input type="text" plain placeholder="请输入搜索内容" class="sousuo" v-model="sousuo">
             </el-row>
         </el-header>
-
+  
         <el-main>
             <el-table :data="tableData" stripe height="73vh" border="true">
                 <el-table-column align="left" width="300">
@@ -40,7 +40,7 @@
                 </el-table-column>
             </el-table>
         </el-main>
-
+  
         <!-- 添加弹出框 -->
         <el-dialog title="添加" :visible.sync="isShow">
             <el-form :model="FormData" label-width="100px" class="demo-ruleForm">
@@ -109,64 +109,25 @@
                 <el-button type="primary" @click="submit">确 定</el-button>
             </div>
         </el-dialog>
-
-        <!-- 筛选弹出层 -->
-        <el-dialog title="筛选 (支持单条件和多条件筛选)" :visible.sync="isShowSearch">
-            <el-table :data="searchTable" border="true">
-                <el-table-column label="课程名称" width="200">
-                    <template slot-scope="scope">
-                        <el-input v-model="scope.row.courseName"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column label="班级名称" width="200">
-                    <template slot-scope="scope">
-                        <el-input v-model="scope.row.className"></el-input>
-                    </template>
-                </el-table-column>
-                <el-table-column label="学期" width="200">
-                    <template slot-scope="scope">
-                        <el-select v-model="scope.row.termStart" placeholder="请选择">
-                            <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
-                            </el-option>
-                        </el-select>
-                        <el-select v-model="scope.row.termEnd" placeholder="请选择">
-                            <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
-                            </el-option>
-                        </el-select>
-                        <el-select v-model="scope.row.term" placeholder="请选择学期">
-                            <el-option label="第一学期" value="1"></el-option>
-                            <el-option label="第二学期" value="2"></el-option>
-                        </el-select>
-                    </template>
-                </el-table-column>
-                <el-table-column align="center">
-                    <el-button size="mini" type="primary" @click="search()">筛选</el-button>
-                </el-table-column>
-            </el-table>
-        </el-dialog>
-
+  
         <el-footer>
             <span>总共有{{ tableData.length }}条课程</span>
         </el-footer>
     </el-container>
-</template>
-
-<script>
-import api from '@/api/api'
-export default {
-    name: "courseBasicInformation",
+  </template>
+  
+  <script>
+  import api from '@/api/api'
+  export default {
+    name: "hsudoInformationTable", //院长用户
     data() {
         return {
-            isover:false,
             tableData: [],
             FormData: {},
-            isShowSearch: false,
             isShow: false,
             sousuo: '',
             indicators: [1, 2, 3],
-            DataOptions: [],
-            //筛选条件
-            searchTable: [{}]
+            DataOptions: []
         }
     },
     methods: {
@@ -175,7 +136,7 @@ export default {
                 this.DataOptions.push(new Date().getFullYear() - 3 + i);
             }
         },
-
+  
         goto(url, data) {
             this.$router.push({
                 path: '/MainPage/' + url,
@@ -185,20 +146,13 @@ export default {
             });
         },
         //点击搜索内容
-        search() { 
-            this.isShowSearch = !this.isShowSearch;
-            api.post("/courseInfo/currentUser/" + localStorage.getItem("UserId"), this.searchTable[0], (resp) => {
-                this.tableData = resp.data.data;
-                this.searchTable = [{}];
-            })
-           this.isover = true
-        },
-        over(){
-            
-            this.getMessage();
-            this.isover = false
+        hunt() {
+            setTimeout(() => {
+                this.$router.push({ path: '/welcome' });
+            }, 2000);
         },
         getMessage() {
+  
             api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
                 this.tableData = resp.data.data;
             })
@@ -211,7 +165,7 @@ export default {
             this.$emit('childClick', classdata);
             this.$bus.$emit("sendCourseID", object.id);
         },
-
+  
         //删除
         handleDelete(item) {
             this.$confirm('是否删除 ?', '提示', {
@@ -249,9 +203,9 @@ export default {
             }).then(() => {
                 this.isShow = !this.isShow;
                 this.FormData.teacherId = localStorage.getItem("UserId");
-
+  
                 this.FormData.indicatorPoints = JSON.stringify(this.FormData.indicatorPoints);
-
+  
                 api.post("/courseInfo", this.FormData, (resp) => {
                     if (resp.data.flag) {
                         this.$message({
@@ -273,20 +227,12 @@ export default {
                 });
             });
         },
-
+  
         //获取指标点列表
         getIndicators() {
             api.get("/courseInfo/indicators", "", (resp) => {
                 this.indicators = resp.data.data;
             })
-        }
-    },
-    // 监听数据
-    watch: {
-        "FormData.termStart": {
-            handler() {
-                this.FormData.termEnd = this.FormData.termStart + 1;
-            }
         }
     },
     mounted() {
@@ -295,13 +241,13 @@ export default {
         this.initDataOptions();
         this.FormData.classroomTeacher = localStorage.getItem("name");
     },
-}
-</script>
-
-<style>
-.sousuo {
+  }
+  </script>
+  
+  <style>
+  .sousuo {
     padding: 10px;
     margin: 20px;
     width: 300px;
-}
-</style>
+  }
+  </style>

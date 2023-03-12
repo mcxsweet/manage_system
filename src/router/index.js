@@ -8,9 +8,10 @@ import courseBasicInformation from '@/components/courseBasicInformation/courseBa
 import programObjective from '@/components/courseBasicInformation/programObjective'
 import classInformation from '@/components/courseBasicInformation/classInformation'
 import basicInformationTable from '@/components/courseExamMethods/basicInformationTable'
+import sudoInformationTable from '@/components/courseBasicInformation/sudoInformationTable'
+import hsudoInformationTable from '@/components/courseBasicInformation/hsudoInformationTable'
 
 import welcome from '@/components/welcome'
-import attendanceManagement from '@/components/attendanceManagement'
 import finalTable from '@/components/classTables/finalTable'
 import usualPreformanceTable from '@/components/classTables/usualPreformanceTable'
 import finalStatisticsTable from '@/components/classTables/finalStatisticsTable'
@@ -28,6 +29,14 @@ export default new VueRouter({
             path: "/MainPage",
             component: MainPage,
             children: [
+                {
+                    path: 'sudoInformationTable',
+                    component: sudoInformationTable
+                },
+                {
+                    path: 'hsudoInformationTable',
+                    component: hsudoInformationTable
+                },
                 {
                     path: 'analysisTable',
                     component: analysisTable
@@ -64,11 +73,6 @@ export default new VueRouter({
                 {
                     path: 'courseBasicInformation', //  课程基本信息
                     component: courseBasicInformation
-                },
-
-                {
-                    path: 'attendanceManagement', //  平时成绩管理
-                    component: attendanceManagement
                 },
                 {
                     path: 'classInformation', //  平时成绩管理
