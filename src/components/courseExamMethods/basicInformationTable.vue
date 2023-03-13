@@ -2,7 +2,7 @@
   <el-container>
     <p style="margin-top: 20px;margin-left: 20px;">请先选择课程</p>
     <el-header style="background-color: #fff;height: 50px;">
-      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false">
+      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="focusOnSelect()">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
           <span style="float: left">{{ item.courseName }}</span>
           <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
@@ -10,11 +10,12 @@
     item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" circle style="margin-left: 10px" @click="getCurrentCourseExam()"></el-button>
+      <el-button icon="el-icon-search" :circle="true" style="margin-left: 10px"
+        @click="getCurrentCourseExam()"></el-button>
     </el-header>
 
     <el-main v-show="ischoose">
-      <el-table :data="examItemArray" border="true" style="width: 100%" default-expand-all="true"
+      <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true"
         :header-cell-style="tableHeader">
         <el-table-column label="考核项目" width="200px">
           <template slot-scope="scope">
@@ -40,7 +41,7 @@
         <!-- 考核子项目 -->
         <el-table-column label="考核子项目">
           <template slot-scope="scope">
-            <el-table :data="scope.row.examChildItemArray" stripe="true">
+            <el-table :data="scope.row.examChildItemArray" :stripe="true">
               <el-table-column label="子项目名称" width="170">
                 <template slot-scope="scope">
                   <el-select v-model="scope.row.examineChildItem" v-show="!scope.row.isExamineChildItem" placeholder="请选择"
@@ -65,7 +66,7 @@
 
               <el-table-column label="对应课程目标" width="170">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.courseTarget" multiple v-show="!scope.row.isCourseTarget">
+                  <el-select v-model="scope.row.courseTarget" :multiple="true" v-show="!scope.row.isCourseTarget">
                     <el-option label="课程目标1" value="课程目标1"></el-option>
                     <el-option label="课程目标2" value="课程目标2"></el-option>
                   </el-select>
@@ -77,7 +78,7 @@
 
               <el-table-column label="对应指标点" width="170">
                 <template slot-scope="scope">
-                  <el-select v-model="scope.row.indicatorPointsDetail" multiple="true"
+                  <el-select v-model="scope.row.indicatorPointsDetail" :multiple="true"
                     v-show="!scope.row.isIndicatorPointsDetail">
                     <el-option label="指标点1" value="指标点1"></el-option>
                     <el-option label="指标点2" value="指标点2"></el-option>
@@ -92,17 +93,17 @@
               <el-table-column label="子项目操作" width="220">
                 <template slot-scope="scope2">
                   <el-tooltip content="编辑" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-edit" circle="true"
+                    <el-button type="primary" icon="el-icon-edit" :circle="true"
                       @click="editChildItem(scope.$index, scope2.$index)"></el-button>
                   </el-tooltip>
 
                   <el-tooltip content="保存" placement="bottom" effect="light">
-                    <el-button type="success" icon="el-icon-check" circle
+                    <el-button type="success" icon="el-icon-check" :circle="true"
                       @click="saveChildItem(scope.$index, scope2.$index)"></el-button>
                   </el-tooltip>
 
                   <el-tooltip content="删除" placement="bottom" effect="light">
-                    <el-button type="danger" icon="el-icon-delete" circle
+                    <el-button type="danger" icon="el-icon-delete" :circle="true"
                       @click="deleteChildItem(scope.$index, scope2.$index)"></el-button>
                   </el-tooltip>
 
@@ -111,7 +112,7 @@
             </el-table>
 
             <el-tooltip content="添加子项目" placement="bottom" effect="light">
-              <el-button type="primary" icon="el-icon-plus" circle
+              <el-button type="primary" icon="el-icon-plus" :circle="true"
                 @click="addExamChildItem(scope.row, scope.$index)"></el-button>
             </el-tooltip>
           </template>
@@ -158,6 +159,8 @@ export default {
       ischoose: false,
       //当前选择课程索引
       currentCourse: "",
+      //当前课程id
+      currentId: "",
       //课程列表(后端获取)
       courseList: [],
 
@@ -197,7 +200,7 @@ export default {
         //指标点
         indicatorPointsDetail: [],
         isIndicatorPointsDetail: false
-      }
+      },
 
     }
   },
@@ -206,30 +209,54 @@ export default {
     tableHeader({ row, column, rowIndex, columnIndex }) {
       return 'text-align:center'
     },
-
+    focusOnSelect() {
+      this.ischoose = false;
+      this.currentId = "";
+    },
     //初始化表格数据
     init() {
+      if (this.currentId) {
+        api.get("/courseExam/courseExamineMethods/" + this.currentId, "", (resp) => {
+          for (let index = 0; index < resp.data.data.length; index++) {
+            resp.data.data[index].isExamineItem = true;
+            resp.data.data[index].isPercentage = true;
+            api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
+              for (let j = 0; j < resp2.data.data.length; j++) {
+                resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
+                resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
 
-      api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
-        for (let index = 0; index < resp.data.data.length; index++) {
-          resp.data.data[index].isExamineItem = true;
-          resp.data.data[index].isPercentage = true;
-          api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
-            for (let j = 0; j < resp2.data.data.length; j++) {
-              resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
-              resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
+                resp2.data.data[j].isExamineChildItem = true;
+                resp2.data.data[j].isChildPercentage = true;
+                resp2.data.data[j].isCourseTarget = true;
+                resp2.data.data[j].isIndicatorPointsDetail = true;
+              }
+              resp.data.data[index].examChildItemArray = resp2.data.data;
+            })
+          }
+          this.currentCourse = resp.data.data[0].courseName;
+          this.examItemArray = resp.data.data;
+        })
+      } else {
+        api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
+          for (let index = 0; index < resp.data.data.length; index++) {
+            resp.data.data[index].isExamineItem = true;
+            resp.data.data[index].isPercentage = true;
+            api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
+              for (let j = 0; j < resp2.data.data.length; j++) {
+                resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
+                resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
 
-              resp2.data.data[j].isExamineChildItem = true;
-              resp2.data.data[j].isChildPercentage = true;
-              resp2.data.data[j].isCourseTarget = true;
-              resp2.data.data[j].isIndicatorPointsDetail = true;
-            }
-            resp.data.data[index].examChildItemArray = resp2.data.data;
-          })
-        }
-
-        this.examItemArray = resp.data.data;
-      })
+                resp2.data.data[j].isExamineChildItem = true;
+                resp2.data.data[j].isChildPercentage = true;
+                resp2.data.data[j].isCourseTarget = true;
+                resp2.data.data[j].isIndicatorPointsDetail = true;
+              }
+              resp.data.data[index].examChildItemArray = resp2.data.data;
+            })
+          }
+          this.examItemArray = resp.data.data;
+        })
+      }
     },
 
     //添加考核项目
@@ -416,9 +443,9 @@ export default {
   mounted() {
     this.getMessage();
     if (this.$route.query.id) {
-      this.currentCourse = this.$route.query.id;
+      this.currentId = this.$route.query.id;
+      this.getCurrentCourseExam();
     }
-    this.getcoursetableData();
   }
 }
 </script>

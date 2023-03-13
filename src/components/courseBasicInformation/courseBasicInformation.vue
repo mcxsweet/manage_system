@@ -152,15 +152,16 @@
         <el-dialog title="操作" :visible.sync="isOperation" :show-close="false" width="40%">
             <div style="display: flex;flex-wrap: wrap;">
                 <p style="width: 100%;margin: 10px;">课程内容设置</p>
-                <el-button style="margin-bottom: 3vh; width: 20vh;"
+                <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
                     @click="goto('classInformation', currentObject.id)">详细课程信息设置</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;"
+                <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
                     @click="handleExport(null, currentObject)">导出文件</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;" @click="handleDelete(currentObject)">删除</el-button>
+                <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
+                    @click="handleDelete(currentObject)">删除</el-button>
 
                 <p style="width: 100%;margin: 10px;">该行项目设置</p>
 
-                <el-button style="margin-bottom: 3vh; width: 20vh;"
+                <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
                     @click="goto('basicInformationTable', currentObject.id)">课程考核评价方式</el-button>
                 <el-button style="margin-bottom: 3vh; width: 20vh;">设置</el-button>
                 <el-button style="margin-bottom: 3vh; width: 20vh;">设置</el-button>
