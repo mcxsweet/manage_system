@@ -210,12 +210,10 @@ export default {
     //初始化表格数据
     init() {
 
-      // this.examItemArray = [];
       api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
           resp.data.data[index].isExamineItem = true;
           resp.data.data[index].isPercentage = true;
-          // resp.data.data[index].examChildItemArray = [];
           api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
             for (let j = 0; j < resp2.data.data.length; j++) {
               resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
@@ -411,14 +409,15 @@ export default {
     //选择框值选择后
     getCurrentCourseExam() {
       this.ischoose = true;
-      console.log(localStorage.getItem("UserId"))
-      console.log(this.currentCourse);
       this.init();
     }
 
   },
   mounted() {
     this.getMessage();
+    if (this.$route.query.id) {
+      this.currentCourse = this.$route.query.id;
+    }
     this.getcoursetableData();
   }
 }

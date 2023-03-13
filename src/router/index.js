@@ -8,6 +8,7 @@ import courseBasicInformation from '@/components/courseBasicInformation/courseBa
 import programObjective from '@/components/courseBasicInformation/programObjective'
 import classInformation from '@/components/courseBasicInformation/classInformation'
 import basicInformationTable from '@/components/courseExamMethods/basicInformationTable'
+
 import sudoInformationTable from '@/components/courseBasicInformation/sudoInformationTable'
 import hsudoInformationTable from '@/components/courseBasicInformation/hsudoInformationTable'
 
