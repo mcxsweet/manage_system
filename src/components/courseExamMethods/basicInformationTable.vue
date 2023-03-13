@@ -288,8 +288,13 @@ export default {
           message: '考核项目和百分比为必填项！！！!'
         });
       } else {
-        this.examItemArray[index].courseId = this.courseList[this.currentCourse].id;
-        this.examItemArray[index].courseName = this.courseList[this.currentCourse].courseName;
+        if (this.currentId) {
+          this.examItemArray[index].courseId = this.currentId;
+          this.examItemArray[index].courseName = this.currentCourse;
+        } else {
+          this.examItemArray[index].courseId = this.courseList[this.currentCourse].id;
+          this.examItemArray[index].courseName = this.courseList[this.currentCourse].courseName;
+        }
         //添加
         if (!this.examItemArray[index].id) {
           api.post("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => { })
@@ -300,9 +305,7 @@ export default {
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
-        // setTimeout(() => {
-        //   this.init();
-        // }, 1000);
+
       }
     },
 
