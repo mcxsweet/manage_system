@@ -2,12 +2,7 @@
     <el-container>
         <p style="margin-top: 20px;margin-left: 20px;">请先选择课程</p>
     <el-header style="background-color: #fff;height: 50px;">
-        <!-- <el-select></el-select> -->
-        <el-select placeholder="请选择学期">
-        <el-option value="第一学期"></el-option>
-        <el-option value="第二学期"></el-option>
-      </el-select>
-      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false,issetfinal=false,examinations.length=0" style="margin-left: 2%;">
+      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false,issetfinal=false,examinations.length=0" >
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
         </el-option>
       </el-select>
@@ -113,7 +108,7 @@
                 </el-table-column>
                 <el-table-column label="分数设置" width="200px">
                     <template slot-scope="scope" >
-                           <el-button @click="selectGarde(scope.row,scope.$index),scope.row.showSelect=false" v-show="scope.row.showSelect" >设置</el-button>
+                           <el-button @click="selectGarde(scope.row,scope.$index)" v-show="scope.row.showSelect" >设置</el-button>
                            <div v-for="g in scope.row.examinationGardes" :key="g.id">
                                {{ g.examination+g.id+':' }}<el-input type="number" size="mini" v-model="g.garde"></el-input>
                            </div>
@@ -143,6 +138,7 @@ export default {
     name:"finalTable",
     data(){
         return{
+            arr:{},
             issetfinal:false, 
             ischoose: false,
         //当前选择课程索引
@@ -154,7 +150,7 @@ export default {
             //题目类型项
             examinationObj:{
                 showSelect:true,
-                examinationId:0,    //类型id
+                examinationId:1,    //类型id
                 examinationName:'', //类型名
                 examinationNum:0,   //题目数
                // exam:'',
@@ -200,6 +196,7 @@ export default {
             this.examinationObj.totalGarde=0
             this.examinationObj.examinationGardes=[]
             this.examinationId=0
+            this.showSelect = true
             this.examinations.push(JSON.parse(JSON.stringify(this.examinationObj)))
             this.examinationObj.examinationId++
         },
@@ -258,15 +255,22 @@ export default {
         getCurrentCourseExam() { 
             this.init();
             this.ischoose = true;
-            console.log(this.examinations)
+            // console.log(this.examinations)
         },
         savaExamnation(obj,index){    
             console.log(this.courseList[this.currentCourse].id)
                 for(let y of obj.examinationGardes){
                     obj.totalGarde=obj.totalGarde+y.garde*1
                 }
+               
                 //添加
-                api.post("courseExamPaper", this.examinations[index], (resp) => {           
+                this.arr.courseid = this.courseList[this.currentCourse].id
+                //this.arr.id = this.examinations[index].examinationId
+                this.arr.itemName = this.examinations[index].examinationName
+                this.arr.itemscore = obj.totalGarde*1
+                this.arr.type = 0
+                console.log(this.arr)
+                api.post("/courseExamPaper", this.arr, (resp) => {   
                  })
                 //修改       
                 // api.put("courseExamPaper", this.examinations[index], (resp) => { })
@@ -274,6 +278,10 @@ export default {
         },
     mounted() {
     this.getMessage();
+    if (this.$route.query.id) {
+      this.currentId = this.$route.query.id;
+      this.getCurrentCourseExam();
+    }
     }
 }
 </script>

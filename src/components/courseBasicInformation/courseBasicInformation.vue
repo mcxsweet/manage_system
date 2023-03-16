@@ -163,8 +163,10 @@
 
                 <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
                     @click="goto('basicInformationTable', currentObject.id)">课程考核评价方式</el-button>
+                <el-button style="margin-bottom: 3vh; width: 20vh;" @click="goto('finalTable',currentObject.id)">试卷设置</el-button>
                 <el-button style="margin-bottom: 3vh; width: 20vh;">设置</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;">设置</el-button>
+                <p style="width: 100%;margin: 10px;">课程成绩管理</p>
+                
             </div>
         </el-dialog>
 

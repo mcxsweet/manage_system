@@ -235,7 +235,6 @@ export default {
               })
             })
           }
-
           //修复界面刷新BUG
           this.$nextTick(() => {
             this.currentCourse = resp.data.data[0].courseName;
