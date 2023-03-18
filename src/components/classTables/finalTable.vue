@@ -1,12 +1,17 @@
 <template>
     <el-container>
-        <p style="margin-top: 20px;margin-left: 20px;">请先选择课程</p>
     <el-header style="background-color: #fff;height: 50px;">
-      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="ischoose = false,issetfinal=false,examinations.length=0" >
+      <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
+          <span style="float: left">{{ item.courseName }}</span>
+          <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
+            item.termStart }}.{{
+    item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" circle style="margin-left: 10px" @click="getCurrentCourseExam()"></el-button>
+      <el-button icon="el-icon-search" :circle="true" style="margin-left: 10px"
+        @click="getCurrentCourseExam()"></el-button>
+        <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回</el-button>
     </el-header>
         <el-main>
             <div  v-show="ischoose">
@@ -138,6 +143,8 @@ export default {
     name:"finalTable",
     data(){
         return{
+            isReturn:false,
+            currentId:0,
             arr:{},
             issetfinal:false, 
             ischoose: false,
@@ -183,6 +190,11 @@ export default {
         }
     },
     methods:{
+        focusOnSelect() {
+            this.currentCourse=""
+            this.ischoose = false;
+            this.currentId = "";
+        },
         tableHeader({row,column,rowIndex,columnIndex}){
             //console.log(row,column,rowIndex,columnIndex);
             if(rowIndex===3){
@@ -240,7 +252,21 @@ export default {
             })
         },
         init() {
-                 this.examinations = [];
+            if(this.currentId){
+                this.currentCourse = this.$route.query.courseName
+                this.examinations = [];
+                api.get("/courseExamPaper/" + this.currentId, "", (resp) => {
+                 for (let index = 0; index < resp.data.data.length; index++) {
+                       this.examinationObj.examinationName = JSON.parse(JSON.stringify(resp.data.data[index].itemName));
+                       this.examinationObj.totalGarde= JSON.parse(resp.data.data[index].itemScore);
+                       this.examinationObj.examinationId = JSON.parse(resp.data.data[index].id)
+                       this.examinationObj.examinationGardes=[]
+                       this.examinations.push(JSON.parse(JSON.stringify(this.examinationObj)))
+                 }
+                })
+            }  
+            else{
+                this.examinations = [];
                 api.get("/courseExamPaper/" + this.courseList[this.currentCourse].id, "", (resp) => {
                  for (let index = 0; index < resp.data.data.length; index++) {
                        this.examinationObj.examinationName = JSON.parse(JSON.stringify(resp.data.data[index].itemName));
@@ -250,12 +276,11 @@ export default {
                        this.examinations.push(JSON.parse(JSON.stringify(this.examinationObj)))
                  }
                 })
-                
+            }
             },
         getCurrentCourseExam() { 
-            this.init();
             this.ischoose = true;
-            // console.log(this.examinations)
+            this.init();  
         },
         savaExamnation(obj,index){    
             console.log(this.courseList[this.currentCourse].id)
@@ -274,12 +299,18 @@ export default {
                  })
                 //修改       
                 // api.put("courseExamPaper", this.examinations[index], (resp) => { })
-            }
+            },
+            goto(url, data) {
+            this.$router.push({
+                path: '/MainPage/' + url
+            });
+        },
         },
     mounted() {
     this.getMessage();
     if (this.$route.query.id) {
-      this.currentId = this.$route.query.id;
+        this.isReturn = true
+      this.currentId = (this.$route.query.id)*1;
       this.getCurrentCourseExam();
     }
     }

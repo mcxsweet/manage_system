@@ -51,7 +51,6 @@
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-message"></i>学生考核成绩记录</template>
                         <el-menu-item-group>
-                            <template slot="title">分组一</template>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
                             <el-menu-item index="1-2" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                         </el-menu-item-group>  
@@ -65,11 +64,9 @@
                     <el-submenu index="3">
                         <template slot="title"><i class="el-icon-setting"></i>成绩管理</template>
                         <el-menu-item-group>
-                            <template slot="title">平时成绩</template>
+                           
                             <el-menu-item index="3-1" @click="goto('usualPreformanceTable')">平时考核成绩统计表</el-menu-item>
                             <el-menu-item index="3-2" @click="goto('finalStatisticsTable')">课程期末试卷成绩</el-menu-item>
-                        </el-menu-item-group>
-                        <el-menu-item-group title="分组2">
                             <el-menu-item index="3-3" @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
                         </el-menu-item-group>
                         <el-submenu index="3-4">
