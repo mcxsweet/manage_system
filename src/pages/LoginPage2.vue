@@ -41,11 +41,12 @@ export default {
         },
         submit() {
             api.post("/user", this.formData, (resp) => {
+                console.log(resp.data.data)
                 if (resp.data.flag == true) {
                     localStorage.setItem("name", this.formData.name);
                     localStorage.setItem("password", this.formData.password);
                     localStorage.setItem("UserId", resp.data.data.id);
-
+                    localStorage.setItem("Isadmin",resp.data.data.isadmin)
                     this.$router.push({ path: '/MainPage' });
 
                 } else {
