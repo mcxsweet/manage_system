@@ -210,6 +210,7 @@ export default {
       return 'text-align:center'
     },
     focusOnSelect() {
+      this.examItemArray = [];
       this.ischoose = false;
       this.currentId = "";
     },
@@ -230,17 +231,11 @@ export default {
                 resp2.data.data[j].isCourseTarget = true;
                 resp2.data.data[j].isIndicatorPointsDetail = true;
               }
-              this.$nextTick(() => {
-                resp.data.data[index].examChildItemArray = resp2.data.data;
-              })
+              resp.data.data[index].examChildItemArray = resp2.data.data;
             })
           }
-
-          //修复界面刷新BUG
-          this.$nextTick(() => {
-            this.currentCourse = resp.data.data[0].courseName;
-            this.examItemArray = resp.data.data;
-          })
+          this.currentCourse = resp.data.data[0].courseName;
+          this.examItemArray = resp.data.data;
         })
       } else {
         api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
@@ -257,14 +252,10 @@ export default {
                 resp2.data.data[j].isCourseTarget = true;
                 resp2.data.data[j].isIndicatorPointsDetail = true;
               }
-              this.$nextTick(() => {
-                resp.data.data[index].examChildItemArray = resp2.data.data;
-              })
+              resp.data.data[index].examChildItemArray = resp2.data.data;
             })
           }
-          this.$nextTick(() => {
-            this.examItemArray = resp.data.data;
-          })
+          this.examItemArray = resp.data.data;
         })
       }
     },
