@@ -1,8 +1,8 @@
 <template>
   <el-container>
-    <p style="margin-top: 20px;margin-left: 20px;">请先选择课程</p>
+
     <el-header style="background-color: #fff;height: 50px;">
-      <el-select v-model="currentCourse" placeholder="请先选择课程" @focus="focusOnSelect()">
+      <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
           <span style="float: left">{{ item.courseName }}</span>
           <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
@@ -12,6 +12,7 @@
       </el-select>
       <el-button icon="el-icon-search" :circle="true" style="margin-left: 10px"
         @click="getCurrentCourseExam()"></el-button>
+      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回</el-button>
     </el-header>
 
     <el-main v-show="ischoose">
@@ -199,7 +200,8 @@ export default {
 
         //指标点
         indicatorPointsDetail: [],
-        isIndicatorPointsDetail: false
+        isIndicatorPointsDetail: false,
+        isReturn: false //返回课程基本信息页面
       },
 
     }
@@ -441,12 +443,19 @@ export default {
     getCurrentCourseExam() {
       this.ischoose = true;
       this.init();
-    }
+    },
+
+    goto(url, data) {
+      this.$router.push({
+        path: '/MainPage/' + url
+      });
+    },
 
   },
   mounted() {
     this.getMessage();
     if (this.$route.query.id) {
+      this.isReturn = true
       this.currentId = this.$route.query.id;
       this.getCurrentCourseExam();
     }
