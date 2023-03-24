@@ -13,7 +13,7 @@ import sudoInformationTable from '@/components/courseBasicInformation/sudoInform
 import hsudoInformationTable from '@/components/courseBasicInformation/hsudoInformationTable'
 
 import welcome from '@/components/welcome'
-import finalTable from '@/components/classTables/finalTable'
+import finalTable from '@/components/courseExamMethods/finalTable'
 import usualPreformanceTable from '@/components/classTables/usualPreformanceTable'
 import finalStatisticsTable from '@/components/classTables/finalStatisticsTable'
 import finalComprehensiveTable from '@/components/classTables/finalComprehensiveTable'

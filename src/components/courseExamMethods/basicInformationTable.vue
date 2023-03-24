@@ -6,7 +6,7 @@
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
           <span style="float: left">{{ item.courseName }}</span>
           <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
-            item.termStart }}.{{
+            item.termEnd }}.{{
     item.term }}</span>
         </el-option>
       </el-select>

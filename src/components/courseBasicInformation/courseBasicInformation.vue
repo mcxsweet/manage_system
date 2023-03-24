@@ -163,12 +163,15 @@
 
                 <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
                     @click="goto('basicInformationTable', currentObject.id)">课程考核评价方式</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;" @click="goto1('finalTable',currentObject.id,currentObject.courseName)">试卷设置</el-button>
-                
+                <el-button style="margin-bottom: 3vh; width: 20vh;"
+                    @click="goto1('finalTable', currentObject.id)">试卷设置</el-button>
+
                 <p style="width: 100%;margin: 10px;">课程成绩管理</p>
-                <el-button style="margin-bottom: 3vh; width: 20vh;" @click="goto('usualPreformanceTable')">平时成绩管理</el-button>
+                <el-button style="margin-bottom: 3vh; width: 20vh;"
+                    @click="goto('usualPreformanceTable')">平时成绩管理</el-button>
                 <el-button style="margin-bottom: 3vh; width: 20vh;" @click="goto('finalStatisticsTable')">期末试卷成绩</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;" @click="goto('finalComprehensiveTable')">期末综合成绩</el-button>
+                <el-button style="margin-bottom: 3vh; width: 20vh;"
+                    @click="goto('finalComprehensiveTable')">期末综合成绩</el-button>
             </div>
         </el-dialog>
 
@@ -218,12 +221,12 @@ export default {
             });
         },
         //专门跳转没有课程名字的页面
-        goto1(url, data,data1) {
+        goto1(url, data, data1) {
             this.$router.push({
                 path: '/MainPage/' + url,
                 query: {
                     id: data,
-                    courseName:data1
+                    courseName: data1
                 }
             });
         },
@@ -353,5 +356,4 @@ export default {
     padding: 10px;
     margin: 20px;
     width: 300px;
-}
-</style>
+}</style>

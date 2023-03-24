@@ -1,15 +1,27 @@
 <template>
     <el-container style="height: 100vh; border: 1px solid #eee">
 
-        <el-header style="text-align: right; font-size: 20px">
-            <el-dropdown @command="handleCommand">
-                <i class="el-icon-setting" style="margin-right: 15px"></i>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>个人信息</el-dropdown-item>
-                    <el-dropdown-item command="signOut">退出</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-            <span>{{ username }}</span>
+        <el-header>
+            <el-row>
+                <el-col :span="12">
+                    <div>
+                        <el-button icon="el-icon-back" :circle="true" @click="goBack()"></el-button>
+                    </div>
+                </el-col>
+                <el-col :span="12">
+                    <div style="font-size: 20px;text-align: right; ">
+                        <el-dropdown @command="handleCommand">
+                            <i class="el-icon-setting" style="margin-right: 15px"></i>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item>个人信息</el-dropdown-item>
+                                <el-dropdown-item command="signOut">退出</el-dropdown-item>
+                            </el-dropdown-menu>
+                        </el-dropdown>
+                        <span>{{ username }}</span>
+                    </div>
+                </el-col>
+            </el-row>
+
         </el-header>
 
         <el-container>
@@ -47,13 +59,13 @@
 
                     </el-submenu>
                 </el-menu>
-                <el-menu >
+                <el-menu>
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-message"></i>学生考核成绩记录</template>
                         <el-menu-item-group>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
                             <el-menu-item index="1-2" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
-                        </el-menu-item-group>  
+                        </el-menu-item-group>
                     </el-submenu>
                     <el-submenu index="2">
                         <template slot="title"><i class="el-icon-menu"></i>试卷管理</template>
@@ -64,7 +76,7 @@
                     <el-submenu index="3">
                         <template slot="title"><i class="el-icon-setting"></i>成绩管理</template>
                         <el-menu-item-group>
-                           
+
                             <el-menu-item index="3-1" @click="goto('usualPreformanceTable')">平时考核成绩统计表</el-menu-item>
                             <el-menu-item index="3-2" @click="goto('finalStatisticsTable')">课程期末试卷成绩</el-menu-item>
                             <el-menu-item index="3-3" @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
@@ -91,7 +103,7 @@ export default {
     data() {
         return {
             username: '',
-            id :1
+            id: 1
         }
     },
     methods: {
@@ -106,6 +118,9 @@ export default {
             if (command == "signOut") {
                 this.signOut();
             }
+        },
+        goBack() {
+            window.history.back();
         }
     },
     mounted() {
@@ -113,7 +128,7 @@ export default {
         this.id = localStorage.getItem('isadmin')
         console.log(this.id)
         // this.$router.push({ path: '/MainPage/welcome' });
-        
+
     },
 
 }
