@@ -11,6 +11,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
+//cookie
+import VueCookies from "vue-cookies";
+Vue.use(VueCookies);
+
 Vue.config.productionTip = false
 Vue.config.silent = true
 
