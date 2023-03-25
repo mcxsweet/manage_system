@@ -40,7 +40,7 @@
         </el-table-column>
 
         <!-- 考核子项目 -->
-        <el-table-column label="考核子项目">
+        <el-table-column label="考核子项目" :v-if="reloadPage">
           <template slot-scope="scope1">
 
             <el-table :data="scope1.row.examChildItemArray" :stripe="true">
@@ -215,7 +215,8 @@ export default {
         //指标点
         indicatorPointsDetail: [],
         isIndicatorPointsDetail: false,
-        isReturn: false //返回课程基本信息页面
+        isReturn: false, //返回课程基本信息页面
+        reloadPage: true,
       },
 
     }
@@ -497,6 +498,15 @@ export default {
       })
     },
 
+    //relode
+    forcePage() {
+      this.reloadPage = false;
+      // this.$nextTick(this.reloadPage = true)
+      setTimeout(() => {
+        this.reloadPage = true;
+      }, 100);
+    }
+
   },
   mounted() {
     this.getIndicators();
@@ -506,7 +516,8 @@ export default {
       this.currentId = this.$route.query.id;
       this.getCurrentCourseExam();
     }
-  }
+    this.forcePage();
+  },
 }
 </script>
 

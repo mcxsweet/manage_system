@@ -63,13 +63,15 @@ export default {
         },
 
         checkSubmit() {
-            if (localStorage.getItem("token") && localStorage.getItem("UserId")) {
-                this.$router.push({ path: '/MainPage' });
-            }
+            api.post("/courseInfo/checkSubmit", "", (resp) => {
+                if (resp.data.flag) {
+                    this.$router.push({ path: '/MainPage' });
+                }
+            })
         }
     },
     mounted() {
-        // this.checkSubmit();
+        this.checkSubmit();
     }
 }
 
