@@ -13,7 +13,7 @@ axios.interceptors.request.use((config) => {
 
 //响应拦截器
 axios.interceptors.response.use((success) => {
-    if (success.data.flag == false && success.data.message == "Lack of token") {
+    if (success.data.flag == false && success.data.message == "Lack of token" || success.data.flag == false && success.data.message == "Token expires") {
         router.replace("/");
         Message.error({ message: success.data.message });
     }
