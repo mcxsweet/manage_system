@@ -126,7 +126,6 @@ export default {
     mounted() {
         this.username = localStorage.getItem("name");
         this.id = localStorage.getItem('isadmin')
-        console.log(this.id)
         // this.$router.push({ path: '/MainPage/welcome' });
 
     },

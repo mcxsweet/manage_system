@@ -41,15 +41,15 @@ export default {
         },
         submit() {
             api.post("/user", this.formData, (resp) => {
-                console.log(resp.data.data)
                 if (resp.data.flag == true) {
 
-                    localStorage.setItem("token", this.$cookies.get("token"));
+                    localStorage.clear();
+                    sessionStorage.setItem("token", this.$cookies.get("token"));
 
                     localStorage.setItem("name", this.formData.name);
-                    localStorage.setItem("password", this.formData.password);
+                    // localStorage.setItem("password", this.formData.password);
                     localStorage.setItem("UserId", resp.data.data.id);
-                    localStorage.setItem("Isadmin", resp.data.data.isadmin)
+                    localStorage.setItem("Isadmin", resp.data.data.isAdmin)
                     this.$router.push({ path: '/MainPage' });
 
                 } else {
@@ -60,12 +60,16 @@ export default {
                 }
             })
 
+        },
+
+        checkSubmit() {
+            if (localStorage.getItem("token") && localStorage.getItem("UserId")) {
+                this.$router.push({ path: '/MainPage' });
+            }
         }
     },
     mounted() {
-        if (localStorage.getItem("name")) {
-            this.$router.push({ path: '/MainPage' });
-        }
+        // this.checkSubmit();
     }
 }
 
