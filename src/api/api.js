@@ -35,9 +35,6 @@ const api = {
             url: url,
             method: "GET",
             params: data || "",
-            // headers: {
-            //     token: localStorage.getItem("token")
-            // }
             // ContentType: "application/x-www-form-urlencoded"
         })
         callback && callback(res)
@@ -48,9 +45,6 @@ const api = {
             url: url,
             method: "POST",
             data: data || "",
-            // headers: {
-            //     token: localStorage.getItem("token")
-            // }
             // ContentType: "application/x-www-form-urlencoded"
         })
         callback && callback(res)
@@ -61,9 +55,6 @@ const api = {
             url: url,
             method: "PUT",
             data: data || "",
-            // headers: {
-            //     token: localStorage.getItem("token")
-            // }
             // ContentType: "application/x-www-form-urlencoded"
         })
         callback && callback(res)
@@ -74,9 +65,6 @@ const api = {
             url: url,
             method: "DELETE",
             data: data || "",
-            // headers: {
-            //     token: localStorage.getItem("token")
-            // }
             // ContentType: "application/x-www-form-urlencoded"
         })
         callback && callback(res)

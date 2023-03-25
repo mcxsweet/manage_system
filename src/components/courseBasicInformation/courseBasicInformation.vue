@@ -99,7 +99,7 @@
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
                     <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
-                    <el-select v-model="FormData.indicatorPoints" filterable multiple placeholder="请选择指标点"
+                    <el-select v-model="FormData.indicatorPoints" :filterable="true" :multiple="true" placeholder="请选择指标点"
                         style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum">
                         <el-option v-for="item in indicators" :key="item.indicatorName" :label="item.indicatorName"
                             :value="item.indicatorName">
@@ -162,7 +162,7 @@
                 <p style="width: 100%;margin: 10px;">该行项目设置</p>
 
                 <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
-                    @click="goto('basicInformationTable', currentObject.id)">课程考核评价方式</el-button>
+                    @click="goto('basicInformationTable', currentObject.id, currentObject.courseName)">课程考核评价方式</el-button>
                 <el-button style="margin-bottom: 3vh; width: 20vh;"
                     @click="goto1('finalTable', currentObject.id)">试卷设置</el-button>
 
@@ -193,7 +193,7 @@ export default {
             isShowSearch: false,
             isShow: false,
             sousuo: '',
-            indicators: [1, 2, 3],
+            indicators: [],
             DataOptions: [],
             //筛选条件
             searchTable: [{}],
@@ -212,11 +212,12 @@ export default {
             }
         },
         //跳转函数
-        goto(url, data) {
+        goto(url, data, data2) {
             this.$router.push({
                 path: '/MainPage/' + url,
                 query: {
-                    id: data
+                    id: data,
+                    name: data2
                 }
             });
         },
@@ -356,4 +357,5 @@ export default {
     padding: 10px;
     margin: 20px;
     width: 300px;
-}</style>
+}
+</style>

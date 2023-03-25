@@ -4,7 +4,8 @@
       <el-table :data="tableData1" border style="width: 100%">
         <el-table-column prop="index" label="序号" width="90%">
           <template slot-scope="scope">
-            <el-span v-model="scope.row.index">{{ '课程目标' + (scope.row.index + 1) + ':' }}</el-span>
+            <el-input v-model="scope.row.targetName" v-show="scope.row.ised"></el-input>
+            <span v-show="!scope.row.ised">{{ scope.row.targetName }}</span>
           </template>
         </el-table-column>
 
@@ -17,8 +18,13 @@
 
         <el-table-column label="毕业要求指标点" width="220">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.indicatorPoints" multiple placeholder="请选择" v-show="scope.row.ised">
-              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+            <el-select v-model="scope.row.indicatorPoints" :filterable="true" :multiple="true" placeholder="请选择"
+              v-show="scope.row.ised">
+              <el-option v-for="item in indicators" :key="item.id" :value="item.indicatorName">
+                <span style="float: left">{{ item.indicatorName }}</span>
+                <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
+                  {{ item.indicatorContent }}
+                </span>
               </el-option>
             </el-select>
 
@@ -90,22 +96,7 @@ export default {
 
       },
       tableData1: [],
-      options: [{
-        value: '选项1',
-        label: '指标的1'
-      }, {
-        value: '选项2',
-        label: '指标的2'
-      }, {
-        value: '选项3',
-        label: '指标的3'
-      }, {
-        value: '选项4',
-        label: '指标的4'
-      }, {
-        value: '选项5',
-        label: '指标的5'
-      }],
+      indicators: [],
       value1: [],
       value2: []
     }
@@ -123,7 +114,16 @@ export default {
         }
         this.tableData1 = resp.data.data;
       })
+      this.getIndicators();
     },
+
+    //获取指标点列表
+    getIndicators() {
+      api.get("/courseInfo/indicators", "", (resp) => {
+        this.indicators = resp.data.data;
+      })
+    },
+
     editta(row, index) {
       row.ised = true;
     },

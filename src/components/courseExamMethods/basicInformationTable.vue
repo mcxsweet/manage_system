@@ -41,51 +41,61 @@
 
         <!-- 考核子项目 -->
         <el-table-column label="考核子项目">
-          <template slot-scope="scope">
-            <el-table :data="scope.row.examChildItemArray" :stripe="true">
+          <template slot-scope="scope1">
+
+            <el-table :data="scope1.row.examChildItemArray" :stripe="true">
               <el-table-column label="子项目名称" width="170">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.examineChildItem" v-show="!scope.row.isExamineChildItem" placeholder="请选择"
-                    style="width:100%">
+
+                <template slot-scope="scope2">
+                  <el-select v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"
+                    placeholder="请选择" style="width:100%">
                     <el-option-group v-for="group in childOptions" :key="group.label" :label="group.label">
-                      <el-option :value="op.value" v-for="(op, index) in group.options" :key="index"></el-option>
+                      <el-option v-for="(op, index) in group.options" :key="index" :value="op.value"></el-option>
                     </el-option-group>
                   </el-select>
-                  <p v-show="scope.row.isExamineChildItem">{{ scope.row.examineChildItem }}</p>
+                  <p v-show="scope2.row.isExamineChildItem">{{ scope2.row.examineChildItem }}</p>
                 </template>
               </el-table-column>
 
               <el-table-column label="子项目百分比" width="150">
-                <template slot-scope="scope">
-                  <el-input type="number" v-model="scope.row.childPercentage" v-show="!scope.row.isChildPercentage"
+                <template slot-scope="scope2">
+                  <el-input type="number" v-model="scope2.row.childPercentage" v-show="!scope2.row.isChildPercentage"
                     :min="0" :max="100">
                     <template slot="append">%</template>
                   </el-input>
-                  <p v-show="scope.row.isChildPercentage">{{ scope.row.childPercentage }} %</p>
+                  <p v-show="scope2.row.isChildPercentage">{{ scope2.row.childPercentage }} %</p>
                 </template>
               </el-table-column>
 
               <el-table-column label="对应课程目标" width="170">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.courseTarget" :multiple="true" v-show="!scope.row.isCourseTarget">
-                    <el-option label="课程目标1" value="课程目标1"></el-option>
-                    <el-option label="课程目标2" value="课程目标2"></el-option>
+                <template slot-scope="scope2">
+                  <el-select v-model="scope2.row.courseTarget" :multiple="true" v-show="!scope2.row.isCourseTarget">
+                    <el-option v-for="item in courseTargetList" :key="item.id" :value="item.targetName">
+                      <span style="float: left">{{ item.targetName }}</span>
+                      <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
+                        {{ item.courseTarget }}
+                      </span>
+                    </el-option>
                   </el-select>
-                  <div v-for="(item, index) in scope.row.courseTarget" :key="index" v-show="scope.row.isCourseTarget">
+                  <div v-for="(item, index) in scope2.row.courseTarget" :key="index" v-show="scope2.row.isCourseTarget">
                     <span>{{ item }}</span>
                   </div>
                 </template>
               </el-table-column>
 
               <el-table-column label="对应指标点" width="170">
-                <template slot-scope="scope">
-                  <el-select v-model="scope.row.indicatorPointsDetail" :multiple="true"
-                    v-show="!scope.row.isIndicatorPointsDetail">
-                    <el-option label="指标点1" value="指标点1"></el-option>
-                    <el-option label="指标点2" value="指标点2"></el-option>
+                <template slot-scope="scope2">
+                  <el-select v-model="scope2.row.indicatorPointsDetail" :multiple="true"
+                    v-show="!scope2.row.isIndicatorPointsDetail">
+                    <el-option v-for="item in indicators" :key="item.id" :value="item.indicatorName">
+                      <span style="float: left">{{ item.indicatorName }}</span>
+                      <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
+                        {{ item.indicatorContent }}
+                      </span>
+                    </el-option>
                   </el-select>
-                  <div v-for="(item, index) in scope.row.indicatorPointsDetail" :key="index"
-                    v-show="scope.row.isIndicatorPointsDetail">
+                  <div v-for="(item, index) in scope2.row.indicatorPointsDetail" :key="index"
+                    v-show="scope2.row.isIndicatorPointsDetail">
                     <span>{{ item }}</span>
                   </div>
                 </template>
@@ -95,17 +105,17 @@
                 <template slot-scope="scope2">
                   <el-tooltip content="编辑" placement="bottom" effect="light">
                     <el-button type="primary" icon="el-icon-edit" :circle="true"
-                      @click="editChildItem(scope.$index, scope2.$index)"></el-button>
+                      @click="editChildItem(scope1.$index, scope2.$index)"></el-button>
                   </el-tooltip>
 
                   <el-tooltip content="保存" placement="bottom" effect="light">
                     <el-button type="success" icon="el-icon-check" :circle="true"
-                      @click="saveChildItem(scope.$index, scope2.$index)"></el-button>
+                      @click="saveChildItem(scope1.$index, scope2.$index)"></el-button>
                   </el-tooltip>
 
                   <el-tooltip content="删除" placement="bottom" effect="light">
                     <el-button type="danger" icon="el-icon-delete" :circle="true"
-                      @click="deleteChildItem(scope.$index, scope2.$index)"></el-button>
+                      @click="deleteChildItem(scope1.$index, scope2.$index)"></el-button>
                   </el-tooltip>
 
                 </template>
@@ -114,7 +124,7 @@
 
             <el-tooltip content="添加子项目" placement="bottom" effect="light">
               <el-button type="primary" icon="el-icon-plus" :circle="true"
-                @click="addExamChildItem(scope.row, scope.$index)"></el-button>
+                @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
             </el-tooltip>
           </template>
 
@@ -164,6 +174,10 @@ export default {
       currentId: "",
       //课程列表(后端获取)
       courseList: [],
+      //当前课程目标
+      courseTargetList: [],
+      //当前指标点
+      indicators: [],
 
       //课程考试项目
       examItemArray: [],
@@ -219,6 +233,9 @@ export default {
     //初始化表格数据
     init() {
       if (this.currentId) {
+        //获取课程目标
+        this.getCurrentCourseTarget(this.currentId);
+        //获取表单数据
         api.get("/courseExam/courseExamineMethods/" + this.currentId, "", (resp) => {
           for (let index = 0; index < resp.data.data.length; index++) {
             resp.data.data[index].isExamineItem = true;
@@ -236,10 +253,13 @@ export default {
               resp.data.data[index].examChildItemArray = resp2.data.data;
             })
           }
-          this.currentCourse = resp.data.data[0].courseName;
+          this.currentCourse = this.$route.query.name;
           this.examItemArray = resp.data.data;
         })
       } else {
+
+        this.getCurrentCourseTarget(this.courseList[this.currentCourse].id);
+
         api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
           for (let index = 0; index < resp.data.data.length; index++) {
             resp.data.data[index].isExamineItem = true;
@@ -261,12 +281,10 @@ export default {
         })
       }
     },
-
     //添加考核项目
     addExamItem() {
       this.examItemArray.push(JSON.parse(JSON.stringify(this.examItem)));
     },
-
     //编辑考核项目
     editExamItem(index) {
       this.examItemArray[index].isExamineItem = false;
@@ -290,7 +308,11 @@ export default {
         }
         //添加
         if (!this.examItemArray[index].id) {
-          api.post("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => { })
+          api.post("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => {
+            if (resp.data.flag) {
+              this.getCurrentCourseExam();
+            }
+          })
         }
         //修改
         else {
@@ -299,6 +321,7 @@ export default {
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
 
+        location.reload();
       }
     },
 
@@ -374,7 +397,7 @@ export default {
             if (resp.data.flag) {
               this.$message({
                 type: 'success',
-                message: '成功!'
+                message: '添加成功!'
               });
             }
           })
@@ -385,13 +408,17 @@ export default {
             if (resp.data.flag) {
               this.$message({
                 type: 'success',
-                message: '成功!'
+                message: '修改成功!'
               });
             }
           })
         }
         this.examItemArray[index].examChildItemArray[childIndex].courseTarget = JSON.parse(this.examItemArray[index].examChildItemArray[childIndex].courseTarget);
         this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail = JSON.parse(this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail);
+
+        this.getCurrentCourseExam();
+        location.reload();
+
       }
     },
 
@@ -442,7 +469,10 @@ export default {
     //选择框值选择后
     getCurrentCourseExam() {
       this.ischoose = true;
-      this.init();
+      this.$nextTick(
+        this.init()
+      )
+
     },
 
     goto(url, data) {
@@ -451,8 +481,25 @@ export default {
       });
     },
 
+    //获取当前课程的课程目标
+    getCurrentCourseTarget(currentId) {
+      api.get("/courseInfo/courseTarget/" + currentId, "", (resp) => {
+        if (resp.data.flag) {
+          this.courseTargetList = resp.data.data;
+        }
+      })
+    },
+
+    //获取指标点列表
+    getIndicators() {
+      api.get("/courseInfo/indicators", "", (resp) => {
+        this.indicators = resp.data.data;
+      })
+    },
+
   },
   mounted() {
+    this.getIndicators();
     this.getMessage();
     if (this.$route.query.id) {
       this.isReturn = true
