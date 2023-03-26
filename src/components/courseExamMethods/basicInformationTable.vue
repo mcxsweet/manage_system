@@ -221,9 +221,9 @@ export default {
         indicatorPointsDetail: [],
         isIndicatorPointsDetail: false,
         isReturn: false, //返回课程基本信息页面
-        reloadPage: true,
       },
 
+      reloadPage: true,
     }
   },
   methods: {
@@ -330,8 +330,6 @@ export default {
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
-
-        location.reload();
       }
     },
 
@@ -397,6 +395,7 @@ export default {
         this.examItemArray[index].examChildItemArray[childIndex].isCourseTarget = true;
         this.examItemArray[index].examChildItemArray[childIndex].isIndicatorPointsDetail = true;
 
+        this.examItemArray[index].examChildItemArray[childIndex].childScore = 100;
         this.examItemArray[index].examChildItemArray[childIndex].courseTarget = JSON.stringify(this.examItemArray[index].examChildItemArray[childIndex].courseTarget);
         this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail = JSON.stringify(this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail);
         this.examItemArray[index].examChildItemArray[childIndex].courseExamineMethodsId = this.examItemArray[index].id;
@@ -425,9 +424,6 @@ export default {
         }
         this.examItemArray[index].examChildItemArray[childIndex].courseTarget = JSON.parse(this.examItemArray[index].examChildItemArray[childIndex].courseTarget);
         this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail = JSON.parse(this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail);
-
-        this.getCurrentCourseExam();
-        location.reload();
 
       }
     },
@@ -506,8 +502,8 @@ export default {
 
     //relode
     forcePage() {
-      // this.reloadPage = false;
-      this.$nextTick(this.reloadPage = false)
+      this.reloadPage = false;
+      // this.$nextTick(this.reloadPage = false)
       setTimeout(() => {
         this.reloadPage = true;
       }, 100);

@@ -149,31 +149,31 @@
         </el-dialog>
 
         <!-- 操作弹出层 -->
-        <el-dialog title="操作" :visible.sync="isOperation" :show-close="false" width="40%">
+        <!-- <el-dialog title="操作" :visible.sync="isOperation" :show-close="false" width="40%"> -->
+        <el-drawer title="我是标题" :visible.sync="isOperation" :with-header="false">
             <div style="display: flex;flex-wrap: wrap;">
                 <p style="width: 100%;margin: 10px;">课程内容设置</p>
-                <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;" type="primary"
                     @click="goto('classInformation', currentObject.id)">详细课程信息设置</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;" type="primary"
                     @click="handleExport(null, currentObject)">导出文件</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;" type="primary"
                     @click="handleDelete(currentObject)">删除</el-button>
 
                 <p style="width: 100%;margin: 10px;">该行项目设置</p>
 
-                <el-button style="margin-bottom: 3vh; width: 20vh;" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;" type="primary"
                     @click="goto('basicInformationTable', currentObject.id, currentObject.courseName)">课程考核评价方式</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;"
-                    @click="goto1('finalTable', currentObject.id)">试卷设置</el-button>
+                <el-button style="margin: 3vh; width: 20vh;"
+                    @click="goto('finalTable', currentObject.id, currentObject.courseName)">试卷设置</el-button>
 
                 <p style="width: 100%;margin: 10px;">课程成绩管理</p>
-                <el-button style="margin-bottom: 3vh; width: 20vh;"
-                    @click="goto('usualPreformanceTable')">平时成绩管理</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;" @click="goto('finalStatisticsTable')">期末试卷成绩</el-button>
-                <el-button style="margin-bottom: 3vh; width: 20vh;"
-                    @click="goto('finalComprehensiveTable')">期末综合成绩</el-button>
+                <el-button style="margin: 2vh; width: 20vh;" @click="goto('usualPreformanceTable')">平时成绩管理</el-button>
+                <el-button style="margin: 2vh; width: 20vh;" @click="goto('finalStatisticsTable')">期末试卷成绩</el-button>
+                <el-button style="margin: 2vh; width: 20vh;" @click="goto('finalComprehensiveTable')">期末综合成绩</el-button>
             </div>
-        </el-dialog>
+        </el-drawer>
+        <!-- </el-dialog> -->
 
         <el-footer>
             <span>总共有{{ tableData.length }}条课程</span>
@@ -221,16 +221,7 @@ export default {
                 }
             });
         },
-        //专门跳转没有课程名字的页面
-        goto1(url, data, data1) {
-            this.$router.push({
-                path: '/MainPage/' + url,
-                query: {
-                    id: data,
-                    courseName: data1
-                }
-            });
-        },
+
         //点击搜索内容
         search() {
             this.isShowSearch = !this.isShowSearch;
