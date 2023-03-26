@@ -42,7 +42,7 @@
         <!-- 考核子项目 -->
         <el-table-column label="考核子项目" :v-if="reloadPage">
           <template slot-scope="scope1">
-            <el-collapse v-model="activeNames" @change="handleChange">
+            <el-collapse>
               <el-collapse-item>
                 <div>
 

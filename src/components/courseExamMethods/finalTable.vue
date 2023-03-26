@@ -15,8 +15,7 @@
         </el-header>
 
         <el-main v-show="ischoose">
-            <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true"
-                :header-cell-style="tableHeader">
+            <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true">
                 <el-table-column label="考核方式" width="200px">
                     <template slot-scope="scope">
                         <p>{{ scope.row.examineItem }}</p>
@@ -81,8 +80,61 @@
             </el-table>
 
 
+            <!-- 详细设置 -->
             <el-drawer :title="workSpaceTitle" :visible.sync="workSpace" direction="btt" :before-close="handleClose"
-                size="80%">
+                size="90%">
+                <el-row :gutter="20">
+                    <el-col :span="4">
+                        <div style="height: 500px;background-color: blue;"></div>
+                    </el-col>
+                    <el-col :span="16">
+                        <div style="height: 500px;background-color: black;">
+
+                            <el-collapse v-model="activeName" accordion @change="handleChange">
+
+                                <div v-for="item, index in finllPaper" :key="index">
+                                    <el-collapse-item :name="item.id">
+                                        <template slot="title">
+                                            <el-row>
+                                                {{ item.itemName }} <i class="header-icon el-icon-info"></i>
+                                            </el-row>
+                                        </template>
+
+                                        <el-table :data="tableData" border stripe style="width: 100%;min-height: 50vh;">
+                                            <el-table-column label="题号" width="180">
+                                                <template slot-scope="scope">
+                                                    <p>{{ scope.row.titleNumber }}</p>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column label="分值" width="180">
+                                                <template slot-scope="scope">
+                                                    <p>{{ scope.row.score }}</p>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column label="指标点">
+                                                <template slot-scope="scope">
+                                                    <p>{{ scope.row.indicatorPoints }}</p>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column label="课程目标">
+                                                <template slot-scope="scope">
+                                                    <p>{{ scope.row.courseTarget }}</p>
+                                                </template>
+                                            </el-table-column>
+                                            <el-table-column label="操作" width="180">
+                                            </el-table-column>
+                                        </el-table>
+
+                                    </el-collapse-item>
+                                </div>
+                            </el-collapse>
+
+                        </div>
+                    </el-col>
+                    <el-col :span="4">
+                        <div style="height: 500px;background-color: black;"></div>
+                    </el-col>
+                </el-row>
 
             </el-drawer>
         </el-main>
@@ -114,15 +166,16 @@ export default {
             workSpace: false,
             workSpaceTitle: "",
 
+            //试卷详情
+            finllPaper: [{ name: 'hello' }, { name: 'sasd' }],
+            activeName: '1',
+
             reloadPage: true,
+
+            tableData: []
         }
     },
     methods: {
-        //表头字体居中
-        tableHeader({ row, column, rowIndex, columnIndex }) {
-            return 'text-align:center'
-        },
-
         //输入框焦点
         focusOnSelect() {
             this.examItemArray = [];
@@ -200,10 +253,14 @@ export default {
 
         //打开工作区
         openWokeSpace(item, detail) {
-            console.log(item);
-            console.log(detail);
             this.workSpaceTitle = item.courseName + " / " + item.examineItem + " / " + detail.examineChildItem
             this.workSpace = !this.workSpace;
+
+            api.get("/courseExamPaper/" + detail.id, "", (resp) => {
+                if (resp.data.flag) {
+                    this.finllPaper = resp.data.data;
+                }
+            })
         },
 
         //工作区关闭确认
@@ -220,6 +277,17 @@ export default {
                     message: '已取消'
                 });
             });
+        },
+
+        //点击题型
+        handleChange(item) {
+            // console.log(item);
+            this.tableData = [];
+            api.get("/courseExamPaper/detail/" + item, "", (resp) => {
+                if (resp.data.data) {
+                    this.tableData = resp.data.data;
+                }
+            })
         }
 
     },

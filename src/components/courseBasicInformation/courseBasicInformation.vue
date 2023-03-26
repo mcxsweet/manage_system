@@ -150,7 +150,7 @@
 
         <!-- 操作弹出层 -->
         <!-- <el-dialog title="操作" :visible.sync="isOperation" :show-close="false" width="40%"> -->
-        <el-drawer title="我是标题" :visible.sync="isOperation" :with-header="false">
+        <el-drawer title="我是标题" :visible.sync="isOperation" :with-header="false" direction="ltr">
             <div style="display: flex;flex-wrap: wrap;">
                 <p style="width: 100%;margin: 10px;">课程内容设置</p>
                 <el-button style="margin: 3vh; width: 20vh;" type="primary"
