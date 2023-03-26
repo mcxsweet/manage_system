@@ -42,94 +42,99 @@
         <!-- 考核子项目 -->
         <el-table-column label="考核子项目" :v-if="reloadPage">
           <template slot-scope="scope1">
+            <el-collapse v-model="activeNames" @change="handleChange">
+              <el-collapse-item>
+                <div>
 
-            <el-table :data="scope1.row.examChildItemArray" :stripe="true">
-              <el-table-column label="子项目名称" width="170">
+                  <el-table :data="scope1.row.examChildItemArray" :stripe="true">
+                    <el-table-column label="子项目名称" width="170">
 
-                <template slot-scope="scope2">
-                  <el-select v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"
-                    placeholder="请选择" style="width:100%">
-                    <el-option-group v-for="group in childOptions" :key="group.label" :label="group.label">
-                      <el-option v-for="(op, index) in group.options" :key="index" :value="op.value"></el-option>
-                    </el-option-group>
-                  </el-select>
-                  <p v-show="scope2.row.isExamineChildItem">{{ scope2.row.examineChildItem }}</p>
-                </template>
-              </el-table-column>
+                      <template slot-scope="scope2">
+                        <el-select v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"
+                          placeholder="请选择" style="width:100%">
+                          <el-option-group v-for="group in childOptions" :key="group.label" :label="group.label">
+                            <el-option v-for="(op, index) in group.options" :key="index" :value="op.value"></el-option>
+                          </el-option-group>
+                        </el-select>
+                        <p v-show="scope2.row.isExamineChildItem">{{ scope2.row.examineChildItem }}</p>
+                      </template>
+                    </el-table-column>
 
-              <el-table-column label="子项目百分比" width="150">
-                <template slot-scope="scope2">
-                  <el-input type="number" v-model="scope2.row.childPercentage" v-show="!scope2.row.isChildPercentage"
-                    :min="0" :max="100">
-                    <template slot="append">%</template>
-                  </el-input>
-                  <p v-show="scope2.row.isChildPercentage">{{ scope2.row.childPercentage }} %</p>
-                </template>
-              </el-table-column>
+                    <el-table-column label="子项目百分比" width="150">
+                      <template slot-scope="scope2">
+                        <el-input type="number" v-model="scope2.row.childPercentage"
+                          v-show="!scope2.row.isChildPercentage" :min="0" :max="100">
+                          <template slot="append">%</template>
+                        </el-input>
+                        <p v-show="scope2.row.isChildPercentage">{{ scope2.row.childPercentage }} %</p>
+                      </template>
+                    </el-table-column>
 
-              <el-table-column label="对应课程目标" width="170">
-                <template slot-scope="scope2">
-                  <el-select v-model="scope2.row.courseTarget" :multiple="true" v-show="!scope2.row.isCourseTarget">
-                    <el-option v-for="item in courseTargetList" :key="item.id" :value="item.targetName">
-                      <span style="float: left">{{ item.targetName }}</span>
-                      <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                        {{ item.courseTarget }}
-                      </span>
-                    </el-option>
-                  </el-select>
-                  <div v-for="(item, index) in scope2.row.courseTarget" :key="index" v-show="scope2.row.isCourseTarget">
-                    <span>{{ item }}</span>
-                  </div>
-                </template>
-              </el-table-column>
+                    <el-table-column label="对应课程目标" width="170">
+                      <template slot-scope="scope2">
+                        <el-select v-model="scope2.row.courseTarget" :multiple="true" v-show="!scope2.row.isCourseTarget">
+                          <el-option v-for="item in courseTargetList" :key="item.id" :value="item.targetName">
+                            <span style="float: left">{{ item.targetName }}</span>
+                            <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
+                              {{ item.courseTarget }}
+                            </span>
+                          </el-option>
+                        </el-select>
+                        <div v-for="(item, index) in scope2.row.courseTarget" :key="index"
+                          v-show="scope2.row.isCourseTarget">
+                          <span>{{ item }}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
 
-              <el-table-column label="对应指标点" width="170">
-                <template slot-scope="scope2">
-                  <el-select v-model="scope2.row.indicatorPointsDetail" :multiple="true"
-                    v-show="!scope2.row.isIndicatorPointsDetail">
-                    <el-option v-for="item in indicators" :key="item.id" :value="item.indicatorName">
-                      <span style="float: left">{{ item.indicatorName }}</span>
-                      <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                        {{ item.indicatorContent }}
-                      </span>
-                    </el-option>
-                  </el-select>
-                  <div v-for="(item, index) in scope2.row.indicatorPointsDetail" :key="index"
-                    v-show="scope2.row.isIndicatorPointsDetail">
-                    <span>{{ item }}</span>
-                  </div>
-                </template>
-              </el-table-column>
+                    <el-table-column label="对应指标点" width="170">
+                      <template slot-scope="scope2">
+                        <el-select v-model="scope2.row.indicatorPointsDetail" :multiple="true"
+                          v-show="!scope2.row.isIndicatorPointsDetail">
+                          <el-option v-for="item in indicators" :key="item.id" :value="item.indicatorName">
+                            <span style="float: left">{{ item.indicatorName }}</span>
+                            <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
+                              {{ item.indicatorContent }}
+                            </span>
+                          </el-option>
+                        </el-select>
+                        <div v-for="(item, index) in scope2.row.indicatorPointsDetail" :key="index"
+                          v-show="scope2.row.isIndicatorPointsDetail">
+                          <span>{{ item }}</span>
+                        </div>
+                      </template>
+                    </el-table-column>
 
-              <el-table-column label="子项目操作" width="220">
-                <template slot-scope="scope2">
-                  <el-tooltip content="编辑" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-edit" :circle="true"
-                      @click="editChildItem(scope1.$index, scope2.$index)"></el-button>
+                    <el-table-column label="子项目操作" width="220">
+                      <template slot-scope="scope2">
+                        <el-tooltip content="编辑" placement="bottom" effect="light">
+                          <el-button type="primary" icon="el-icon-edit" :circle="true"
+                            @click="editChildItem(scope1.$index, scope2.$index)"></el-button>
+                        </el-tooltip>
+
+                        <el-tooltip content="保存" placement="bottom" effect="light">
+                          <el-button type="success" icon="el-icon-check" :circle="true"
+                            @click="saveChildItem(scope1.$index, scope2.$index)"></el-button>
+                        </el-tooltip>
+
+                        <el-tooltip content="删除" placement="bottom" effect="light">
+                          <el-button type="danger" icon="el-icon-delete" :circle="true"
+                            @click="deleteChildItem(scope1.$index, scope2.$index)"></el-button>
+                        </el-tooltip>
+
+                      </template>
+                    </el-table-column>
+                  </el-table>
+
+                  <el-tooltip content="添加子项目" placement="bottom" effect="light">
+                    <el-button type="primary" icon="el-icon-plus" :circle="true"
+                      @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
                   </el-tooltip>
 
-                  <el-tooltip content="保存" placement="bottom" effect="light">
-                    <el-button type="success" icon="el-icon-check" :circle="true"
-                      @click="saveChildItem(scope1.$index, scope2.$index)"></el-button>
-                  </el-tooltip>
-
-                  <el-tooltip content="删除" placement="bottom" effect="light">
-                    <el-button type="danger" icon="el-icon-delete" :circle="true"
-                      @click="deleteChildItem(scope1.$index, scope2.$index)"></el-button>
-                  </el-tooltip>
-
-                </template>
-              </el-table-column>
-            </el-table>
-
-            <el-tooltip content="添加子项目" placement="bottom" effect="light">
-              <el-button type="primary" icon="el-icon-plus" :circle="true"
-                @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
-            </el-tooltip>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
           </template>
-
-
-
         </el-table-column>
 
 
@@ -226,6 +231,7 @@ export default {
     tableHeader({ row, column, rowIndex, columnIndex }) {
       return 'text-align:center'
     },
+
     focusOnSelect() {
       this.examItemArray = [];
       this.ischoose = false;
@@ -300,6 +306,9 @@ export default {
           message: '考核项目和百分比为必填项！！！!'
         });
       } else {
+
+        this.examItemArray[index].itemScore = 100;
+
         if (this.currentId) {
           this.examItemArray[index].courseId = this.currentId;
           this.examItemArray[index].courseName = this.currentCourse;
@@ -470,10 +479,7 @@ export default {
     //选择框值选择后
     getCurrentCourseExam() {
       this.ischoose = true;
-      this.$nextTick(
-        this.init()
-      )
-
+      this.init()
     },
 
     goto(url, data) {
@@ -500,8 +506,8 @@ export default {
 
     //relode
     forcePage() {
-      this.reloadPage = false;
-      // this.$nextTick(this.reloadPage = true)
+      // this.reloadPage = false;
+      this.$nextTick(this.reloadPage = false)
       setTimeout(() => {
         this.reloadPage = true;
       }, 100);
