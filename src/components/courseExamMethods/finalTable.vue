@@ -70,71 +70,115 @@
                     </template>
                 </el-table-column>
 
-
-                <el-table-column label="操作" width="220">
+                <!-- <el-table-column label="操作" width="220">
                     <template slot-scope="scope">
                         <el-button type="warning" size="mini" @click="editExamItem(scope.$index)">编辑</el-button>
                         <el-button type="danger" size="mini" @click="saveExamItem(scope.$index)">保存</el-button>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
             </el-table>
 
 
-            <!-- 详细设置 -->
+            <!-- 试卷 -->
             <el-drawer :title="workSpaceTitle" :visible.sync="workSpace" direction="btt" :before-close="handleClose"
                 size="90%">
-                <el-row :gutter="20">
+                <el-row :gutter="24">
                     <el-col :span="4">
-                        <div style="height: 500px;background-color: blue;"></div>
+                        <div style="height: 500px;">
+
+                            <el-row>
+                                <el-button style="margin: 1vw;" type="primary" @click="isAddPaperItem = true">添加</el-button>
+                            </el-row>
+                            <el-row>
+                                <el-button style="margin: 1vw;" type="primary" @click="test()">修改</el-button>
+                            </el-row>
+                            <el-row>
+                                <el-button style="margin: 1vw;" type="primary"
+                                    @click="isDeletePaperItem = !isDeletePaperItem">删除</el-button>
+                            </el-row>
+
+                        </div>
                     </el-col>
                     <el-col :span="16">
-                        <div style="height: 500px;background-color: black;">
-
+                        <div style="height: 500px;">
+                            <el-result icon="warning" title="当前数据为空" subTitle="请添加数据或返回" v-if="finllPaper.length == 0">
+                            </el-result>
                             <el-collapse v-model="activeName" accordion @change="handleChange">
-
                                 <div v-for="item, index in finllPaper" :key="index">
-                                    <el-collapse-item :name="item.id">
-                                        <template slot="title">
-                                            <el-row>
-                                                {{ item.itemName }} <i class="header-icon el-icon-info"></i>
-                                            </el-row>
-                                        </template>
+                                    <el-row>
+                                        <el-col :span="23">
+                                            <el-collapse-item :name="item.id">
+                                                <template slot="title">
+                                                    <el-row>
+                                                        {{ item.itemName }} <i class="header-icon el-icon-info"></i>
 
-                                        <el-table :data="tableData" border stripe style="width: 100%;min-height: 50vh;">
-                                            <el-table-column label="题号" width="180">
-                                                <template slot-scope="scope">
-                                                    <p>{{ scope.row.titleNumber }}</p>
+                                                    </el-row>
                                                 </template>
-                                            </el-table-column>
-                                            <el-table-column label="分值" width="180">
-                                                <template slot-scope="scope">
-                                                    <p>{{ scope.row.score }}</p>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column label="指标点">
-                                                <template slot-scope="scope">
-                                                    <p>{{ scope.row.indicatorPoints }}</p>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column label="课程目标">
-                                                <template slot-scope="scope">
-                                                    <p>{{ scope.row.courseTarget }}</p>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column label="操作" width="180">
-                                            </el-table-column>
-                                        </el-table>
+                                                <el-table v-loading="loading" :data="tableData" border stripe
+                                                    style="width: 100%;" height="400">
+                                                    <el-table-column label="题号" width="50">
+                                                        <template slot-scope="scope">
+                                                            <p>{{ scope.row.titleNumber }}</p>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="分值" width="180">
+                                                        <template slot-scope="scope">
+                                                            <p>{{ scope.row.score }}</p>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="指标点">
+                                                        <template slot-scope="scope">
+                                                            <p>{{ scope.row.indicatorPoints }}</p>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="课程目标">
+                                                        <template slot-scope="scope">
+                                                            <p>{{ scope.row.courseTarget }}</p>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="操作" width="180">
+                                                    </el-table-column>
+                                                </el-table>
 
-                                    </el-collapse-item>
+                                            </el-collapse-item>
+                                        </el-col>
+                                        <el-col :span="1">
+                                            <el-button v-if="isDeletePaperItem" style="margin-top:8px ;" type="danger"
+                                                size="mini" @click="deletePaperItem(item.id)">删除</el-button>
+                                        </el-col>
+                                    </el-row>
+                                    <span style="height: 1px;"></span>
                                 </div>
                             </el-collapse>
+
+                            <!-- 添加 -->
+                            <el-dialog title="添加" :visible.sync="isAddPaperItem" width="40%" append-to-body>
+
+                                <el-form :model="addForm">
+                                    <el-form-item label="名称">
+                                        <el-input v-model="addForm.itemName"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="分数">
+                                        <el-input v-model="addForm.itemScore"></el-input>
+                                    </el-form-item>
+                                </el-form>
+
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button @click="isAddPaperItem = false">取 消</el-button>
+                                    <el-button type="primary" @click="addPaperItem()">确 定</el-button>
+                                </div>
+                            </el-dialog>
 
                         </div>
                     </el-col>
                     <el-col :span="4">
-                        <div style="height: 500px;background-color: black;"></div>
+                        <div style="height: 500px;"></div>
                     </el-col>
                 </el-row>
+
+
+
+
 
             </el-drawer>
         </el-main>
@@ -165,14 +209,23 @@ export default {
             //详细工作区
             workSpace: false,
             workSpaceTitle: "",
-
-            //试卷详情
-            finllPaper: [{ name: 'hello' }, { name: 'sasd' }],
+            //当前工作区选中的考察子项目
+            currentExamineItem: {},
+            //试卷详情（有小题）
+            finllPaper: [],
             activeName: '1',
-
             reloadPage: true,
 
-            tableData: []
+            tableData: [],
+            //表格刷新控件
+            loading: true,
+            //添加题型控件
+            isAddPaperItem: false,
+            //添加表单
+            addForm: {},
+            //删除题型控件
+            isDeletePaperItem: false,
+
         }
     },
     methods: {
@@ -188,17 +241,11 @@ export default {
                 //获取表单数据
                 api.get("/courseExam/courseExamineMethods/" + this.currentId, "", (resp) => {
                     for (let index = 0; index < resp.data.data.length; index++) {
-                        resp.data.data[index].isExamineItem = true;
-                        resp.data.data[index].isPercentage = true;
                         api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
                             for (let j = 0; j < resp2.data.data.length; j++) {
                                 resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
                                 resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
 
-                                resp2.data.data[j].isExamineChildItem = true;
-                                resp2.data.data[j].isChildPercentage = true;
-                                resp2.data.data[j].isCourseTarget = true;
-                                resp2.data.data[j].isIndicatorPointsDetail = true;
                             }
                             resp.data.data[index].examChildItemArray = resp2.data.data;
                         })
@@ -209,17 +256,10 @@ export default {
             } else {
                 api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
                     for (let index = 0; index < resp.data.data.length; index++) {
-                        resp.data.data[index].isExamineItem = true;
-                        resp.data.data[index].isPercentage = true;
                         api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
                             for (let j = 0; j < resp2.data.data.length; j++) {
                                 resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
                                 resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
-
-                                resp2.data.data[j].isExamineChildItem = true;
-                                resp2.data.data[j].isChildPercentage = true;
-                                resp2.data.data[j].isCourseTarget = true;
-                                resp2.data.data[j].isIndicatorPointsDetail = true;
                             }
                             resp.data.data[index].examChildItemArray = resp2.data.data;
                         })
@@ -254,8 +294,9 @@ export default {
         //打开工作区
         openWokeSpace(item, detail) {
             this.workSpaceTitle = item.courseName + " / " + item.examineItem + " / " + detail.examineChildItem
-            this.workSpace = !this.workSpace;
+            this.workSpace = true;
 
+            this.currentExamineItem = detail;
             api.get("/courseExamPaper/" + detail.id, "", (resp) => {
                 if (resp.data.flag) {
                     this.finllPaper = resp.data.data;
@@ -265,37 +306,99 @@ export default {
 
         //工作区关闭确认
         handleClose(done) {
-            this.$confirm('是否关闭？请记得保存', '提示', {
+            // this.$confirm('是否关闭？请记得保存', '提示', {
+            //     confirmButtonText: '确定',
+            //     cancelButtonText: '取消',
+            //     type: 'warning'
+            // }).then(() => {
+            //     done();
+            // }).catch(() => {
+            //     this.$message({
+            //         type: 'info',
+            //         message: '已取消'
+            //     });
+            // });
+            done();
+        },
+
+        //点击题型
+        handleChange(item) {
+            // this.tableData = [];
+            api.get("/courseExamPaper/detail/" + item, "", (resp) => {
+                if (resp.data.data) {
+                    this.tableData = resp.data.data;
+                }
+            })
+            this.loading = false;
+        },
+
+        //添加题型
+        addPaperItem() {
+            console.log(this.currentExamineItem);
+            this.addForm.examChildMethodId = this.currentExamineItem.id;
+            api.post("/courseExamPaper", this.addForm, (resp) => {
+                if (resp.data.flag) {
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    });
+                    api.get("/courseExamPaper/" + this.currentExamineItem.id, "", (resp) => {
+                        if (resp.data.flag) {
+                            this.finllPaper = resp.data.data;
+                        }
+                    })
+                    this.isAddPaperItem = false;
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: resp.data.message
+                    });
+                }
+            })
+
+        },
+
+        //删除题型
+        deletePaperItem(id) {
+            this.$confirm('是否删除 ?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                done();
+                api.del("/courseExamPaper", id, (resp) => {
+                    if (resp.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                        api.get("/courseExamPaper/" + this.currentExamineItem.id, "", (resp) => {
+                            if (resp.data.flag) {
+                                this.finllPaper = resp.data.data;
+                            }
+                        })
+                        this.isDeletePaperItem = false;
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: resp.data.message
+                        });
+                    }
+                })
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消'
                 });
             });
-        },
-
-        //点击题型
-        handleChange(item) {
-            // console.log(item);
-            this.tableData = [];
-            api.get("/courseExamPaper/detail/" + item, "", (resp) => {
-                if (resp.data.data) {
-                    this.tableData = resp.data.data;
-                }
-            })
         }
+
+
 
     },
     mounted() {
 
         this.getMessage();
         if (this.$route.query.id) {
-            this.isReturn = true
             this.currentId = this.$route.query.id;
             this.getCurrentCourseExam();
         }
