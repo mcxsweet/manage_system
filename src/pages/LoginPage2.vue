@@ -64,7 +64,7 @@ export default {
 
         checkSubmit() {
             api.post("/courseInfo/checkSubmit", "", (resp) => {
-                if (resp.data.flag) {
+                if (resp.data.flag && localStorage.getItem("name")) {
                     this.$router.push({ path: '/MainPage' });
                 }
             })
