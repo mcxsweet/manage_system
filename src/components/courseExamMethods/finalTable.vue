@@ -148,7 +148,7 @@
                                                             <el-button style="margin-top:8px ;" type="danger" size="mini"
                                                                 @click="deleteDetail(scope.row.id)">删除</el-button>
                                                             <el-button style="margin-top:8px ;" type="primary" size="mini"
-                                                                @click="updateFormUp(item)">修改</el-button>
+                                                                @click="popUpUpdate(scope.row)">修改</el-button>
 
                                                         </template>
                                                     </el-table-column>
@@ -236,6 +236,40 @@
                                 </div>
                             </el-dialog>
 
+                            <!-- 修改小题 -->
+                            <el-dialog title="修改" :visible.sync="isUpdateDetail" width="40%" append-to-body>
+                                <el-form :model="updateDetailForm">
+                                    <el-form-item label="题号">
+                                        <el-input v-model="updateDetailForm.titleNumber"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="分值">
+                                        <el-input v-model="updateDetailForm.score"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="指标点">
+                                        <el-select v-model="updateDetailForm.indicatorPoints" :multiple="true"
+                                            style="width:100% ;">
+                                            <el-option v-for="item, index in currentExamineItem.indicatorPointsDetail"
+                                                :key="index" :value="item">
+                                                <span style="float: left">{{ item }}</span>
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="课程目标">
+                                        <el-select v-model="updateDetailForm.courseTarget" :multiple="true"
+                                            style="width:100% ;">
+                                            <el-option v-for="item, index in currentExamineItem.courseTarget" :key="index"
+                                                :value="item">
+                                                <span style="float: left">{{ item }}</span>
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button @click="isUpdateDetail = false">取 消</el-button>
+                                    <el-button type="primary" @click="updateDetail()">确 定</el-button>
+                                </div>
+                            </el-dialog>
+
                         </div>
                     </el-col>
                     <el-col :span="4">
@@ -302,6 +336,10 @@ export default {
             isAddDetail: false,
             //添加小题表单
             addDetailForm: {},
+            //修改小题表单控件
+            isUpdateDetail: false,
+            //修改小题表单
+            updateDetailForm: {},
 
         }
     },
@@ -530,6 +568,35 @@ export default {
                     this.isAddDetail = false;
                     this.handleChange(this.currentTypeId);
                     this.addDetailForm = {};
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: resp.data.message
+                    });
+                }
+            })
+        },
+
+        //弹出修改界面
+        popUpUpdate(item) {
+            this.updateDetailForm = item;
+            this.isUpdateDetail = !this.isUpdateDetail;
+        },
+
+        //修改小题
+        updateDetail() {
+            //转码
+            this.updateDetailForm.indicatorPoints = JSON.stringify(this.updateDetailForm.indicatorPoints);
+            this.updateDetailForm.courseTarget = JSON.stringify(this.updateDetailForm.courseTarget);
+            api.put("/courseExamPaper/detail", this.updateDetailForm, (resp) => {
+                if (resp.data.flag) {
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    });
+                    this.isUpdateDetail = !this.isUpdateDetail;
+                    this.handleChange(this.currentTypeId);
+                    this.updateDetailForm = {};
                 } else {
                     this.$message({
                         type: 'error',
