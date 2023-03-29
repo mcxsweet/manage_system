@@ -269,7 +269,6 @@
                                     <el-button type="primary" @click="updateDetail()">确 定</el-button>
                                 </div>
                             </el-dialog>
-
                         </div>
                     </el-col>
                     <el-col :span="4">

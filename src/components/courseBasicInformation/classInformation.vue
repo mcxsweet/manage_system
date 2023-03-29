@@ -73,8 +73,11 @@
                     <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
                     <el-select v-model="FormData.indicatorPoints" filterable multiple placeholder="请选择指标点"
                         style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum">
-                        <el-option v-for="item in indicators" :key="item.indicatorName" :label="item.indicatorName"
-                            :value="item.indicatorName">
+                        <el-option v-for="item in indicators" :key="item.indicatorName" :value="item.indicatorName">
+                            <span style="float: left">{{ item.indicatorName }}</span>
+                            <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
+                                {{ item.indicatorContent }}
+                            </span>
                         </el-option>
                     </el-select>
                 </el-form-item>
