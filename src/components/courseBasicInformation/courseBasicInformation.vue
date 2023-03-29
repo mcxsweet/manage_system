@@ -153,24 +153,24 @@
         <el-drawer title="我是标题" :visible.sync="isOperation" :with-header="false" direction="ltr">
             <div style="display: flex;flex-wrap: wrap;">
                 <p style="width: 100%;margin: 10px;">课程内容设置</p>
-                <el-button style="margin: 3vh; width: 20vh;" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;" type="primary" plain
                     @click="goto('classInformation', currentObject.id)">详细课程信息设置</el-button>
-                <el-button style="margin: 3vh; width: 20vh;" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;" type="success" plain
                     @click="handleExport(null, currentObject)">导出文件</el-button>
-                <el-button style="margin: 3vh; width: 20vh;" type="primary"
-                    @click="handleDelete(currentObject)">删除</el-button>
+                <!-- <el-button style="margin: 3vh; width: 20vh;" type="primary"
+                    @click="handleDelete(currentObject)">删除</el-button> -->
 
                 <p style="width: 100%;margin: 10px;">该行项目设置</p>
 
-                <el-button style="margin: 3vh; width: 20vh;" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;" type="primary" plain
                     @click="goto('basicInformationTable', currentObject.id, currentObject.courseName)">课程考核评价方式</el-button>
-                <el-button style="margin: 3vh; width: 20vh;"
+                <el-button style="margin: 3vh; width: 20vh;" type="info" plain
                     @click="goto('finalTable', currentObject.id, currentObject.courseName)">试卷设置</el-button>
 
                 <p style="width: 100%;margin: 10px;">课程成绩管理</p>
-                <el-button style="margin: 2vh; width: 20vh;" @click="goto('usualPreformanceTable')">平时成绩管理</el-button>
-                <el-button style="margin: 2vh; width: 20vh;" @click="goto('finalStatisticsTable')">期末试卷成绩</el-button>
-                <el-button style="margin: 2vh; width: 20vh;" @click="goto('finalComprehensiveTable')">期末综合成绩</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" @click="goto('usualPreformanceTable')" type="primary" plain>平时成绩管理</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalStatisticsTable')" type="primary" plain>期末试卷成绩</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalComprehensiveTable')" type="primary" plain>期末综合成绩</el-button>
             </div>
         </el-drawer>
         <!-- </el-dialog> -->
