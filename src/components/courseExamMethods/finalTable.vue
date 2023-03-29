@@ -38,7 +38,7 @@
                 <el-table-column label="考核项目" :v-if="reloadPage">
                     <template slot-scope="scope">
                         <el-collapse>
-                            <el-collapse-item title=" ">
+                            <el-collapse-item title=" 点击展开">
                                 <div>
                                     <el-table :data="scope.row.examChildItemArray" style="width: 100%">
                                         <el-table-column label="名称">
