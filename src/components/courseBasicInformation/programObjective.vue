@@ -55,9 +55,9 @@
 
         <el-table-column label="操作" width="220">
           <template slot-scope="scope">
-            <el-button type="warning" size="mini" @click="editta(scope.row, scope)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="saveta(scope.row)">保存</el-button>
-            <el-button type="primary" size="mini" @click="delect(scope.row)">删除</el-button>
+            <el-button type="primary" size="mini" @click="editta(scope.row, scope)">编辑</el-button>
+            <el-button type="success" size="mini" @click="saveta(scope.row)">保存</el-button>
+            <el-button type="danger" size="mini" @click="delect(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
