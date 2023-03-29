@@ -139,9 +139,9 @@
 
         <el-table-column label="操作" width="220">
           <template slot-scope="scope">
-            <el-button type="warning" size="mini" @click="editExamItem(scope.$index)">编辑</el-button>
-            <el-button type="danger" size="mini" @click="saveExamItem(scope.$index)">保存</el-button>
-            <el-button type="primary" size="mini" @click="delectExamItem(scope.$index)">删除</el-button>
+            <el-button type="primary" size="mini" @click="editExamItem(scope.$index)">编辑</el-button>
+            <el-button type="success" size="mini" @click="saveExamItem(scope.$index)">保存</el-button>
+            <el-button type="danger" size="mini" @click="delectExamItem(scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>

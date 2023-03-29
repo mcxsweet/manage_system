@@ -10,14 +10,14 @@
                 </el-col>
                 <el-col :span="12">
                     <div style="font-size: 20px;text-align: right; ">
-                        <el-dropdown @command="handleCommand">
-                            <i class="el-icon-setting" style="margin-right: 15px"></i>
+                        <el-dropdown @command="handleCommand" trigger="click">
+                           <el-button icon="el-icon-user" size="mini" style="margin-right: 15px;"></el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item>个人信息</el-dropdown-item>
                                 <el-dropdown-item command="signOut">退出</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                        <span>{{ username }}</span>
+                        <span style="color: black;">{{ username }}</span>
                     </div>
                 </el-col>
             </el-row>
