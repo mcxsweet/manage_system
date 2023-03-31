@@ -15,6 +15,8 @@
         </el-header>
 
         <el-main v-show="ischoose">
+
+            <el-divider content-position="left">考核方式展示</el-divider>
             <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true">
                 <el-table-column label="考核方式" width="200px">
                     <template slot-scope="scope">
@@ -78,6 +80,23 @@
                 </el-table-column> -->
             </el-table>
 
+            <!-- 题型与指标点对应关系 -->
+            <el-divider content-position="left">全局展示</el-divider>
+            <div>
+                <el-table :data="tableData2" style="width: 100%">
+                    <el-table-column prop="color" label="指标点\题型" width="180"> </el-table-column>
+                    <el-table-column v-for="(i, index) in questions" :label="i" align="center" header-align="center"
+                        :key="index">
+                        <el-table-column v-for="(i, index) in semllQuestions" :label="i" align="center"
+                            header-align="center" :key="index">
+                            <el-table-column v-for="(i, index) in semllQuestions" :label="i" align="center"
+                                header-align="center" :key="index">
+                                <template v-slot="scope">{{ scope.row[i] }}</template>
+                            </el-table-column>
+                        </el-table-column>
+                    </el-table-column>
+                </el-table>
+            </div>
 
             <!-- 试卷 -->
             <el-drawer :title="workSpaceTitle" :visible.sync="workSpace" direction="btt" :before-close="handleClose"
@@ -99,7 +118,7 @@
                         </div>
                     </el-col>
                     <el-col :span="16">
-                        <div style="height: 500px;">
+                        <div style="margin-bottom: 50px;">
                             <el-result icon="warning" title="当前数据为空" subTitle="请添加数据或返回" v-if="finllPaper.length == 0">
                             </el-result>
                             <el-collapse v-model="activeName" accordion @change="handleChange">
@@ -110,7 +129,6 @@
                                                 <template slot="title">
                                                     <el-row>
                                                         {{ item.itemName }} <i class="header-icon el-icon-info"></i>
-
                                                     </el-row>
                                                 </template>
                                                 <el-table v-loading="loading" :data="tableData" border stripe
@@ -166,7 +184,6 @@
                                                 size="mini" @click="updateFormUp(item)">修改</el-button>
                                         </el-col>
                                     </el-row>
-                                    <!-- <el-divider></el-divider> -->
                                 </div>
                             </el-collapse>
 
@@ -270,6 +287,8 @@
                                 </div>
                             </el-dialog>
                         </div>
+
+
                     </el-col>
                     <el-col :span="4">
                         <div style="height: 500px;"></div>
@@ -339,6 +358,29 @@ export default {
             isUpdateDetail: false,
             //修改小题表单
             updateDetailForm: {},
+
+
+            //整体展示表格
+            questions: [],
+            semllQuestions: [],
+            semllQuestionsScore: [],
+            tableData2: [
+                {
+                    color: "red",
+                    xl: 10,
+                    x: 0
+                },
+                {
+                    color: "blue",
+                    xl: 10,
+                    x: 0
+                },
+                {
+                    color: "black",
+                    xl: 10,
+                    x: 5
+                }
+            ],
 
         }
     },
@@ -416,7 +458,12 @@ export default {
                 if (resp.data.flag) {
                     this.finllPaper = resp.data.data;
                 }
+
+                //给展示表格赋值
+                this.initShowTable(resp);
             })
+
+
         },
 
         //工作区关闭确认
@@ -634,9 +681,18 @@ export default {
             });
         },
 
+        //给展示表格赋值
+        initShowTable(resp) {
+            this.questions = [];
+            this.semllQuestions = [];
+            this.semllQuestionsScore = [];
+            //网络请求阶段
+        }
+
 
     },
     mounted() {
+        this.$set(this.examItemArray, "examChildItemArray", []);
 
         this.getMessage();
         if (this.$route.query.id) {

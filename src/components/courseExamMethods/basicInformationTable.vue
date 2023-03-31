@@ -90,11 +90,13 @@
                       <template slot-scope="scope2">
                         <el-select v-model="scope2.row.indicatorPointsDetail" :multiple="true"
                           v-show="!scope2.row.isIndicatorPointsDetail">
-                          <el-option v-for="item in indicators" :key="item.id" :value="item.indicatorName">
+                          <el-option v-for="item in indicators" :key="item" :value="item">
+
+                            <!-- <el-option v-for="item in indicators" :key="item.id" :value="item.indicatorName">
                             <span style="float: left">{{ item.indicatorName }}</span>
                             <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
                               {{ item.indicatorContent }}
-                            </span>
+                            </span> -->
                           </el-option>
                         </el-select>
                         <div v-for="(item, index) in scope2.row.indicatorPointsDetail" :key="index"
@@ -241,6 +243,7 @@ export default {
       if (this.currentId) {
         //获取课程目标
         this.getCurrentCourseTarget(this.currentId);
+        this.getIndicators(this.currentId);
         //获取表单数据
         api.get("/courseExam/courseExamineMethods/" + this.currentId, "", (resp) => {
           for (let index = 0; index < resp.data.data.length; index++) {
@@ -265,6 +268,7 @@ export default {
       } else {
 
         this.getCurrentCourseTarget(this.courseList[this.currentCourse].id);
+        this.getIndicators(this.courseList[this.currentCourse].id);
 
         api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
           for (let index = 0; index < resp.data.data.length; index++) {
@@ -493,9 +497,9 @@ export default {
     },
 
     //获取指标点列表
-    getIndicators() {
-      api.get("/courseInfo/indicators", "", (resp) => {
-        this.indicators = resp.data.data;
+    getIndicators(id) {
+      api.get("/courseInfo/" + id, "", (resp) => {
+        this.indicators = JSON.parse(resp.data.data.indicatorPoints);
       })
     },
 
@@ -510,7 +514,8 @@ export default {
 
   },
   mounted() {
-    this.getIndicators();
+    this.$set(this.examItemArray, "examChildItemArray", []);
+
     this.getMessage();
     if (this.$route.query.id) {
       this.isReturn = true
