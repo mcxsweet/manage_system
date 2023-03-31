@@ -1,10 +1,24 @@
 <template>
     <el-container>
+        
+    <el-header style="background-color: #fff;height: 50px;">
+      <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
+        <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
+          <span style="float: left">{{ item.courseName }}</span>
+          <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
+            item.termEnd }}.{{
+    item.term }}</span>
+        </el-option>
+      </el-select>
+      <el-button icon="el-icon-search" :circle="true" style="margin-left: 10px"
+        @click="getCurrentCourseExam()"></el-button>
+      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回</el-button>
+    </el-header>
         <el-main>
-           <div v-show="showtable">
+           <!-- <div v-show="showtable">
             <h1 style="text-align: center;">XXXXX      任课教师：XXX</h1>
-           </div>
-            <el-table boder="true" :header-cell-style="tableHeader" :data="tableData" v-show="true">
+           </div> -->
+            <!-- <el-table boder="true" :header-cell-style="tableHeader" :data="tableData" v-show="true">
                 <el-table-column label="学号"></el-table-column>
                 <el-table-column label="姓名"></el-table-column>
                 <el-table-column label="班级"></el-table-column>
@@ -38,79 +52,75 @@
                 <el-table-column label="成绩汇报">
                     <el-table-column label="平时成绩"></el-table-column>
                 </el-table-column>
-             </el-table>
-             <el-button @click="showdiv1=true">编辑</el-button>
-             <div style="margin-top: 2%;" v-show="showdiv1">
-                <span>平时成绩设置：</span>
-                <el-form>
-                    <el-form-item label="考勤分：" style="margin-left: 18px;">
-                        <el-input-number v-model="attendance" :min="0" size="mini"></el-input-number><span>%</span>
-                    </el-form-item>
-                    <el-form-item label="作业分：" style="margin-left: 18px;">
-                        <el-input-number v-model="homework" :min="0" size="mini"></el-input-number><span>%</span>
-                    </el-form-item>
-                    <el-form-item label="课堂提问：">
-                        <el-input-number v-model="classquestion" :min="0" size="mini"></el-input-number><span>%</span>
-                    </el-form-item>
-                    <el-form-item label="期中考试：">
-                        <el-input-number v-model="midterm" :min="0" size="mini"></el-input-number><span>%</span>
-                    </el-form-item>
-                    <el-form-item label="实验：" style="margin-left: 25px;">
-                        <el-input-number v-model="test" :min="0" size="mini"></el-input-number><span>%</span>   
-                    </el-form-item>
-                </el-form>
-                <el-button @click="showdiv1=!showdiv1,showdiv2=!showdiv2">保存</el-button>
-             </div>
-             <div v-show="showdiv2">
-                <el-form>
-                    <el-form-item label="课时数：">
-                        <el-select v-model="classNum" placeholder="请选择课时数" size="mini">
-                            <el-option value="8"></el-option>
-                            <el-option value="16"></el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="作业次数：">
-                        <el-input-number v-model="homeworkNum" :min="0" size="mini"></el-input-number>
-                    </el-form-item>
-                </el-form>
-                <el-button @click="saveNum(classNum,homeworkNum)">保存</el-button>
-             </div>
+             </el-table> -->
+             <!-- <el-button @click="showdiv1=true">编辑</el-button> -->
+                    <div>
+                       <el-table :data="tableData1" border="true" style="width: 800px;">
+                            <el-table-column label="项目">
+                                <template slot-scope="scope">
+                                    <span>{{ scope.row.name }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="占比">
+                                <template slot-scope="scope">
+                                    <div>
+                                        <span v-show="!scope.row.isshow">{{ scope.row.num }}%</span>
+                                    </div>
+                                    <el-input v-show="scope.row.isshow" type="number" v-model="scope.row.num" :min="0" :max="100"><template slot="append">%</template></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="课时/作业/实验次数">
+                                <template slot-scope="scope">
+                                    <div>
+                                        <span v-show="!scope.row.isshow">{{ scope.row.point }}次</span>
+                                    </div>
+                                    <el-input v-show="scope.row.isshow" type="number" v-model="scope.row.point" :min="0"><template slot="append">次</template></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="小分">
+                                <template slot-scope="scope">
+                                        <span v-show="!scope.row.isshow">{{ scope.row.littleNum }}分</span>
+                                    <el-input v-show="scope.row.isshow" type="number" v-model="scope.row.littleNum" :min="0"><template slot="append">分</template></el-input>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="操作">
+                                <template slot-scope="scope">
+                                    <el-button type="primary" size="mini" @click="settingData,scope.row.isshow = !scope.row.isshow" v-show="!scope.row.isshow">编辑</el-button>
+                                    <el-button type="success" size="mini" @click="saveData,scope.row.isshow = !scope.row.isshow" v-show="scope.row.isshow">保存</el-button>
+                                    <el-button type="danger" size="mini" @click="delectData">删除</el-button>
+                                </template>
+                            </el-table-column>
+                       </el-table>
+                    </div>                                  
         </el-main>
     </el-container>
 
 </template>
 
+
+
 <script>
+import api from '@/api/api'
 export default {
     name:"usualPerformanceTable",
     data(){
         return{
-            tableData:[],
-            attendances:[],
-            homeworks:[],
-            attobj:{
-                attId:0
-            },
-            homobj:{
-                homId:0
-            },
-            addId:0,
-            attendance:0,
-            homework:0,
-            classquestion:0,
-            midterm:0,
-            test:0,
-            classNum:16,
-            homeworkNum:0,
-            showtable:false,
-            showdiv1:true,
-            showdiv2:false
+            ischoose:false,
+            currentCourse:"",
+            courseList:[],
+            tableData1:[
+                {name:"考勤",num:0,point:0,littleNum:0,ishow:false}, //考勤
+                {name:"作业",num:0,point:0,littleNum:0,ishow:false},   //作业
+                {name:"课堂提问",num:0,point:0,littleNum:0,ishow:false}, //课堂提问
+                {name:"期中考试",num:0,point:0,littleNum:0,ishow:false}, //期中考试
+                {name:"实验",num:0,point:0,littleNum:0,ishow:false} //实验
+            ],
         }
     },
     methods:{
         tableHeader({row,column,rowIndex,columnIndex}){
             let i = this.attendances.length+1
-             console.log(rowIndex,columnIndex,i);
+             //console.log(rowIndex,columnIndex,i);
             if(rowIndex===1&&columnIndex===1){
                 return 'background:yellow'
             }
@@ -119,30 +129,35 @@ export default {
             }
             return 'text-align:center'
         },
-        saveNum(obj1,obj2){
-            if(obj1==this.attendances.length){
-                return
-            }
-            else {
-                this.attendances.length=0
-                this.showdiv2 = false
-                this.attobj.attId=0
-                for(let i=0;i<obj1;i++){
-                    this.attobj.attId++
-                    this.attendances.push(JSON.parse(JSON.stringify(this.attobj)))
-                }
-                if(obj2==this.homeworks.length){
-                    return 
-                }
-                else{
-                    this.homeworks.length=0
-                    this.homobj.homId=0
-                    for( let j=0;j<obj2;j++){
-                        this.homobj.homId++
-                        this.homeworks.push(JSON.parse(JSON.stringify(this.homobj)))   
-                    }
-                }
-            } 
+        //编辑
+        settingData(){
+
+        },
+        //保存
+        saveData(){
+
+        },
+        //删除
+        delectData(){
+
+        },
+        getMessage() {
+            api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
+                this.courseList = resp.data.data;
+            })
+        },
+        focusOnSelect() {
+            //this.examItemArray = [];
+            this.ischoose = false;
+            this.currentId = "";
+            },
+    },
+    mounted(){
+        this.getMessage();
+        if (this.$route.query.id) {
+        this.isReturn = true
+        this.currentId = this.$route.query.id;
+        this.getCurrentCourseExam();
         }
     }
 }
