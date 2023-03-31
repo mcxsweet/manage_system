@@ -6,6 +6,9 @@
                 <el-form-item label="课程名称" prop="courseName">
                     <el-input v-model="FormData.courseName"></el-input>
                 </el-form-item>
+                <el-form-item label="开设专业">
+                    <el-input v-model="FormData.major"></el-input>
+                </el-form-item>
                 <el-form-item label="任课教师" prop="classroomTeacher">
                     <el-input v-model="FormData.classroomTeacher"></el-input>
                 </el-form-item>
@@ -34,6 +37,9 @@
                         <el-option label="第一学期" value="1"></el-option>
                         <el-option label="第二学期" value="2"></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="所选教材">
+                    <el-input v-model="FormData.textBook"></el-input>
                 </el-form-item>
                 <el-form-item label="学生人数" prop="studentsNum">
                     <el-input v-model="FormData.studentsNum"></el-input>

@@ -23,6 +23,8 @@
                 </el-table-column>
                 <el-table-column prop="courseName" label="课程名称" width="200">
                 </el-table-column>
+                <el-table-column prop="major" label="开设专业" width="200">
+                </el-table-column>
                 <el-table-column prop="theoreticalHours" label="理论学时" width="100">
                 </el-table-column>
                 <el-table-column prop="labHours" label="实验学时" width="100">
@@ -49,6 +51,9 @@
             <el-form :model="FormData" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="课程名称" prop="courseName">
                     <el-input v-model="FormData.courseName"></el-input>
+                </el-form-item>
+                <el-form-item label="开设专业">
+                    <el-input v-model="FormData.major"></el-input>
                 </el-form-item>
                 <el-form-item label="任课教师" prop="classroomTeacher">
                     <el-input v-model="FormData.classroomTeacher"></el-input>
@@ -168,9 +173,12 @@
                     @click="goto('finalTable', currentObject.id, currentObject.courseName)">试卷设置</el-button>
 
                 <p style="width: 100%;margin: 10px;">课程成绩管理</p>
-                <el-button style="margin: 3vh; width: 20vh;" @click="goto('usualPreformanceTable')" type="primary" plain>平时成绩管理</el-button>
-                <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalStatisticsTable')" type="primary" plain>期末试卷成绩</el-button>
-                <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalComprehensiveTable')" type="primary" plain>期末综合成绩</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" @click="goto('usualPreformanceTable')" type="primary"
+                    plain>平时成绩管理</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalStatisticsTable')" type="primary"
+                    plain>期末试卷成绩</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalComprehensiveTable')" type="primary"
+                    plain>期末综合成绩</el-button>
             </div>
         </el-drawer>
         <!-- </el-dialog> -->
