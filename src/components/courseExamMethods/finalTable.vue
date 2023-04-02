@@ -71,32 +71,14 @@
                         </el-collapse>
                     </template>
                 </el-table-column>
-
-                <!-- <el-table-column label="操作" width="220">
-                    <template slot-scope="scope">
-                        <el-button type="warning" size="mini" @click="editExamItem(scope.$index)">编辑</el-button>
-                        <el-button type="danger" size="mini" @click="saveExamItem(scope.$index)">保存</el-button>
-                    </template>
-                </el-table-column> -->
             </el-table>
 
             <!-- 题型与指标点对应关系 -->
             <el-divider content-position="left">全局展示</el-divider>
             <div>
-                <el-table :data="tableData2" style="width: 100%">
-                    <el-table-column prop="color" label="指标点\题型" width="180"> </el-table-column>
-                    <el-table-column v-for="(i, index) in questions" :label="i" align="center" header-align="center"
-                        :key="index">
-                        <el-table-column v-for="(i, index) in semllQuestions" :label="i" align="center"
-                            header-align="center" :key="index">
-                            <el-table-column v-for="(i, index) in semllQuestions" :label="i" align="center"
-                                header-align="center" :key="index">
-                                <template v-slot="scope">{{ scope.row[i] }}</template>
-                            </el-table-column>
-                        </el-table-column>
-                    </el-table-column>
-                </el-table>
+                <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
             </div>
+
 
             <!-- 试卷 -->
             <el-drawer :title="workSpaceTitle" :visible.sync="workSpace" direction="btt" :before-close="handleClose"
@@ -131,6 +113,7 @@
                                                         {{ item.itemName }} <i class="header-icon el-icon-info"></i>
                                                     </el-row>
                                                 </template>
+
                                                 <el-table v-loading="loading" :data="tableData" border stripe
                                                     style="width: 100%;" height="400">
                                                     <el-table-column label="题号" width="50">
@@ -288,7 +271,6 @@
                             </el-dialog>
                         </div>
 
-
                     </el-col>
                     <el-col :span="4">
                         <div style="height: 500px;"></div>
@@ -304,6 +286,7 @@
 
 <script>
 import api from '@/api/api'
+import axios from 'axios';
 
 export default {
     name: "finalTable",
@@ -361,26 +344,7 @@ export default {
 
 
             //整体展示表格
-            questions: [],
-            semllQuestions: [],
-            semllQuestionsScore: [],
-            tableData2: [
-                {
-                    color: "red",
-                    xl: 10,
-                    x: 0
-                },
-                {
-                    color: "blue",
-                    xl: 10,
-                    x: 0
-                },
-                {
-                    color: "black",
-                    xl: 10,
-                    x: 5
-                }
-            ],
+            pdfUrl: null,
 
         }
     },
@@ -458,12 +422,8 @@ export default {
                 if (resp.data.flag) {
                     this.finllPaper = resp.data.data;
                 }
-
-                //给展示表格赋值
-                this.initShowTable(resp);
             })
-
-
+            this.initShowTable();
         },
 
         //工作区关闭确认
@@ -682,16 +642,29 @@ export default {
         },
 
         //给展示表格赋值
-        initShowTable(resp) {
-            this.questions = [];
-            this.semllQuestions = [];
-            this.semllQuestionsScore = [];
-            //网络请求阶段
+        initShowTable() {
+            // api.get("/courseExamPaper/Table", "", (resp) => {
+            //     const blob = new Blob([resp.data], { type: 'application/pdf' });
+
+            //     // 生成URL，将其分配给嵌入元素的src属性
+            //     this.pdfUrl = URL.createObjectURL(blob);
+
+            //     console.log(blob);
+            // })
+            axios.get("/courseExamPaper/Table", { responseType: 'blob' })
+                .then((response) => {
+                    // 将响应数据转换为Blob对象
+                    const blob = new Blob([response.data], { type: 'application/pdf' });
+
+                    // 生成URL，将其分配给嵌入元素的src属性
+                    this.pdfUrl = URL.createObjectURL(blob);
+                })
         }
 
 
     },
     mounted() {
+        this.initShowTable();
         this.$set(this.examItemArray, "examChildItemArray", []);
 
         this.getMessage();
@@ -700,6 +673,8 @@ export default {
             this.getCurrentCourseExam();
         }
         this.forcePage();
+
+
     },
 }
 </script>

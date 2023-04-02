@@ -179,6 +179,8 @@
                     plain>期末试卷成绩</el-button>
                 <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalComprehensiveTable')" type="primary"
                     plain>期末综合成绩</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" type="success" plain
+                    @click="handleExportTest()">导出文件</el-button>
             </div>
         </el-drawer>
         <!-- </el-dialog> -->
@@ -252,6 +254,10 @@ export default {
         //导出
         handleExport(index, object) {
             window.location.href = "http://localhost:8080/courseInfo/export/" + object.id;
+        },
+        //导出
+        handleExportTest() {
+            window.location.href = "http://localhost:8080/courseExamPaper/Table";
         },
         //跳转到设置界面
         handleSetting(index, object) {
