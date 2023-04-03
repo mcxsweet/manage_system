@@ -399,7 +399,9 @@ export default {
         //选择框值选择后
         getCurrentCourseExam() {
             this.ischoose = true;
-            this.init()
+            this.init();
+            this.initShowTable();
+
         },
 
         //relode
@@ -651,7 +653,13 @@ export default {
 
             //     console.log(blob);
             // })
-            axios.get("/courseExamPaper/Table", { responseType: 'blob' })
+            var url = "";
+            if (this.currentId) {
+                url = this.currentId;
+            } else {
+                url = this.courseList[this.currentCourse].id;
+            }
+            axios.get("/courseExamPaper/Table/" + url, { responseType: 'blob' })
                 .then((response) => {
                     // 将响应数据转换为Blob对象
                     const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -664,7 +672,6 @@ export default {
 
     },
     mounted() {
-        this.initShowTable();
         this.$set(this.examItemArray, "examChildItemArray", []);
 
         this.getMessage();
