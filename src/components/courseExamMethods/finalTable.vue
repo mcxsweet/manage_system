@@ -645,14 +645,6 @@ export default {
 
         //给展示表格赋值
         initShowTable() {
-            // api.get("/courseExamPaper/Table", "", (resp) => {
-            //     const blob = new Blob([resp.data], { type: 'application/pdf' });
-
-            //     // 生成URL，将其分配给嵌入元素的src属性
-            //     this.pdfUrl = URL.createObjectURL(blob);
-
-            //     console.log(blob);
-            // })
             var url = "";
             if (this.currentId) {
                 url = this.currentId;
