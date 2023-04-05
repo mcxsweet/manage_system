@@ -25,16 +25,16 @@
                 <el-table-column label="考勤分">
 
                 </el-table-column>
-                <el-table-column label="作业">
+                <el-table-column label="作业分">
 
                 </el-table-column>
-                <el-table-column label="课堂提问">  
+                <el-table-column label="课堂提问分">  
 
                 </el-table-column>
-                <el-table-column label="其中考核"> 
+                <el-table-column label="期中考核成绩"> 
 
                 </el-table-column>
-                <el-table-column label="实验">
+                <el-table-column label="实验分">
 
                 </el-table-column>
                 <el-table-column label="平时成绩">
@@ -58,7 +58,7 @@ export default {
             //教师课程列表
             courseList:[],
             //表格数据
-            tableData:[{},{}]
+            tableData:[]
         }
     },
     methods:{
