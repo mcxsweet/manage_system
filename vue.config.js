@@ -5,6 +5,7 @@ module.exports = defineConfig({
 
   devServer: {
     //路由跨域问题
-    proxy: 'http://localhost:8080'
+    // proxy: "http://43.140.201.70:8080"
+    proxy: "http://localhost:8080"
   }
 })
