@@ -72,6 +72,7 @@ export default {
                 this.courseList = resp.data.data;
             })
         },
+        //点击课程选择框
         focusOnSelect() {
             this.tableData = [];
             this.ischoose = false;

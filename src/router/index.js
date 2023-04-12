@@ -6,11 +6,11 @@ import MainPage from '@/pages/MainPage'
 import LoginPage from '@/pages/LoginPage2'
 import courseBasicInformation from '@/components/courseBasicInformation/courseBasicInformation'
 import programObjective from '@/components/courseBasicInformation/programObjective'
-import classInformation from '@/components/courseBasicInformation/classInformation'
-import basicInformationTable from '@/components/courseExamMethods/basicInformationTable'
 
-import sudoInformationTable from '@/components/courseBasicInformation/sudoInformationTable'
-import hsudoInformationTable from '@/components/courseBasicInformation/hsudoInformationTable'
+import classInformation from '@/components/courseBasicInformation/classInformation'
+import teachingPro from '@/components/courseBasicInformation/teachingPro'
+import indexPoint from '@/components/courseBasicInformation/indexPoint'
+import basicInformationTable from '@/components/courseExamMethods/basicInformationTable'
 
 import welcome from '@/components/welcome'
 import finalTable from '@/components/courseExamMethods/finalTable'
@@ -29,15 +29,7 @@ export default new VueRouter({
         {
             path: "/MainPage",
             component: MainPage,
-            children: [
-                {
-                    path: 'sudoInformationTable',
-                    component: sudoInformationTable
-                },
-                {
-                    path: 'hsudoInformationTable',
-                    component: hsudoInformationTable
-                },
+            children: [             
                 {
                     path: 'analysisTable',
                     component: analysisTable
@@ -76,7 +68,15 @@ export default new VueRouter({
                     component: courseBasicInformation
                 },
                 {
-                    path: 'classInformation', //  平时成绩管理
+                    path:'teachingPro', //教学大纲
+                    component:teachingPro
+                },
+                {
+                    path:'indexPoint', //毕业要求指标点
+                    component:indexPoint
+                },
+                {
+                    path: 'classInformation', //  课程详细基本信息
                     component: classInformation,
                     props: true,
                     children: [
