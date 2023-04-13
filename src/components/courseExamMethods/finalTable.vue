@@ -91,10 +91,10 @@
                                 <el-button style="margin: 1vw;" type="primary" @click="isAddPaperItem = true">添加</el-button>
                             </el-row>
                             <el-row>
-                                <el-button style="margin: 1vw;" type="primary" @click="updateItem()">修改</el-button>
+                                <el-button style="margin: 1vw;" type="success" @click="updateItem()">修改</el-button>
                             </el-row>
                             <el-row>
-                                <el-button style="margin: 1vw;" type="primary" @click="deleteItem()">删除</el-button>
+                                <el-button style="margin: 1vw;" type="danger" @click="deleteItem()">删除</el-button>
                             </el-row>
 
                         </div>

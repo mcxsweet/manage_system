@@ -28,11 +28,13 @@
             <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
                 <el-menu v-if="false">
                     <el-submenu index="1">
-                        <template slot="title"><i class="el-icon-message"></i>教师课程信息</template>
+                        <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
                             <template slot="title">分组一</template>
                             <el-menu-item index="1-1" @click="goto('sudoInformationTable')">课程基本信息</el-menu-item>
-                            <el-menu-item index="1-2" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
+                            <el-menu-item index="1-2" @click="goto('sudoInformationTable')">教学大纲</el-menu-item>
+                            <el-menu-item index="1-3" @click="goto('sudoInformationTable')">课程毕业指标点</el-menu-item>
+                            <el-menu-item index="1-4" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
                     <el-submenu index="2">
@@ -61,10 +63,12 @@
                 </el-menu>
                 <el-menu>
                     <el-submenu index="1">
-                        <template slot="title"><i class="el-icon-message"></i>学生考核成绩记录</template>
+                        <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
-                            <el-menu-item index="1-2" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
+                            <el-menu-item index="1-2" @click="goto('teachingPro')">教学大纲</el-menu-item>
+                            <el-menu-item index="1-3" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item>
+                            <el-menu-item index="1-4" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
                     <el-submenu index="2">

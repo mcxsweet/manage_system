@@ -85,6 +85,7 @@ export default {
                 this.courseList = resp.data.data;
             })
         },
+
         //获取详细信息
         getStudentScore() {
             api.get("/student/10/getStudent", "", (resp) => {
@@ -95,6 +96,8 @@ export default {
             console.log(param);
 
         },
+
+        //点击课程选择框
         focusOnSelect() {
             this.tableData = [];
             this.ischoose = false;
