@@ -36,7 +36,9 @@
                 </el-table-column>
 
                 <el-table-column v-for="item, index in examMethods" :label="item.message" :prop="item.data" :key="index">
+                </el-table-column>
 
+                <el-table-column label="总分">
                 </el-table-column>
 
                 <el-table-column label="操作" width="200px">
@@ -51,6 +53,8 @@
             </el-table>
 
             <el-button style="margin-top: 1vw;" type="primary" @click="addData">添加</el-button>
+            <el-button style="margin-top: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
+            <el-button style="margin-top: 1vw;" type="primary" @click="test()">下载文件</el-button>
 
             <el-dialog title="编辑" :visible.sync="isShow">
                 <el-form :model="tableData[index]">
@@ -84,6 +88,13 @@
                     <el-button type="danger" style="margin: 1vh ;" @click="isShow = false">取消</el-button>
                 </div>
             </el-dialog>
+
+            <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
+                <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                </el-upload>
+            </el-dialog>
         </el-main>
     </el-container>
 </template>
@@ -111,6 +122,9 @@ export default {
             isworkScore: false,
             isquizScore: false,
             ismidTermScore: false,
+
+            //文件上传弹窗
+            showUpload: false,
         }
     },
     methods: {
@@ -162,6 +176,7 @@ export default {
                 }
             }
         },
+        //修改数据
         saveData() {
             this.$confirm('是否提交 ?', '提示', {
                 confirmButtonText: '确定',
@@ -169,7 +184,14 @@ export default {
                 type: 'warning'
             }).then(() => {
                 this.isShow = !this.isShow;
-                api.put("/student/updateStudent", this.tableData[this.index], (resp) => { })
+                api.put("/student/updateStudent", this.tableData[this.index], (resp) => {
+                    if (resp.data.flag) {
+                        this.tableData[this.index].studentId = this.tableData[this.index].id;
+                        this.tableData[this.index].id = this.tableData[this.index].usualScoreId;
+                        api.put("/student/updateStudentUsualScore", "", (respanse) => {
+                        })
+                    }
+                })
             }
             ).catch(() => {
                 this.$message({
@@ -177,6 +199,11 @@ export default {
                     message: '已取消'
                 });
             });
+        },
+
+        //添加数据
+        insertData() {
+
         },
         delectData(index) {
             this.tableData.splice(index, 1);
