@@ -90,11 +90,39 @@
                     <el-form-item label="试验分" prop="score">
                         <el-input v-model="tableData[index].score"></el-input>
                     </el-form-item>
-                    
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button type="success" style="margin: 1vh ;" @click="saveData(tableData[index])">保存</el-button>
+                        <el-button type="danger" style="margin: 1vh ;" @click="isShow = false">取消</el-button>
+                    </div>  
+            </el-dialog>
+            <el-dialog title="添加" :visible.sync="isShow1">
+                <el-form :model="dataObj">
+                    <el-form-item label="学号" prop="studentNumber">
+                        <el-input v-model="dataObj.studentNumber"></el-input>
+                    </el-form-item>
+                    <el-form-item label="学生姓名" prop="studentName">
+                        <el-input v-model="dataObj.studentName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="班级" prop="className">
+                        <el-input v-model="dataObj.className"></el-input>
+                    </el-form-item>
+                    <el-form-item label="作业分" prop="score">
+                        <el-input v-model="dataObj.score"></el-input>
+                    </el-form-item>
+                    <el-form-item label="课堂提问分" prop="score">
+                        <el-input v-model="dataObj.score"></el-input>
+                    </el-form-item>
+                    <el-form-item label="其中考核成绩" prop="score">
+                        <el-input v-model="dataObj.score"></el-input>
+                    </el-form-item>
+                    <el-form-item label="试验分" prop="score">
+                        <el-input v-model="dataObj.score"></el-input>
+                    </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button type="success" style="margin: 1vh ;" @click="saveData(tableData[index])">保存</el-button>
-                    <el-button type="danger" style="margin: 1vh ;" @click="isShow = false">取消</el-button>
+                    <el-button type="success" style="margin: 1vh ;" @click="saveAdd()">保存</el-button>
+                    <el-button type="danger" style="margin: 1vh ;" @click="isShow1 = false">取消</el-button>
                 </div>  
             </el-dialog>
         </el-main>
@@ -115,9 +143,13 @@ export default {
             courseList: [],
             //表格数据
             tableData: [],
+
             dataObj:{studentNumber:"",studentName:"",className:"",score:0,showScore:true,showUser:true},
-            isShow : false,
-            index :0
+
+            isShow : false, //编辑弹窗
+            isShow1 : false, //添加弹窗
+
+            index :0,
         }
     },
     methods: {
@@ -144,13 +176,35 @@ export default {
                 
             })
         },
-        addData(){
-            this.tableData.push(JSON.parse(JSON.stringify(this.dataObj)))
-           
+        addData(){ 
+            this.dataObj.className= ""
+            this.dataObj.studentName= ""
+            this.dataObj.studentNumber= ""
+            this.dataObj.score=0
+            this.isShow1 = !this.isShow1
+            //this.tableData.push(JSON.parse(JSON.stringify(this.dataObj)))
+        },
+        saveAdd(){
+            this.$confirm('是否提交 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                    this.tableData.push(JSON.parse(JSON.stringify(this.dataObj)))
+                    let len = this.tableData.length
+                    api.post("/student/updateStudent", this.tableData[len], (resp) => { })                  
+                }
+            ).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
+            this.isShow1 = false
         },
         setting(index1){
             this.isShow = !this.isShow
-           this.index = index1
+            this.index = index1
         },
         saveData(){
             this.$confirm('是否提交 ?', '提示', {
