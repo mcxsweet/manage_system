@@ -80,8 +80,6 @@
                     <el-form-item v-if="isworkScore" label="作业分" prop="workScore">
                         <el-input v-model="tableData[index].workScore"></el-input>
                     </el-form-item>
-
-
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button type="success" style="margin: 1vh ;" @click="saveData(tableData[index])">保存</el-button>
@@ -89,11 +87,42 @@
                 </div>
             </el-dialog>
 
+
             <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
                 <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 </el-upload>
+            </el-dialog>
+
+            <el-dialog title="添加" :visible.sync="isShow1">
+                <el-form :model="dataObj">
+                    <el-form-item label="学号" prop="studentNumber">
+                        <el-input v-model="dataObj.studentNumber"></el-input>
+                    </el-form-item>
+                    <el-form-item label="学生姓名" prop="studentName">
+                        <el-input v-model="dataObj.studentName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="班级" prop="className">
+                        <el-input v-model="dataObj.className"></el-input>
+                    </el-form-item>
+                    <el-form-item v-if="isattendanceScore" label="考勤" prop="attendanceScore">
+                        <el-input v-model="dataObj.attendanceScore"></el-input>
+                    </el-form-item>
+                    <el-form-item v-if="isquizScore" label="课堂提问分" prop="quizScore">
+                        <el-input v-model="dataObj.quizScore"></el-input>
+                    </el-form-item>
+                    <el-form-item v-if="ismidTermScore" label="期中考核成绩" prop="midTermScore">
+                        <el-input v-model="dataObj.midTermScore"></el-input>
+                    </el-form-item>
+                    <el-form-item v-if="isworkScore" label="作业分" prop="workScore">
+                        <el-input v-model="dataObj.workScore"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button type="success" style="margin: 1vh ;" @click="saveAdd()">保存</el-button>
+                    <el-button type="danger" style="margin: 1vh ;" @click="isShow1 = false">取消</el-button>
+                </div>
             </el-dialog>
         </el-main>
     </el-container>
@@ -113,8 +142,9 @@ export default {
             courseList: [],
             //表格数据
             tableData: [],
-            dataObj: { studentNumber: "", studentName: "", className: "", score: 0, showScore: true, showUser: true },
+            dataObj: { studentNumber: "", studentName: "", className: "", attendanceScore: 0, quizScore: 0, midTermScore: 0, workScore: 0 },
             isShow: false,
+            isShow1: false,
             index: 0,
             //考核方式列表遍历表格列
             examMethods: [],
@@ -152,9 +182,39 @@ export default {
 
             })
         },
+        //打开添加弹窗
         addData() {
-            this.tableData.push(JSON.parse(JSON.stringify(this.dataObj)))
+            this.dataObj.className = ""
+            this.dataObj.studentName = ""
+            this.dataObj.studentNumber = ""
+            this.dataObj.attendanceScore = 0
+            this.dataObj.quizScore = 0
+            this.dataObj.midTermScore = 0
+            this.dataObj.workScore = 0
+            this.isShow1 = !this.isShow1
+        },
 
+        saveAdd() {
+            this.$confirm('是否提交 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.tableData.push(JSON.parse(JSON.stringify(this.dataObj)))
+                const studentData = []
+                studentData.studentName = this.dataObj.studentName
+                studentData.studentNumber = this.dataObj.studentNumber
+                studentData.className = this.dataObj.className
+
+                api.post("/student/addStudent", studentData, (resp) => { })
+            }
+            ).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
+            this.isShow1 = false
         },
         setting(index1) {
             this.isShow = !this.isShow;
