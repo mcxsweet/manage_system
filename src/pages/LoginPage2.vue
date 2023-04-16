@@ -49,7 +49,8 @@ export default {
                     localStorage.setItem("name", this.formData.name);
                     // localStorage.setItem("password", this.formData.password);
                     localStorage.setItem("UserId", resp.data.data.id);
-                    localStorage.setItem("Isadmin", resp.data.data.isAdmin)
+                    localStorage.setItem("Isadmin", resp.data.data.isAdmin);
+                    localStorage.setItem("TeacherName", resp.data.data.teacherName);
                     this.$router.push({ path: '/MainPage' });
 
                 } else {

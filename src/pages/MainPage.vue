@@ -11,7 +11,7 @@
                 <el-col :span="12">
                     <div style="font-size: 20px;text-align: right; ">
                         <el-dropdown @command="handleCommand" trigger="click">
-                           <el-button icon="el-icon-user" size="mini" style="margin-right: 15px;"></el-button>
+                            <el-button icon="el-icon-user" size="mini" style="margin-right: 15px;"></el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item>个人信息</el-dropdown-item>
                                 <el-dropdown-item command="signOut">退出</el-dropdown-item>
@@ -128,7 +128,7 @@ export default {
         }
     },
     mounted() {
-        this.username = localStorage.getItem("name");
+        this.username = localStorage.getItem("TeacherName");
         this.id = localStorage.getItem('isadmin')
         // this.$router.push({ path: '/MainPage/welcome' });
 

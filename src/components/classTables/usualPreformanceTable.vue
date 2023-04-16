@@ -4,37 +4,23 @@
             <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
                 <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
                     <span style="float: left">{{ item.courseName }}</span>
-                    <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
-                        item.termEnd }}.{{
-        item.term }}</span>
+                    <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">
+                        {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}</span>
                 </el-option>
             </el-select>
             <el-button icon="el-icon-search" :circle="true" style="margin-left: 10px"
-                @click="getCurrentCourseExam()"></el-button>
-            <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回</el-button>
+                @click="getCurrentCourseItem()"></el-button>
         </el-header>
 
-        <el-main>
-            <el-table border="true" :header-cell-style="tableHeader" :data="tableData" v-show="!ischoose">
+        <el-main v-if="ischoose">
+            <el-table border="true" :header-cell-style="tableHeader" :data="tableData">
                 <el-table-column label="学号" prop="studentNumber">
-                    <!-- <template slot-scope="scope">
-                        <el-input v-model="scope.row.studentNumber" v-show="!scope.row.showUser"></el-input>
-                        <p v-show="scope.row.showUser">{{ scope.row.studentNumber }}</p>
-                    </template> -->
                 </el-table-column>
                 <el-table-column label="姓名" prop="studentName">
-                    <!-- <template slot-scope="scope">
-                        <el-input v-model="scope.row.studentName" v-show="!scope.row.showUser"></el-input>
-                        <p v-show="scope.row.showUser">{{ scope.row.studentName }}</p>
-                    </template> -->
                 </el-table-column>
                 <el-table-column label="班级" prop="className">
-                    <!-- <template slot-scope="scope">
-                        <el-input v-model="scope.row.className" v-show="!scope.row.showUser"></el-input>
-                        <p v-show="scope.row.showUser">{{ scope.row.className }}</p>
-                    </template> -->
                 </el-table-column>
-
+                <!-- 遍历表格列 -->
                 <el-table-column v-for="item, index in examMethods" :label="item.message" :prop="item.data" :key="index">
                 </el-table-column>
 
@@ -55,6 +41,13 @@
             <el-button style="margin-top: 1vw;" type="primary" @click="addData">添加</el-button>
             <el-button style="margin-top: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
             <el-button style="margin-top: 1vw;" type="primary" @click="test()">下载文件</el-button>
+
+            <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
+                <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                </el-upload>
+            </el-dialog>
 
             <el-dialog title="编辑" :visible.sync="isShow">
                 <el-form :model="tableData[index]">
@@ -87,14 +80,6 @@
                 </div>
             </el-dialog>
 
-
-            <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
-                <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                </el-upload>
-            </el-dialog>
-
             <el-dialog title="添加" :visible.sync="isShow1">
                 <el-form :model="dataObj">
                     <el-form-item label="学号" prop="studentNumber">
@@ -120,10 +105,11 @@
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
-                    <el-button type="success" style="margin: 1vh ;" @click="saveAdd()">保存</el-button>
+                    <el-button type="success" style="margin: 1vh ;" @click="insertData()">保存</el-button>
                     <el-button type="danger" style="margin: 1vh ;" @click="isShow1 = false">取消</el-button>
                 </div>
             </el-dialog>
+
         </el-main>
     </el-container>
 </template>
@@ -136,13 +122,15 @@ export default {
         return {
             //表格显示
             ischoose: false,
+            //当前课程id
+            currentId: "",
             //课程名称
             currentCourse: "",
             //教师课程列表
             courseList: [],
             //表格数据
             tableData: [],
-            dataObj: { studentNumber: "", studentName: "", className: "", attendanceScore: 0, quizScore: 0, midTermScore: 0, workScore: 0 },
+            dataObj: { studentNumber: "", studentName: "", className: "", attendanceScore: "", quizScore: "", midTermScore: "", workScore: "", courseId: 10 },
             isShow: false,
             isShow1: false,
             index: 0,
@@ -162,6 +150,16 @@ export default {
         tableHeader({ row, column, rowIndex, columnIndex }) {
             return 'text-align:center'
         },
+        //初始化表格
+        getCurrentCourseItem() {
+            if (this.currentId == "") {
+                this.currentId = this.courseList[this.currentCourse].id;
+            }
+            this.getExamMethods();
+            this.getStudentScore();
+            this.ischoose = true;
+
+        },
         //获取课程列表   
         getMessage() {
             api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
@@ -171,29 +169,15 @@ export default {
 
         //获取详细信息
         getStudentScore() {
-            api.get("/student/10/getStudent", "", (resp) => {
-
-                // for (let index = 0; index < resp.data.data.length; index++) {
-                //     resp.data.data[index].showUser = true
-                //     resp.data.data[index].showScore = true
-                // }
-
+            api.get("/student/" + this.currentId + "/getStudent", "", (resp) => {
                 this.tableData = resp.data.data;
 
             })
         },
         //打开添加弹窗
         addData() {
-            this.dataObj.className = ""
-            this.dataObj.studentName = ""
-            this.dataObj.studentNumber = ""
-            this.dataObj.attendanceScore = 0
-            this.dataObj.quizScore = 0
-            this.dataObj.midTermScore = 0
-            this.dataObj.workScore = 0
             this.isShow1 = !this.isShow1
         },
-
         saveAdd() {
             this.$confirm('是否提交 ?', '提示', {
                 confirmButtonText: '确定',
@@ -219,22 +203,6 @@ export default {
         setting(index1) {
             this.isShow = !this.isShow;
             this.index = index1;
-            for (var i = 0; i < this.examMethods.length; i++) {
-                switch (this.examMethods[i].data) {
-                    case "attendanceScore":
-                        this.isattendanceScore = true;
-                        break;
-                    case "workScore":
-                        this.isworkScore = true;
-                        break;
-                    case "quizScore":
-                        this.isquizScore = true;
-                        break;
-                    case "midTermScore":
-                        this.ismidTermScore = true;
-                        break;
-                }
-            }
         },
         //修改数据
         saveData() {
@@ -248,8 +216,26 @@ export default {
                     if (resp.data.flag) {
                         this.tableData[this.index].studentId = this.tableData[this.index].id;
                         this.tableData[this.index].id = this.tableData[this.index].usualScoreId;
-                        api.put("/student/updateStudentUsualScore", "", (respanse) => {
-                        })
+                        if (this.tableData[this.index].id) {
+                            api.put("/student/updateStudentUsualScore", this.tableData[this.index], (respanse) => {
+                                if (respanse.data.flag) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: '成功!'
+                                    });
+                                }
+                            })
+                        } else {
+                            api.post("/student/addUsualScore", this.tableData[this.index], (respanse) => {
+                                if (respanse.data.flag) {
+                                    this.$message({
+                                        type: 'success',
+                                        message: '成功!'
+                                    });
+                                }
+                            })
+                        }
+                        this.tableData[this.index].id = this.tableData[this.index].studentId;
                     }
                 })
             }
@@ -263,10 +249,45 @@ export default {
 
         //添加数据
         insertData() {
-
+            api.post("/student/addStudent", this.dataObj, (resp) => {
+                if (resp.data.flag) {
+                    this.dataObj.studentId = resp.data.message;
+                    api.post("/student/addUsualScore", this.dataObj, (respanse) => {
+                        if (respanse.data.flag) {
+                            this.$message({
+                                type: 'success',
+                                message: '成功!'
+                            });
+                            this.getStudentScore();
+                            this.isShow1 = !this.isShow1;
+                        }
+                    })
+                }
+            })
         },
+
+        //删除数据
         delectData(index) {
-            this.tableData.splice(index, 1);
+            this.$confirm('是否提交 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                api.del("/student/deleteStudent", this.tableData[index], (resp) => {
+                    if (resp.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '成功!'
+                        });
+                        this.tableData.splice(index, 1);
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
         },
         test(param) {
             console.log(param);
@@ -274,8 +295,24 @@ export default {
 
         //获取考核方式
         getExamMethods() {
-            api.get("/student/10/getMethods", "", (resp) => {
+            api.get("/student/" + this.currentId + "/getMethods", "", (resp) => {
                 this.examMethods = resp.data.data;
+                for (var i = 0; i < this.examMethods.length; i++) {
+                    switch (this.examMethods[i].data) {
+                        case "attendanceScore":
+                            this.isattendanceScore = true;
+                            break;
+                        case "workScore":
+                            this.isworkScore = true;
+                            break;
+                        case "quizScore":
+                            this.isquizScore = true;
+                            break;
+                        case "midTermScore":
+                            this.ismidTermScore = true;
+                            break;
+                    }
+                }
             })
         },
 
@@ -287,13 +324,14 @@ export default {
         },
     },
     mounted() {
-        this.getExamMethods();
-        this.getMessage();
-        this.getStudentScore();
         if (this.$route.query.id) {
             this.currentId = this.$route.query.id;
-
+            this.currentCourse = this.$route.query.name;
+            this.getCurrentCourseItem();
+            // this.getStudentScore();
         }
+        this.getMessage();
+
     }
 }
 </script>

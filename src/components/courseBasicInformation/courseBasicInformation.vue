@@ -173,7 +173,8 @@
                     @click="goto('finalTable', currentObject.id, currentObject.courseName)">试卷设置</el-button>
 
                 <p style="width: 100%;margin: 10px;">课程成绩管理</p>
-                <el-button style="margin: 3vh; width: 20vh;" @click="goto('usualPreformanceTable')" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;"
+                    @click="goto('usualPreformanceTable', currentObject.id, currentObject.courseName)" type="primary"
                     plain>平时成绩管理</el-button>
                 <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalStatisticsTable')" type="primary"
                     plain>期末试卷成绩</el-button>
@@ -352,7 +353,7 @@ export default {
         this.getIndicators();
         this.getMessage();
         this.initDataOptions();
-        this.FormData.classroomTeacher = localStorage.getItem("name");
+        this.FormData.classroomTeacher = localStorage.getItem("TeacherName");
     },
 }
 </script>
