@@ -49,12 +49,13 @@
                     <el-table-column label="子项目名称" width="170">
 
                       <template slot-scope="scope2">
-                        <el-select v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"
+                        <el-input v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"></el-input>
+                        <!-- <el-select v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"
                           placeholder="请选择" style="width:100%">
                           <el-option-group v-for="group in childOptions" :key="group.label" :label="group.label">
                             <el-option v-for="(op, index) in group.options" :key="index" :value="op.value"></el-option>
                           </el-option-group>
-                        </el-select>
+                        </el-select> -->
                         <p v-show="scope2.row.isExamineChildItem">{{ scope2.row.examineChildItem }}</p>
                       </template>
                     </el-table-column>
@@ -149,13 +150,13 @@
       </el-table>
       <el-button icon="el-icon-plus" type="primary" @click="addExamItem()">添加考核方式</el-button>
       <el-divider></el-divider>
-      <div style="margin-top: 5%;">
+      <!-- <div style="margin-top: 5%;">
         <h1>考核评定法: 期末总成绩=<span v-for="(a, index) in examItemArray" :key="index"><span v-if="index != 0">+</span>{{
           a.examineItem + '(' + a.percentage + '%)' }} </span> </h1>
         <h1 v-for="(b, index) in examItemArray" :key="index">{{ b.examineItem + '=' }}<span
             v-for="(ch, index1) in b.examChildItemArray" :key="index1"><span v-if="index1 != 0">+</span>{{
               ch.examineChildItem + '(' + ch.childPercentage + '%)' }}</span></h1>
-      </div>
+      </div> -->
     </el-main>
 
   </el-container>

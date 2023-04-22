@@ -2,10 +2,9 @@
   <el-container>
     <el-main>
       <el-table :data="tableData1" border style="width: 100%">
-        <el-table-column prop="index" label="序号" width="90%">
+        <el-table-column prop="index" label="序号" width="100%">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.targetName" v-show="scope.row.ised"></el-input>
-            <span v-show="!scope.row.ised">{{ scope.row.targetName }}</span>
+            <span>课程目标{{ scope.$index+1 }}：</span>
           </template>
         </el-table-column>
 
@@ -20,11 +19,7 @@
           <template slot-scope="scope">
             <el-select v-model="scope.row.indicatorPoints" :filterable="true" :multiple="true" placeholder="请选择"
               v-show="scope.row.ised">
-              <el-option v-for="item in indicators" :key="item.id" :value="item.indicatorName">
-                <span style="float: left">{{ item.indicatorName }}</span>
-                <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                  {{ item.indicatorContent }}
-                </span>
+              <el-option v-for="item in indicators" :key="item" :value="item">
               </el-option>
             </el-select>
 
@@ -46,6 +41,10 @@
             <el-select v-model="scope.row.evaluationMethod" multiple placeholder="评价依据" v-show="scope.row.ised">
               <el-option label="考试" value="考试"></el-option>
               <el-option label="作业" value="作业"></el-option>
+              <el-option label="报告" value="报告"></el-option>
+              <el-option label="论文" value="论文"></el-option>
+              <el-option label="答辩" value="答辩"></el-option>
+              <el-option label="实验" value="实验"></el-option>
             </el-select>
             <div v-for="(item2, index) in scope.row.evaluationMethod" :key="index" v-show="!scope.row.ised">
               <span>{{ item2 }}</span>
@@ -57,7 +56,7 @@
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="editta(scope.row, scope)">编辑</el-button>
             <el-button type="success" size="mini" @click="saveta(scope.row)">保存</el-button>
-            <el-button type="danger" size="mini" @click="delect(scope.row)">删除</el-button>
+            <el-button type="danger" size="mini" @click="delect(scope.row,scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -95,6 +94,7 @@ export default {
         evaluationMethod: [],
 
       },
+      id:"",
       tableData1: [],
       indicators: [],
       value1: [],
@@ -119,8 +119,10 @@ export default {
 
     //获取指标点列表
     getIndicators() {
-      api.get("/courseInfo/indicators", "", (resp) => {
-        this.indicators = resp.data.data;
+      api.get("/courseInfo/"+this.id, "", (resp) => {
+        this.indicators = JSON.parse(resp.data.data.indicatorPoints);
+        
+        
       })
     },
 
@@ -131,9 +133,11 @@ export default {
       row.ised = false
       this.tableData1[row.index].indicatorPoints = JSON.stringify(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.stringify(this.tableData1[row.index].evaluationMethod);
-
+      
       if (row.id == null) {
         api.post("/courseInfo/courseTarget", this.tableData1[row.index], (resp) => {
+
+          console.log(resp.data.flag)
           if (resp.data.flag) {
             this.$message({
               type: 'success',
@@ -166,15 +170,7 @@ export default {
       this.tableData1[row.index].indicatorPoints = JSON.parse(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.parse(this.tableData1[row.index].evaluationMethod);
     },
-    delect(obj) {
-      // let j
-      // let index = this.tableData1.indexOf(obj);
-      // this.tableData1.splice(index, 1)
-      // for (let i = 0; i < this.tableData1.length; i++) {
-      //   j = this.tableData1.indexOf(this.tableData1[i])
-      //   this.tableData1[i].index = j
-      // }
-
+    delect(obj,index) {
       this.$confirm('是否删除 ?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -186,13 +182,14 @@ export default {
           if (resp.data.flag) {
             this.$message({
               type: 'success',
-              message: '添加成功!'
+              message: '删除成功!'
             });
-            this.init();
+            this.tableData1.splice(index,1);
+            //this.init();
           } else if (resp.status != 200) {
             this.$message({
               type: 'error',
-              message: '添加失败!'
+              message: '删除失败!'
             });
           }
         })
@@ -214,6 +211,7 @@ export default {
     this.obj.courseName = this.$route.query.courseName;
   },
   mounted() {
+    this.id = this.$route.query.courseId
     this.init();
   },
 }
