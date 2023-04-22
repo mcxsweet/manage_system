@@ -258,7 +258,7 @@ export default {
         },
         //导出
         handleExportTest() {
-            window.location.href = "http://localhost:8080/courseExamPaper/Table";
+            window.location.href = "http://localhost:8080/student/10/studentUsualScoreExcl";
         },
         //跳转到设置界面
         handleSetting(index, object) {

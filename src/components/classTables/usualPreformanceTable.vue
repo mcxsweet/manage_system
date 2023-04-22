@@ -43,10 +43,14 @@
             <el-button style="margin-top: 1vw;" type="primary" @click="test()">下载文件</el-button>
 
             <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
-                <el-upload class="upload-demo" drag action="https://jsonplaceholder.typicode.com/posts/" multiple>
+                <!-- <el-upload class="upload-demo" drag action="https://localhost:8080/posts/" multiple>
                     <i class="el-icon-upload"></i>
                     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                </el-upload>
+                </el-upload> -->
+                <form>
+                    <input type="file" @change="handleFileUpload" />
+                    <button type="submit" @click.prevent="uploadFile">上传文件</button>
+                </form>
             </el-dialog>
 
             <el-dialog title="编辑" :visible.sync="isShow">
@@ -116,6 +120,7 @@
 
 <script>
 import api from '@/api/api'
+import axios from 'axios'
 export default {
     name: "usualPerformanceTable",
     data() {
@@ -146,6 +151,25 @@ export default {
         }
     },
     methods: {
+
+        //上传文件
+        handleFileUpload(event) {
+            this.selectedFile = event.target.files[0]
+        },
+        uploadFile() {
+            const formData = new FormData()
+            formData.append('file', this.selectedFile)
+            axios.post('/student/10/studentUsualScoreExcl', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
+                console.log(response.data)
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+
         //表格标题字体居中
         tableHeader({ row, column, rowIndex, columnIndex }) {
             return 'text-align:center'
