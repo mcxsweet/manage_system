@@ -116,6 +116,7 @@ export default {
         },
         signOut() {
             localStorage.clear();
+            sessionStorage.clear();
             this.$router.push({ path: '/' });
         },
         handleCommand(command) {

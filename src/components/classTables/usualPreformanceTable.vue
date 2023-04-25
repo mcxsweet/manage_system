@@ -40,7 +40,7 @@
 
             <el-button style="margin-top: 1vw;" type="primary" @click="addData">添加</el-button>
             <el-button style="margin-top: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
-            <el-button style="margin-top: 1vw;" type="primary" @click="test()">下载文件</el-button>
+            <el-button style="margin-top: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
 
             <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
                 <!-- <el-upload class="upload-demo" drag action="https://localhost:8080/posts/" multiple>
@@ -151,6 +151,10 @@ export default {
         }
     },
     methods: {
+        //下载文件
+        downLoad() {
+            window.location.href = "http://localhost:8080/student/" + this.currentId + "/studentUsualScoreExcl";
+        },
 
         //上传文件
         handleFileUpload(event) {
@@ -159,7 +163,7 @@ export default {
         uploadFile() {
             const formData = new FormData()
             formData.append('file', this.selectedFile)
-            axios.post('/student/10/studentUsualScoreExcl', formData, {
+            axios.post("/student/" + this.currentId + "/studentUsualScoreExcl", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -181,7 +185,9 @@ export default {
             }
             this.getExamMethods();
             this.getStudentScore();
-            this.ischoose = true;
+            if (this.tableData) {
+                this.ischoose = true;
+            }
 
         },
         //获取课程列表   
