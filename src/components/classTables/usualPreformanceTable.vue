@@ -197,9 +197,9 @@ export default {
             })
         },
 
-        //获取详细信息
+        //获取学生平时成绩信息
         getStudentScore() {
-            api.get("/student/" + this.currentId + "/getStudent", "", (resp) => {
+            api.get("/student/" + this.currentId + "/getUsualStudent", "", (resp) => {
                 this.tableData = resp.data.data;
 
             })
