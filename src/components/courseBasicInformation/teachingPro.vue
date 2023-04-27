@@ -1,15 +1,17 @@
 <template>
-  
+  <pdf-upload pfdType="teachingPro"></pdf-upload>
 </template>
 
 <script>
+import pdfUpload from './pdfUpload.vue'
 export default {
     name:'teachingPro',
-    data() {
-        return {
-            
+    components:{pdfUpload},
+    data(){
+        return{
+
         }
-    },
+    }
 }
 </script>
 
