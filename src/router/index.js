@@ -8,7 +8,9 @@ import courseBasicInformation from '@/components/courseBasicInformation/courseBa
 import programObjective from '@/components/courseBasicInformation/programObjective'
 
 import classInformation from '@/components/courseBasicInformation/classInformation'
-import teachingPro from '@/components/courseBasicInformation/teachingPro'
+import teachingPro from '@/components/courseBasicInformation/teachingPros/teachingPro'
+import sudoTeachingPro from '@/components/courseBasicInformation/teachingPros/sudoTeachingPro'
+import SuperTeachingPro from '@/components/courseBasicInformation/teachingPros/SuperTeachingPro'
 import indexPoint from '@/components/courseBasicInformation/indexPoint'
 import basicInformationTable from '@/components/courseExamMethods/basicInformationTable'
 
@@ -70,6 +72,14 @@ export default new VueRouter({
                 {
                     path:'teachingPro', //教学大纲
                     component:teachingPro
+                },
+                {
+                    path:'sudoTeachingPro', //系主任教学大纲
+                    component:sudoTeachingPro
+                },
+                {
+                    path:'SuperTeachingPro', //院长教学大纲
+                    component:SuperTeachingPro
                 },
                 {
                     path:'indexPoint', //毕业要求指标点
