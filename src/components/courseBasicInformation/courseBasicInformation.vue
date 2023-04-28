@@ -2,7 +2,7 @@
     <el-container>
         <el-header style="background-color: #fff;height: 50px;">
             <el-row>
-                <el-button plain @click="isShow = !isShow">添加</el-button>
+                <el-button plain @click="isShow = !isShow" v-if="isadmin == 0">添加</el-button>
                 <!-- <el-button type="danger" plain>删除</el-button> -->
                 <el-button type="success" plain @click="isShowSearch = !isShowSearch">筛选</el-button>
                 <el-button type="primary" @click="over()" v-show="isover">筛选完毕</el-button>
@@ -11,7 +11,7 @@
 
         <el-main>
             <el-table :data="tableData" stripe height="73vh" border="true">
-                <el-table-column align="left" width="150">
+                <el-table-column align="left" width="150" label="课程操作">
                     <template slot-scope="scope">
                         <!-- <el-button size="mini" type="primary" round
                             @click="goto('classInformation', scope.row.id)">设置</el-button>
@@ -219,7 +219,7 @@ export default {
             isOperation: false,
             //当前选中的对象
             currentObject: {},
-
+            isadmin:0 //权限等级
         }
     },
     methods: {
@@ -255,9 +255,18 @@ export default {
         },
         //获取基本信息
         getMessage() {
-            api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
+            if(this.isadmin ==0){
+                api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
                 this.tableData = resp.data.data;
             })
+            }
+            else if(this.isadmin==2){
+
+            }
+            else{
+
+            }
+           
         },
         //导出
         handleExport(index, object) {
@@ -361,6 +370,7 @@ export default {
         this.getMessage();
         this.initDataOptions();
         this.FormData.classroomTeacher = localStorage.getItem("TeacherName");
+        this.isadmin = localStorage.getItem("Isadmin");
     },
 }
 </script>
