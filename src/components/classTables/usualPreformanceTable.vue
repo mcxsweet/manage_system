@@ -14,6 +14,12 @@
 
         <el-main v-if="ischoose">
             <el-table border="true" :header-cell-style="tableHeader" :data="tableData">
+                <el-table-column label="序号" width="50px">
+                    <template slot-scope="scope">
+                        <span>{{ scope.$index + 1 }}</span>
+                    </template>
+                </el-table-column>
+
                 <el-table-column label="学号" prop="studentNumber">
                 </el-table-column>
                 <el-table-column label="姓名" prop="studentName">
