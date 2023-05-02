@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header style="background-color: #fff;height: 50px;">
-            <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
+            <el-select v-if="reload" v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
                 <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
                     <span style="float: left">{{ item.courseName }}</span>
                     <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">
@@ -12,57 +12,66 @@
                 @click="getCurrentCourseItem()"></el-button>
         </el-header>
 
-        <el-main>
+        <el-main v-if="ischoose">
 
             <!-- 学生期末成绩信息表格 -->
-            <el-table boder="true" :header-cell-style="tableHeader" :data="tableData">
-                <el-table-column label="序号" width="50px">
-                    <template slot-scope="scope">
-                        <span>{{ scope.$index + 1 }}</span>
-                    </template>
-                </el-table-column>
+            <div v-if="!isEmpty">
+                <el-table boder="true" :header-cell-style="tableHeader" :data="tableData">
+                    <el-table-column label="序号" width="50px">
+                        <template slot-scope="scope">
+                            <span>{{ scope.$index + 1 }}</span>
+                        </template>
+                    </el-table-column>
 
-                <el-table-column label="学号" prop="studentNumber" width="150px">
-                </el-table-column>
-                <el-table-column label="姓名" prop="studentName" width="100px">
-                </el-table-column>
-                <el-table-column label="班级" prop="className" width="200px">
-                </el-table-column>
+                    <el-table-column label="学号" prop="studentNumber" width="150px">
+                    </el-table-column>
+                    <el-table-column label="姓名" prop="studentName" width="100px">
+                    </el-table-column>
+                    <el-table-column label="班级" prop="className" width="200px">
+                    </el-table-column>
 
-                <el-table-column label="试卷">
-                    <el-table-column v-for="item, index in examPper" :key="index" :label="item.message">
-                        <el-table-column v-for="item2, index2 in item.data" :key="index2" :label="item2" width="50px">
-                            <template slot-scope="scope">
-                                <span v-if="scope.row.scoreDetails != null">
-                                    {{ scope.row.scoreResponse[index][index2] }}
-                                </span>
-                            </template>
+                    <el-table-column label="试卷">
+                        <el-table-column v-for="item, index in examPper" :key="index" :label="item.message">
+                            <el-table-column v-for="item2, index2 in item.data" :key="index2" :label="item2" width="50px">
+                                <template slot-scope="scope">
+                                    <span v-if="scope.row.scoreDetails != null">
+                                        {{ scope.row.scoreResponse[index][index2] }}
+                                    </span>
+                                </template>
+                            </el-table-column>
                         </el-table-column>
                     </el-table-column>
-                </el-table-column>
 
-                <el-table-column label="总分" width="100px">
-                </el-table-column>
-                <el-table-column label="操作" width="210px">
-                    <template slot-scope="scope">
-                        <el-button size="mini" type="primary" @click="settingData(scope.$index)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="deleteData(scope.$index)">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
+                    <el-table-column label="总分" width="100px">
+                    </el-table-column>
+                    <el-table-column label="操作" width="210px">
+                        <template slot-scope="scope">
+                            <el-button size="mini" type="primary" @click="settingData(scope.$index)">编辑</el-button>
+                            <el-button size="mini" type="danger" @click="deleteData(scope.$index)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
 
+                <el-button type="primary" @click="addData">添加学生信息</el-button>
+                <el-button style="margin-top: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
+                <el-button style="margin-top: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
 
-            <el-button type="primary" @click="addData">添加学生信息</el-button>
-            <el-button style="margin-top: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
-            <el-button style="margin-top: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
+                <!--  -->
+                <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
+                    <el-form>
+                        <input type="file" @change="handleFileUpload" />
+                        <el-button type="submit" size="mini" @click.prevent="uploadFile()">上传文件</el-button>
+                    </el-form>
+                </el-dialog>
+            </div>
 
-            <!--  -->
-            <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
-                <el-form>
-                    <input type="file" @change="handleFileUpload" />
-                    <el-button type="submit" size="mini" @click.prevent="uploadFile()">上传文件</el-button>
-                </el-form>
-            </el-dialog>
+            <div v-if="isEmpty">
+                <el-result icon="warning" title="获取试卷信息失败！" subTitle="请先对试卷进行设置">
+                    <!-- <template slot="extra">
+                        <el-button type="primary" size="medium">返回</el-button>
+                    </template> -->
+                </el-result>
+            </div>
 
             <!--  -->
             <el-dialog title="编辑" :visible.sync="showdialog" v-if="showdialog">
@@ -126,7 +135,9 @@ export default {
     data() {
         return {
 
-            currentId: "10",
+            currentId: "",
+            currentCourse: "",
+            courseList: [],
             //事件全局中线把选择填空数目传过来
             tableData: [],
             //题型和分数
@@ -140,14 +151,13 @@ export default {
             setDataObj: { studentNumber: "", studentName: "", className: "", courseId: "", scoreResponse: [[]] },
 
             ischoose: false,
+            isEmpty: false,
 
             index: 0,
-
             showdialog: false,
-
             showdialog2: false,
-
             showUpload: false,
+            reload: false,
 
             //试卷列
             examPper: [],
@@ -158,9 +168,14 @@ export default {
 
         // 获取表格列（试卷信息）
         getExamPaper() {
-            api.get("/student/10/getFinalExamPaper", "", (resp) => {
-                for (let i = 0; i < resp.data.data.length; i++) {
-                    resp.data.data[i].data = JSON.parse(resp.data.data[i].data);
+            api.get("/student/" + this.currentId + "/getFinalExamPaper", "", (resp) => {
+                if (resp.data.data == null) {
+                    this.isEmpty = true;
+                } else {
+                    this.isEmpty = false;
+                    for (let i = 0; i < resp.data.data.length; i++) {
+                        resp.data.data[i].data = JSON.parse(resp.data.data[i].data);
+                    }
                 }
                 this.examPper = resp.data.data;
             })
@@ -168,7 +183,7 @@ export default {
 
         //获取学生信息
         getStudentScore() {
-            api.get("/student/10/getFinalScoreStudent", "", (resp) => {
+            api.get("/student/" + this.currentId + "/getFinalScoreStudent", "", (resp) => {
                 this.tableData = resp.data.data;
             })
         },
@@ -191,7 +206,6 @@ export default {
                 if (response.data.flag) {
                     this.getStudentScore();
                     this.showUpload = !this.showUpload;
-
                 }
             }).catch(error => {
                 this.$message({
@@ -200,10 +214,6 @@ export default {
                 });
             })
         },
-        test(param) {
-            console.log(param);
-        },
-
         //打开添加弹窗
         addData() {
             // this.tableDataObj.scoreDetails = [];
@@ -213,7 +223,6 @@ export default {
             }
             this.showdialog2 = !this.showdialog2;
         },
-
         //打开编辑弹窗
         settingData(index1) {
             this.showdialog = true;
@@ -378,7 +387,6 @@ export default {
         },
         //点击课程选择框
         focusOnSelect() {
-            this.tableData = [];
             this.ischoose = false;
             this.currentId = "";
         },
@@ -387,14 +395,16 @@ export default {
             if (this.currentId == "") {
                 this.currentId = this.courseList[this.currentCourse].id;
             }
-            this.getExamMethods();
+            this.examPper = [];
+            this.getExamPaper();
+
             this.getStudentScore();
             this.ischoose = true;
-
         },
 
     },
     mounted() {
+
         if (this.$route.query.id) {
             this.currentId = this.$route.query.id;
             this.currentCourse = this.$route.query.name;
@@ -402,8 +412,9 @@ export default {
             // this.getStudentScore();
         }
         this.getMessage();
-        this.getExamPaper();
-        this.getStudentScore();
+        this.reload = true;
+        // this.getExamPaper();
+        // this.getStudentScore();
     }
 }
 </script>

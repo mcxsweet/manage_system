@@ -113,7 +113,7 @@
                             :value="item.indicatorName">
                             <span style="float: left">{{ item.indicatorName }}</span>
                             <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                            {{ item.indicatorContent }}
+                                {{ item.indicatorContent }}
                             </span>
                         </el-option>
                     </el-select>
@@ -183,7 +183,8 @@
                 <el-button style="margin: 3vh; width: 20vh;"
                     @click="goto('usualPreformanceTable', currentObject.id, currentObject.courseName)" type="primary"
                     plain>平时成绩管理</el-button>
-                <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalStatisticsTable')" type="primary"
+                <el-button style="margin: 3vh; width: 20vh;"
+                    @click="goto('finalStatisticsTable', currentObject.id, currentObject.courseName)" type="primary"
                     plain>期末试卷成绩</el-button>
                 <el-button style="margin: 3vh; width: 20vh;" @click="goto('finalComprehensiveTable')" type="primary"
                     plain>期末综合成绩</el-button>
@@ -219,7 +220,7 @@ export default {
             isOperation: false,
             //当前选中的对象
             currentObject: {},
-            isadmin:0 //权限等级
+            isadmin: 0 //权限等级
         }
     },
     methods: {
@@ -255,18 +256,18 @@ export default {
         },
         //获取基本信息
         getMessage() {
-            if(this.isadmin ==0){
+            if (this.isadmin == 0) {
                 api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
-                this.tableData = resp.data.data;
-            })
+                    this.tableData = resp.data.data;
+                })
             }
-            else if(this.isadmin==2){
+            else if (this.isadmin == 2) {
 
             }
-            else{
+            else {
 
             }
-           
+
         },
         //导出
         handleExport(index, object) {

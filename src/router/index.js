@@ -16,8 +16,8 @@ import basicInformationTable from '@/components/courseExamMethods/basicInformati
 
 import welcome from '@/components/welcome'
 import finalTable from '@/components/courseExamMethods/finalTable'
-import usualPreformanceTable from '@/components/classTables/usualPreformanceTable'
-import finalStatisticsTable from '@/components/classTables/finalStatisticsTable'
+import usualPreformanceTable from '@/components/studentScoreManager/usualPreformanceTable'
+import finalStatisticsTable from '@/components/studentScoreManager/finalStatisticsTable'
 import finalComprehensiveTable from '@/components/classTables/finalComprehensiveTable'
 import analysisTable from '@/components/classTables/analysisTable'
 import programTable from '@/components/classTables/programTable'
@@ -31,7 +31,7 @@ export default new VueRouter({
         {
             path: "/MainPage",
             component: MainPage,
-            children: [             
+            children: [
                 {
                     path: 'analysisTable',
                     component: analysisTable
@@ -70,20 +70,20 @@ export default new VueRouter({
                     component: courseBasicInformation
                 },
                 {
-                    path:'teachingPro', //教学大纲
-                    component:teachingPro
+                    path: 'teachingPro', //教学大纲
+                    component: teachingPro
                 },
                 {
-                    path:'sudoTeachingPro', //系主任教学大纲
-                    component:sudoTeachingPro
+                    path: 'sudoTeachingPro', //系主任教学大纲
+                    component: sudoTeachingPro
                 },
                 {
-                    path:'SuperTeachingPro', //院长教学大纲
-                    component:SuperTeachingPro
+                    path: 'SuperTeachingPro', //院长教学大纲
+                    component: SuperTeachingPro
                 },
                 {
-                    path:'indexPoint', //毕业要求指标点
-                    component:indexPoint
+                    path: 'indexPoint', //毕业要求指标点
+                    component: indexPoint
                 },
                 {
                     path: 'classInformation', //  课程详细基本信息
