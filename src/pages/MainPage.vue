@@ -66,9 +66,9 @@
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
-                             <el-menu-item v-if="isadmin==0" index="1-2" @click="goto('teachingPro')">教学大纲</el-menu-item>
-                            <el-menu-item v-if="isadmin==1" index="1-2" @click="goto('sudoTeachingPro')">教学大纲</el-menu-item>
-                            <el-menu-item v-if="isadmin==2" index="1-2" @click="goto('SuperTeachingPro')">教学大纲</el-menu-item>
+                            <el-menu-item v-if="isadmin == 0" index="1-2" @click="goto('teachingPro')">教学大纲</el-menu-item>
+                            <el-menu-item v-if="isadmin == 1" index="1-2" @click="goto('sudoTeachingPro')">教学大纲</el-menu-item>
+                            <el-menu-item v-if="isadmin == 2" index="1-2" @click="goto('SuperTeachingPro')">教学大纲</el-menu-item>
                             <el-menu-item index="1-3" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item>
                             <el-menu-item index="1-4" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                         </el-menu-item-group>
@@ -110,7 +110,7 @@ export default {
         return {
             username: '',
             id: 1,
-            isadmin:0,
+            isadmin: "",
         }
     },
     methods: {

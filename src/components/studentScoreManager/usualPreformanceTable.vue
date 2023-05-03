@@ -28,13 +28,15 @@
                     <el-table-column label="班级" prop="className">
                     </el-table-column>
                     <!-- 遍历表格列 -->
-                    <el-table-column v-for="item, index in examMethods" :label="item.message" :prop="item.data"
-                        :key="index">
+                    <el-table-column v-for="item, index in examMethods" :label="item" :key="index">
+                        <template slot-scope="scope">
+                            <span v-if="scope.row.scoreResponse != null">
+                                {{ scope.row.scoreResponse[index] }}
+                            </span>
+                        </template>
                     </el-table-column>
-
                     <el-table-column label="总分">
                     </el-table-column>
-
                     <el-table-column label="操作" width="200px">
                         <template slot-scope="scope">
                             <el-button type="primary" style="margin-left: 1vw ;" size="mini"
@@ -52,19 +54,12 @@
             </div>
             <div v-if="isEmpty">
                 <el-result icon="warning" title="获取成绩信息失败！" subTitle="请先对考核方式进行设置">
-                    <!-- <template slot="extra">
-                        <el-button type="primary" size="medium">返回</el-button>
-                    </template> -->
                 </el-result>
             </div>
 
 
 
             <el-dialog v-if="showUpload" title="上传文件" :visible.sync="showUpload" style="text-align: center;">
-                <!-- <el-upload class="upload-demo" drag action="https://localhost:8080/posts/" multiple>
-                    <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                </el-upload> -->
                 <form>
                     <input type="file" @change="handleFileUpload" />
                     <button type="submit" @click.prevent="uploadFile">上传文件</button>
@@ -72,28 +67,18 @@
             </el-dialog>
 
             <el-dialog v-if="isShow" title="编辑" :visible.sync="isShow">
-                <el-form :model="tableData[index]">
+                <el-form :model="setDataObj">
                     <el-form-item label="学号" prop="studentNumber">
-                        <el-input v-model="tableData[index].studentNumber"></el-input>
+                        <el-input v-model="setDataObj.studentNumber"></el-input>
                     </el-form-item>
                     <el-form-item label="学生姓名" prop="studentName">
-                        <el-input v-model="tableData[index].studentName"></el-input>
+                        <el-input v-model="setDataObj.studentName"></el-input>
                     </el-form-item>
                     <el-form-item label="班级" prop="className">
-                        <el-input v-model="tableData[index].className"></el-input>
+                        <el-input v-model="setDataObj.className"></el-input>
                     </el-form-item>
-
-                    <el-form-item v-if="isattendanceScore" label="考勤" prop="attendanceScore">
-                        <el-input v-model="tableData[index].attendanceScore"></el-input>
-                    </el-form-item>
-                    <el-form-item v-if="isquizScore" label="课堂提问分" prop="quizScore">
-                        <el-input v-model="tableData[index].quizScore"></el-input>
-                    </el-form-item>
-                    <el-form-item v-if="ismidTermScore" label="期中考核成绩" prop="midTermScore">
-                        <el-input v-model="tableData[index].midTermScore"></el-input>
-                    </el-form-item>
-                    <el-form-item v-if="isworkScore" label="作业分" prop="workScore">
-                        <el-input v-model="tableData[index].workScore"></el-input>
+                    <el-form-item v-for="item, j in examMethods" :label="item" :key="j">
+                        <el-input v-model="setDataObj.scoreResponse[j]"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -113,18 +98,10 @@
                     <el-form-item label="班级" prop="className">
                         <el-input v-model="dataObj.className"></el-input>
                     </el-form-item>
-                    <el-form-item v-if="isattendanceScore" label="考勤" prop="attendanceScore">
-                        <el-input v-model="dataObj.attendanceScore"></el-input>
+                    <el-form-item v-for="item, index in examMethods" :label="item" :key="index">
+                        <el-input v-model="dataObj.scoreDetails[index]"></el-input>
                     </el-form-item>
-                    <el-form-item v-if="isquizScore" label="课堂提问分" prop="quizScore">
-                        <el-input v-model="dataObj.quizScore"></el-input>
-                    </el-form-item>
-                    <el-form-item v-if="ismidTermScore" label="期中考核成绩" prop="midTermScore">
-                        <el-input v-model="dataObj.midTermScore"></el-input>
-                    </el-form-item>
-                    <el-form-item v-if="isworkScore" label="作业分" prop="workScore">
-                        <el-input v-model="dataObj.workScore"></el-input>
-                    </el-form-item>
+
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button type="success" style="margin: 1vh ;" @click="insertData()">保存</el-button>
@@ -154,16 +131,13 @@ export default {
             courseList: [],
             //表格数据
             tableData: [],
-            dataObj: { studentNumber: "", studentName: "", className: "", attendanceScore: "", quizScore: "", midTermScore: "", workScore: "", courseId: 10 },
+            dataObj: { studentNumber: "", studentName: "", className: "", scoreDetails: [], courseId: "" },
+            setDataObj: { studentNumber: "", studentName: "", className: "", scoreResponse: [], courseId: "" },
             isShow: false,
             isShow1: false,
             index: 0,
             //考核方式列表遍历表格列
             examMethods: [],
-            isattendanceScore: false,
-            isworkScore: false,
-            isquizScore: false,
-            ismidTermScore: false,
             isEmpty: false,
 
             //文件上传弹窗
@@ -188,9 +162,15 @@ export default {
                     'Content-Type': 'multipart/form-data'
                 }
             }).then(response => {
-                console.log(response.data)
+                if (response.data.flag) {
+                    this.getStudentScore();
+                    this.showUpload = !this.showUpload;
+                }
             }).catch(error => {
-                console.log(error)
+                this.$message({
+                    type: 'error',
+                    message: error.data.message
+                });
             })
         },
 
@@ -216,7 +196,6 @@ export default {
                 this.courseList = resp.data.data;
             })
         },
-
         //获取学生平时成绩信息
         getStudentScore() {
             api.get("/student/" + this.currentId + "/getUsualStudent", "", (resp) => {
@@ -227,31 +206,26 @@ export default {
         addData() {
             this.isShow1 = !this.isShow1
         },
-        saveAdd() {
-            this.$confirm('是否提交 ?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.tableData.push(JSON.parse(JSON.stringify(this.dataObj)))
-                const studentData = []
-                studentData.studentName = this.dataObj.studentName
-                studentData.studentNumber = this.dataObj.studentNumber
-                studentData.className = this.dataObj.className
-
-                api.post("/student/addStudent", studentData, (resp) => { })
-            }
-            ).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消'
-                });
-            });
-            this.isShow1 = false
-        },
         setting(index1) {
             this.isShow = !this.isShow;
             this.index = index1;
+            this.setDataObj.id = this.tableData[index1].id;
+            this.setDataObj.studentNumber = this.tableData[index1].studentNumber;
+            this.setDataObj.studentName = this.tableData[index1].studentName;
+            this.setDataObj.className = this.tableData[index1].className;
+            this.setDataObj.courseId = this.tableData[index1].courseId;
+            this.setDataObj.usualScoreId = this.tableData[index1].usualScoreId;
+            this.setDataObj.studentId = this.tableData[index1].studentId;
+            this.setDataObj.score = this.tableData[index1].score;
+
+            if (this.tableData[index1].scoreResponse.length > 0) {
+                this.setDataObj.scoreResponse = this.tableData[index1].scoreResponse;
+            } else {
+                this.setDataObj.scoreResponse = [];
+                for (let i = 0; i < this.examMethods.length; i++) {
+                    this.setDataObj.scoreResponse.push("");
+                }
+            }
         },
         //修改数据
         saveData() {
@@ -261,30 +235,45 @@ export default {
                 type: 'warning'
             }).then(() => {
                 this.isShow = !this.isShow;
-                api.put("/student/updateStudent", this.tableData[this.index], (resp) => {
+                api.put("/student/updateStudent", this.setDataObj, (resp) => {
                     if (resp.data.flag) {
-                        this.tableData[this.index].studentId = this.tableData[this.index].id;
-                        this.tableData[this.index].id = this.tableData[this.index].usualScoreId;
-                        if (this.tableData[this.index].id) {
-                            api.put("/student/updateStudentUsualScore", this.tableData[this.index], (respanse) => {
+                        this.setDataObj.scoreDetails = JSON.stringify(this.setDataObj.scoreResponse);
+                        this.setDataObj.studentId = this.setDataObj.id;
+                        if (this.setDataObj.usualScoreId) {
+                            api.put("/student/updateStudentUsualScore", this.setDataObj, (respanse) => {
                                 if (respanse.data.flag) {
                                     this.$message({
                                         type: 'success',
                                         message: '成功!'
+                                    });
+                                    this.getStudentScore();
+                                } else {
+                                    this.$message({
+                                        type: 'error',
+                                        message: resp.data.message
                                     });
                                 }
                             })
                         } else {
-                            api.post("/student/addUsualScore", this.tableData[this.index], (respanse) => {
+                            api.post("/student/addUsualScore", this.setDataObj, (respanse) => {
                                 if (respanse.data.flag) {
                                     this.$message({
                                         type: 'success',
                                         message: '成功!'
                                     });
+                                } else {
+                                    this.$message({
+                                        type: 'error',
+                                        message: resp.data.message
+                                    });
                                 }
                             })
                         }
-                        this.tableData[this.index].id = this.tableData[this.index].studentId;
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: resp.data.message
+                        });
                     }
                 })
             }
@@ -295,12 +284,13 @@ export default {
                 });
             });
         },
-
         //添加数据
         insertData() {
+            this.dataObj.courseId = this.currentId;
             api.post("/student/addStudent", this.dataObj, (resp) => {
                 if (resp.data.flag) {
                     this.dataObj.studentId = resp.data.message;
+                    this.dataObj.scoreDetails = JSON.stringify(this.dataObj.scoreDetails);
                     api.post("/student/addUsualScore", this.dataObj, (respanse) => {
                         if (respanse.data.flag) {
                             this.$message({
@@ -309,12 +299,25 @@ export default {
                             });
                             this.getStudentScore();
                             this.isShow1 = !this.isShow1;
+                            this.dataObj = { scoreDetails: [] };
+                            for (var i = 0; i < this.examMethods.length; i++) {
+                                this.dataObj.scoreDetails.push("");
+                            }
+                        } else {
+                            this.$message({
+                                type: 'error',
+                                message: respanse.data.message
+                            });
                         }
                     })
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: resp.data.message
+                    });
                 }
             })
         },
-
         //删除数据
         delectData(index) {
             this.$confirm('是否提交 ?', '提示', {
@@ -329,6 +332,7 @@ export default {
                             message: '成功!'
                         });
                         this.tableData.splice(index, 1);
+                        this.getStudentScore();
                     }
                 })
             }).catch(() => {
@@ -338,26 +342,13 @@ export default {
                 });
             });
         },
-
         //获取考核方式
         getExamMethods() {
             api.get("/student/" + this.currentId + "/getMethods", "", (resp) => {
                 this.examMethods = resp.data.data;
+                this.dataObj.scoreDetails = [];
                 for (var i = 0; i < this.examMethods.length; i++) {
-                    switch (this.examMethods[i].data) {
-                        case "attendanceScore":
-                            this.isattendanceScore = true;
-                            break;
-                        case "workScore":
-                            this.isworkScore = true;
-                            break;
-                        case "quizScore":
-                            this.isquizScore = true;
-                            break;
-                        case "midTermScore":
-                            this.ismidTermScore = true;
-                            break;
-                    }
+                    this.dataObj.scoreDetails.push("");
                 }
                 if (resp.data.data.length == 0) {
                     this.isEmpty = true;
