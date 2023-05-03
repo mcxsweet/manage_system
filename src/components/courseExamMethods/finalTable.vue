@@ -75,7 +75,7 @@
 
             <!-- 题型与指标点对应关系 -->
             <el-divider content-position="left">全局展示</el-divider>
-            <div>
+            <div v-loading="loading2">
                 <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
             </div>
 
@@ -318,6 +318,8 @@ export default {
             tableData: [],
             //表格刷新控件
             loading: true,
+            //PDF加载空间
+            loading2: true,
             //添加题型控件
             isAddPaperItem: false,
             //添加表单
@@ -659,6 +661,7 @@ export default {
 
                     // 生成URL，将其分配给嵌入元素的src属性
                     this.pdfUrl = URL.createObjectURL(blob);
+                    this.loading2 = false;
                 })
         }
 

@@ -51,6 +51,7 @@ export default {
                     localStorage.setItem("UserId", resp.data.data.id);
                     localStorage.setItem("Isadmin", resp.data.data.isAdmin);
                     localStorage.setItem("TeacherName", resp.data.data.teacherName);
+                    localStorage.setItem("department", resp.data.data.department);
                     this.$router.push({ path: '/MainPage' });
 
                 } else {

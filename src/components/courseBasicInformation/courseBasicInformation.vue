@@ -275,7 +275,7 @@ export default {
         },
         //导出
         handleExportTest() {
-            window.location.href = "http://localhost:8080/student/10/studentUsualScoreExcl";
+            window.location.href = "http://localhost:8080/courseInfo/10/indicatorsPDF";
         },
         //跳转到设置界面
         handleSetting(index, object) {
