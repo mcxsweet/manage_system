@@ -128,29 +128,41 @@
                                                     </el-table-column>
                                                     <el-table-column label="指标点">
                                                         <template slot-scope="scope">
-                                                            <!-- <p>{{ scope.row.indicatorPoints }}</p> -->
                                                             <div v-for="item, index in scope.row.indicatorPoints"
-                                                                :key="index">
+                                                                :key="index" v-show="scope.row.isUpdateDetail">
                                                                 <p>{{ item }}</p>
                                                             </div>
+                                                            <el-select v-model="scope.row.indicatorPoints" :multiple="true"
+                                                                                        style="width:100% ;">
+                                                                <el-option v-for="item, index in currentExamineItem.indicatorPointsDetail"
+                                                                    :key="index" :value="item" v-show="!scope.row.isUpdateDetail">
+                                                                    <span style="float: left">{{ item }}</span>
+                                                                </el-option>
+                                                            </el-select>
                                                         </template>
                                                     </el-table-column>
                                                     <el-table-column label="课程目标">
                                                         <template slot-scope="scope">
-                                                            <!-- <p>{{ scope.row.courseTarget }}</p> -->
-                                                            <div v-for="item, index in scope.row.courseTarget" :key="index">
+                                                            <div v-for="item, index in scope.row.courseTarget" :key="index" v-show="scope.row.isUpdateDetail">
                                                                 <p>{{ item }}</p>
                                                             </div>
+                                                            <el-select v-model="scope.row.indicatorPoints" :multiple="true"
+                                                                                        style="width:100% ;">
+                                                                <el-option v-for="item, index in currentExamineItem.courseTarget"
+                                                                    :key="index" :value="item" v-show="!scope.row.isUpdateDetail">
+                                                                    <span style="float: left">{{ item }}</span>
+                                                                </el-option>
+                                                            </el-select>
                                                         </template>
                                                     </el-table-column>
-                                                    <el-table-column label="操作" width="180">
+                                                    <el-table-column label="操作" width="210px">
                                                         <template slot-scope="scope">
-
-                                                            <el-button style="margin-top:8px ;" type="danger" size="mini"
-                                                                @click="deleteDetail(scope.row.id)">删除</el-button>
                                                             <el-button style="margin-top:8px ;" type="primary" size="mini"
                                                                 @click="popUpUpdate(scope.row)">修改</el-button>
-
+                                                            <el-button style="margin-top:8px ;" type="success" size="mini"
+                                                                >保存</el-button>
+                                                            <el-button style="margin-top:8px ;" type="danger" size="mini"
+                                                                @click="deleteDetail(scope.row.id)">删除</el-button>
                                                         </template>
                                                     </el-table-column>
 
@@ -179,10 +191,13 @@
                                     <el-form-item label="总分">
                                         <el-input v-model="addForm.itemScore"></el-input>
                                     </el-form-item>
+                                    <el-form-item label="题数">
+                                        <el-input v-model="addForm.itemNum"></el-input>
+                                    </el-form-item>
                                 </el-form>
                                 <div slot="footer" class="dialog-footer">
                                     <el-button @click="isAddPaperItem = false">取 消</el-button>
-                                    <el-button type="primary" @click="addPaperItem()">确 定</el-button>
+                                    <el-button type="primary" @click="addPaperItem1(addForm.itemNum)">确 定</el-button>
                                 </div>
                             </el-dialog>
 
@@ -233,40 +248,6 @@
                                 <div slot="footer" class="dialog-footer">
                                     <el-button @click="isAddDetail = false">取 消</el-button>
                                     <el-button type="primary" @click="addDetail()">确 定</el-button>
-                                </div>
-                            </el-dialog>
-
-                            <!-- 修改小题 -->
-                            <el-dialog title="修改" :visible.sync="isUpdateDetail" width="40%" append-to-body>
-                                <el-form :model="updateDetailForm">
-                                    <el-form-item label="题号">
-                                        <el-input v-model="updateDetailForm.titleNumber"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="分值">
-                                        <el-input v-model="updateDetailForm.score"></el-input>
-                                    </el-form-item>
-                                    <el-form-item label="指标点">
-                                        <el-select v-model="updateDetailForm.indicatorPoints" :multiple="true"
-                                            style="width:100% ;">
-                                            <el-option v-for="item, index in currentExamineItem.indicatorPointsDetail"
-                                                :key="index" :value="item">
-                                                <span style="float: left">{{ item }}</span>
-                                            </el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                    <el-form-item label="课程目标">
-                                        <el-select v-model="updateDetailForm.courseTarget" :multiple="true"
-                                            style="width:100% ;">
-                                            <el-option v-for="item, index in currentExamineItem.courseTarget" :key="index"
-                                                :value="item">
-                                                <span style="float: left">{{ item }}</span>
-                                            </el-option>
-                                        </el-select>
-                                    </el-form-item>
-                                </el-form>
-                                <div slot="footer" class="dialog-footer">
-                                    <el-button @click="isUpdateDetail = false">取 消</el-button>
-                                    <el-button type="primary" @click="updateDetail()">确 定</el-button>
                                 </div>
                             </el-dialog>
                         </div>
@@ -323,7 +304,7 @@ export default {
             //添加题型控件
             isAddPaperItem: false,
             //添加表单
-            addForm: {},
+            addForm: {itemNum:0},
             //删除题型按钮控件
             isDeletePaperItem: false,
             //修改题型按钮控件
@@ -338,9 +319,9 @@ export default {
             //添加小题表单控件
             isAddDetail: false,
             //添加小题表单
-            addDetailForm: {},
+            addDetailForm: {titleNumber:0,Score:0,isUpdateDetail: false},
             //修改小题表单控件
-            isUpdateDetail: false,
+            
             //修改小题表单
             updateDetailForm: {},
 
@@ -367,7 +348,6 @@ export default {
                             for (let j = 0; j < resp2.data.data.length; j++) {
                                 resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
                                 resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
-
                             }
                             resp.data.data[index].examChildItemArray = resp2.data.data;
                         })
@@ -449,23 +429,77 @@ export default {
 
         //点击题型
         handleChange(item) {
-            // this.tableData = [];
             this.currentTypeId = item;
             api.get("/courseExamPaper/detail/" + item, "", (resp) => {
                 if (resp.data.data) {
+                    // for(let i =0;i<this.resp.data.data.length;i++){
+                    //     resp.data.data[i].isUpdateDetail = true
+                    // }
                     this.tableData = resp.data.data;
                     for (let index = 0; index < this.tableData.length; index++) {
                         this.tableData[index].indicatorPoints = JSON.parse(this.tableData[index].indicatorPoints);
                         this.tableData[index].courseTarget = JSON.parse(this.tableData[index].courseTarget);
+                        this.tableData[index].isUpdateDetail = true
                     }
                 }
             })
             this.loading = false;
         },
-
+        addPaperItem1(index){
+            this.$confirm('是否添加 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }),then(() => {
+                this.add(index);
+                if (this.tableData.length!=0) {
+                     this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: '添加失败'
+                    });
+                }
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
+            
+        },
+        add(index){
+            for(let i=0;i<index;i++){
+                this.addDetailForm.titleNumber++
+                this.addForm.examChildMethodId = this.currentExamineItem.id;
+                this.addForm.indicatorPoints={}
+                this.addForm.courseTarget={}
+                this.tableData.push(JSON.parse(JSON.stringify(this.addDetailForm)))
+                this.addDetailForm.primaryId = this.currentTypeId;
+                this.addDetailForm.indicatorPoints = JSON.stringify(this.addDetailForm.indicatorPoints);
+                this.addDetailForm.courseTarget = JSON.stringify(this.addDetailForm.courseTarget);
+                api.post("/courseExamPaper/detail", this.addDetailForm, (resp) => {
+                    if (resp.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '添加成功!'
+                        });
+                        this.handleChange(this.currentTypeId); 
+                    } else {
+                         this.$message({
+                            type: 'error',
+                            message: resp.data.message
+                        });
+                    }
+                })
+            }
+           
+        },
         //添加题型
         addPaperItem() {
-            console.log(this.currentExamineItem);
             this.addForm.examChildMethodId = this.currentExamineItem.id;
             api.post("/courseExamPaper", this.addForm, (resp) => {
                 if (resp.data.flag) {

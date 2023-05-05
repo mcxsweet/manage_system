@@ -92,9 +92,9 @@ export default {
         indicatorPoints: [],
         //评价依据
         evaluationMethod: [],
-
       },
       id:"",
+      tableLength:0,
       tableData1: [],
       indicators: [],
       value1: [],
@@ -104,7 +104,10 @@ export default {
   methods: {
     //初始化表格
     init() {
-      api.get("/courseInfo/courseTarget/" + this.obj.courseId, "", (resp) => {
+      if(this.tableData1.length==0){
+        this.add1(this.tableLength);
+      }else{
+        api.get("/courseInfo/courseTarget/" + this.obj.courseId, "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
           resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
           resp.data.data[index].evaluationMethod = JSON.parse(resp.data.data[index].evaluationMethod);
@@ -114,6 +117,8 @@ export default {
         }
         this.tableData1 = resp.data.data;
       })
+      
+      }
       this.getIndicators();
     },
 
@@ -202,8 +207,21 @@ export default {
 
     },
     add() {
-      this.obj.index = this.tableData1.length
-      this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+      if(this.tableLength>this.tableData1.length){
+        this.obj.index = this.tableData1.length
+        this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+      }else{
+        this.$message({
+          type:'error',
+          message:'不可再添加空白项！'
+        })
+      }
+    },
+    add1(index){
+        for(let i =0;i<index;i++){
+        this.obj.index = this.tableData1.length
+        this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+      }
     }
   },
   created() {
@@ -211,7 +229,8 @@ export default {
     this.obj.courseName = this.$route.query.courseName;
   },
   mounted() {
-    this.id = this.$route.query.courseId
+    this.id = this.$route.query.courseId;
+    this.tableLength = this.$route.query.courseTargetNum;
     this.init();
   },
 }
