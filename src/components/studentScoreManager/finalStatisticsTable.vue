@@ -130,6 +130,8 @@
 <script>
 import api from '@/api/api'
 import axios from 'axios'
+import global from '@/script/global'
+
 export default {
     name: "finalStatisticsTable",
     data() {
@@ -376,7 +378,7 @@ export default {
 
         //下载文件
         downLoad() {
-            window.location.href = "http://localhost:8080/student/" + this.currentId + "/studentFinalScoreExcl";
+            window.location.href = global.BaseUrl + "/student/" + this.currentId + "/studentFinalScoreExcl";
         },
 
         //获取课程列表   
