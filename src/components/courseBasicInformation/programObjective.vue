@@ -106,9 +106,7 @@ export default {
   methods: {
     //初始化表格
     init() {
-      if(this.tableData1.length==0){
-        this.add1(this.tableLength);
-      }else{
+      
         api.get("/courseInfo/courseTarget/" + this.obj.courseId, "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
           resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
@@ -118,9 +116,12 @@ export default {
           resp.data.data[index].ised = false;
         }
         this.tableData1 = resp.data.data;
-      })
-      
+        if(this.tableLength>this.tableData1.length){
+          let i =0
+          i=(this.tableLength-this.tableData1.length)*1
+        this.add1(i);
       }
+      })  
       this.getIndicators();
     },
 
