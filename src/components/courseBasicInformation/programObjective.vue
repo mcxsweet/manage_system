@@ -4,7 +4,9 @@
       <el-table :data="tableData1" border style="width: 100%">
         <el-table-column prop="index" label="序号" width="100%">
           <template slot-scope="scope">
-            <span>课程目标{{ scope.$index+1 }}：</span>
+            <!-- <span>课程目标{{ scope.$index+1 }}：</span> -->
+            <el-input v-model="scope.row.targetName" v-show="scope.row.ised"></el-input>
+            <span v-show="!scope.row.ised">{{ scope.row.targetName }}</span>
           </template>
         </el-table-column>
 
@@ -56,7 +58,7 @@
           <template slot-scope="scope">
             <el-button type="primary" size="mini" @click="editta(scope.row, scope)">编辑</el-button>
             <el-button type="success" size="mini" @click="saveta(scope.row)">保存</el-button>
-            <el-button type="danger" size="mini" @click="delect(scope.row,scope.$index)">删除</el-button>
+            <el-button type="danger" size="mini" @click="delect(scope.row, scope.$index)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -93,7 +95,7 @@ export default {
         //评价依据
         evaluationMethod: [],
       },
-      id:"",
+      id: "",
       tableLength:0,
       tableData1: [],
       indicators: [],
@@ -124,10 +126,10 @@ export default {
 
     //获取指标点列表
     getIndicators() {
-      api.get("/courseInfo/"+this.id, "", (resp) => {
+      api.get("/courseInfo/" + this.id, "", (resp) => {
         this.indicators = JSON.parse(resp.data.data.indicatorPoints);
-        
-        
+
+
       })
     },
 
@@ -138,7 +140,7 @@ export default {
       row.ised = false
       this.tableData1[row.index].indicatorPoints = JSON.stringify(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.stringify(this.tableData1[row.index].evaluationMethod);
-      
+
       if (row.id == null) {
         api.post("/courseInfo/courseTarget", this.tableData1[row.index], (resp) => {
 
@@ -175,7 +177,7 @@ export default {
       this.tableData1[row.index].indicatorPoints = JSON.parse(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.parse(this.tableData1[row.index].evaluationMethod);
     },
-    delect(obj,index) {
+    delect(obj, index) {
       this.$confirm('是否删除 ?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -189,7 +191,7 @@ export default {
               type: 'success',
               message: '删除成功!'
             });
-            this.tableData1.splice(index,1);
+            this.tableData1.splice(index, 1);
             //this.init();
           } else if (resp.status != 200) {
             this.$message({

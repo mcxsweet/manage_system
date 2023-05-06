@@ -202,6 +202,8 @@
 
 <script>
 import api from '@/api/api'
+import global from '@/script/global';
+
 export default {
     name: "courseBasicInformation",
     data() {
@@ -271,7 +273,7 @@ export default {
         },
         //导出
         handleExport(index, object) {
-            window.location.href = "http://localhost:8080/courseInfo/export/" + object.id;
+            window.location.href = global.BaseUrl + "/courseInfo/export/" + object.id;
         },
         //导出
         handleExportTest() {

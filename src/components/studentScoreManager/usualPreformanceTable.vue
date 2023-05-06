@@ -116,6 +116,8 @@
 <script>
 import api from '@/api/api'
 import axios from 'axios'
+import global from '@/script/global'
+
 export default {
     name: "usualPerformanceTable",
     data() {
@@ -147,7 +149,7 @@ export default {
     methods: {
         //下载文件
         downLoad() {
-            window.location.href = "http://localhost:8080/student/" + this.currentId + "/studentUsualScoreExcl";
+            window.location.href = global.BaseUrl + "/student/" + this.currentId + "/studentUsualScoreExcl";
         },
 
         //上传文件
