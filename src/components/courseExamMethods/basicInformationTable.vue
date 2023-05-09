@@ -324,7 +324,18 @@ export default {
         if (!this.examItemArray[index].id) {
           api.post("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => {
             if (resp.data.flag) {
-              this.getCurrentCourseExam();
+              //this.getCurrentCourseExam();
+              if (resp.data.flag) {
+            this.$message({
+              type: 'success',
+              message: '成功!'
+            });
+          } else {
+            this.$message({
+              type: 'error',
+              message: '失败!'
+            });
+          }
             }
           })
         }
