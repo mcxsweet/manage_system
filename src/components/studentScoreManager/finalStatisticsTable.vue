@@ -43,6 +43,9 @@
                     </el-table-column>
 
                     <el-table-column label="总分" width="100px">
+                        <template slot-scope="scope">
+                            {{ scope.row.score }}
+                        </template>
                     </el-table-column>
                     <el-table-column label="操作" width="210px">
                         <template slot-scope="scope">
