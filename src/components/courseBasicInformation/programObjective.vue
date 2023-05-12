@@ -40,7 +40,7 @@
 
         <el-table-column label="请选择评价依据" width="180">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.evaluationMethod" multiple placeholder="评价依据" v-show="scope.row.ised">
+            <el-select v-model="scope.row.evaluationMethod" multiple placeholder="评价依据" v-show="scope.row.ised" allow-create="true" filterable="true">
               <el-option label="考试" value="考试"></el-option>
               <el-option label="作业" value="作业"></el-option>
               <el-option label="报告" value="报告"></el-option>
@@ -94,9 +94,9 @@ export default {
         indicatorPoints: [],
         //评价依据
         evaluationMethod: [],
-
       },
       id: "",
+      tableLength:0,
       tableData1: [],
       indicators: [],
       value1: [],
@@ -106,7 +106,8 @@ export default {
   methods: {
     //初始化表格
     init() {
-      api.get("/courseInfo/courseTarget/" + this.obj.courseId, "", (resp) => {
+      
+        api.get("/courseInfo/courseTarget/" + this.obj.courseId, "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
           resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
           resp.data.data[index].evaluationMethod = JSON.parse(resp.data.data[index].evaluationMethod);
@@ -115,7 +116,12 @@ export default {
           resp.data.data[index].ised = false;
         }
         this.tableData1 = resp.data.data;
-      })
+        if(this.tableLength>this.tableData1.length){
+          let i =0
+          i=(this.tableLength-this.tableData1.length)*1
+        this.add1(i);
+      }
+      })  
       this.getIndicators();
     },
 
@@ -204,8 +210,21 @@ export default {
 
     },
     add() {
-      this.obj.index = this.tableData1.length
-      this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+      if(this.tableLength>this.tableData1.length){
+        this.obj.index = this.tableData1.length
+        this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+      }else{
+        this.$message({
+          type:'error',
+          message:'不可再添加空白项！'
+        })
+      }
+    },
+    add1(index){
+        for(let i =0;i<index;i++){
+        this.obj.index = this.tableData1.length
+        this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+      }
     }
   },
   created() {
@@ -213,7 +232,8 @@ export default {
     this.obj.courseName = this.$route.query.courseName;
   },
   mounted() {
-    this.id = this.$route.query.courseId
+    this.id = this.$route.query.courseId;
+    this.tableLength = this.$route.query.courseTargetNum;
     this.init();
   },
 }

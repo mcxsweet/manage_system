@@ -61,7 +61,7 @@
                             path: '/MainPage/classInformation/programObjective/',
                             query: {
                                 courseId: FormData.id,
-                                courseName: FormData.courseName
+                                courseTargetNum: FormData.courseTargetNum
                             }
                         }" tag="el-button" @click.native="settingbegain">设置课程目标</router-link>
                         <el-button type="primary" v-show="showbt" @click="settingOver">设置完毕</el-button>

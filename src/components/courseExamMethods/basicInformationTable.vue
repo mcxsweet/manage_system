@@ -20,7 +20,7 @@
         :header-cell-style="tableHeader">
         <el-table-column label="考核项目" width="200px">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%"
+            <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%" allow-create="true" filterable="true"
               v-show="!scope.row.isExamineItem">
               <el-option value="平时考核成绩"></el-option>
               <el-option value="实验考核成绩"></el-option>
@@ -324,7 +324,18 @@ export default {
         if (!this.examItemArray[index].id) {
           api.post("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => {
             if (resp.data.flag) {
-              this.getCurrentCourseExam();
+              //this.getCurrentCourseExam();
+              if (resp.data.flag) {
+            this.$message({
+              type: 'success',
+              message: '成功!'
+            });
+          } else {
+            this.$message({
+              type: 'error',
+              message: '失败!'
+            });
+          }
             }
           })
         }
