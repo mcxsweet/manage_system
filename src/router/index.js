@@ -18,7 +18,7 @@ import welcome from '@/components/welcome'
 import finalTable from '@/components/courseExamMethods/finalTable'
 import usualPreformanceTable from '@/components/studentScoreManager/usualPreformanceTable'
 import finalStatisticsTable from '@/components/studentScoreManager/finalStatisticsTable'
-import finalComprehensiveTable from '@/components/classTables/finalComprehensiveTable'
+import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
 import analysisTable from '@/components/classTables/analysisTable'
 import programTable from '@/components/classTables/programTable'
 

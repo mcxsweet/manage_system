@@ -69,7 +69,7 @@
             </div>
 
             <div v-if="isEmpty">
-                <el-result icon="warning" title="获取试卷信息失败！" subTitle="请先对试卷进行设置">
+                <el-result icon="warning" title="当前课程期末考核方式未设置！" subTitle="请先对试卷进行设置">
                     <!-- <template slot="extra">
                         <el-button type="primary" size="medium">返回</el-button>
                     </template> -->
