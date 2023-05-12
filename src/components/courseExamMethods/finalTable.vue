@@ -159,7 +159,7 @@
                                                             <el-button style="margin-top:8px ;" type="primary" size="mini"
                                                                 @click="popUpUpdate(scope.row)">修改</el-button>
                                                             <el-button style="margin-top:8px ;" type="success" size="mini"
-                                                                @click="saveItem(scope.row),scope.row.isshow=false">保存</el-button>
+                                                                @click="saveItem(scope.row,scope.$index),scope.row.isshow=false">保存</el-button>
                                                             <el-button style="margin-top:8px ;" type="danger" size="mini"
                                                                 @click="deleteDetail(scope.row.id)">删除</el-button>
                                                         </template>
@@ -463,8 +463,7 @@ export default {
         },
 
         //点击题型
-        handleChange(item) {
-           
+        handleChange(item) { 
             this.currentTypeId = item;
             api.get("/courseExamPaper/detail/" + item, "", (resp) => {
                 if (resp.data.data) {
@@ -475,7 +474,6 @@ export default {
                         this.tableData[index].isshow = false
                     }
                 }
-                console.log(this.tableData)
             })
             this.loading = false;
         },
@@ -508,18 +506,19 @@ export default {
             
         },
         //自动添加的小题保存
-        saveItem(obj){  
+        saveItem(obj,index){  
             obj.primaryId = this.currentTypeId
-            console.log(obj.indicatorPoints,obj.courseTarget)
             obj.indicatorPoints = JSON.stringify(obj.indicatorPoints);
             obj.courseTarget = JSON.stringify(obj.courseTarget);
-            console.log(obj.indicatorPoints,obj.courseTarget)
             api.post("/courseExamPaper/detail",obj,(resp)=>{
+                this.tableData[index].indicatorPoints = JSON.parse(obj.indicatorPoints)
+                this.tableData[index].courseTarget = JSON.parse(obj.courseTarget)
                 if (resp.data.flag) {
                         this.$message({
                             type: 'success',
                             message: '添加成功!'
                         });
+                       
                         //this.handleChange(this.currentTypeId); 
                     } else {
                          this.$message({
@@ -529,6 +528,7 @@ export default {
                     }
             })
         },
+        //自动添加小题函数
         add1(obj,len){
            let index = obj.itemNumber
             this.addDetailForm.titleNumber = len
