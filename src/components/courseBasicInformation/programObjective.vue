@@ -40,7 +40,7 @@
 
         <el-table-column label="请选择评价依据" width="180">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.evaluationMethod" multiple placeholder="评价依据" v-show="scope.row.ised">
+            <el-select v-model="scope.row.evaluationMethod" multiple placeholder="评价依据" v-show="scope.row.ised" allow-create="true" filterable="true">
               <el-option label="考试" value="考试"></el-option>
               <el-option label="作业" value="作业"></el-option>
               <el-option label="报告" value="报告"></el-option>
