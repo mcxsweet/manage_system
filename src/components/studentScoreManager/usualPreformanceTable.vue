@@ -56,7 +56,7 @@
                 <el-button style="margin-top: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
             </div>
             <div v-if="isEmpty">
-                <el-result icon="warning" title="获取成绩信息失败！" subTitle="请先对考核方式进行设置">
+                <el-result icon="warning" title="当前课程平时考核方式未设置！" subTitle="请先对考核方式进行设置">
                 </el-result>
             </div>
 
