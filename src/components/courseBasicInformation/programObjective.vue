@@ -2,9 +2,8 @@
   <el-container>
     <el-main>
       <el-table :data="tableData1" border style="width: 100%">
-        <el-table-column prop="index" label="序号" width="100%">
+        <el-table-column prop="index" label="序号" width="118">
           <template slot-scope="scope">
-            <!-- <span>课程目标{{ scope.$index+1 }}：</span> -->
             <el-input v-model="scope.row.targetName" v-show="scope.row.ised"></el-input>
             <span v-show="!scope.row.ised">{{ scope.row.targetName }}</span>
           </template>
@@ -141,11 +140,8 @@ export default {
       row.ised = false
       this.tableData1[row.index].indicatorPoints = JSON.stringify(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.stringify(this.tableData1[row.index].evaluationMethod);
-
       if (row.id == null) {
         api.post("/courseInfo/courseTarget", this.tableData1[row.index], (resp) => {
-
-          console.log(resp.data.flag)
           if (resp.data.flag) {
             this.$message({
               type: 'success',
@@ -174,7 +170,6 @@ export default {
           }
         })
       }
-
       this.tableData1[row.index].indicatorPoints = JSON.parse(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.parse(this.tableData1[row.index].evaluationMethod);
     },
@@ -210,8 +205,11 @@ export default {
 
     },
     add() {
+      let j=0
       if(this.tableLength>this.tableData1.length){
         this.obj.index = this.tableData1.length
+        j=this.obj.index+1
+        this.obj.targetName = "课程目标"+j
         this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
       }else{
         this.$message({
@@ -221,8 +219,11 @@ export default {
       }
     },
     add1(index){
+        let j =0
         for(let i =0;i<index;i++){
         this.obj.index = this.tableData1.length
+        j=this.obj.index+1
+        this.obj.targetName = "课程目标"+j
         this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
       }
     }
