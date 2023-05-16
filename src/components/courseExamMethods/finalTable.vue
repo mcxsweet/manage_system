@@ -75,6 +75,9 @@
 
             <!-- 题型与指标点对应关系 -->
             <el-divider content-position="left">全局展示</el-divider>
+            <el-button type="primary" @click="exportPDF()" style="margin: 1vh;">导出PDF</el-button>
+            <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
+
             <div v-loading="loading2">
                 <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
             </div>
@@ -103,7 +106,7 @@
                         <div style="margin-bottom: 50px;">
                             <el-result icon="warning" title="当前数据为空" subTitle="请添加数据或返回" v-if="finllPaper.length == 0">
                             </el-result>
-                            <el-collapse v-model="activeName" accordion @change="handleChange" >
+                            <el-collapse v-model="activeName" accordion @change="handleChange">
                                 <div v-for="item, index in finllPaper" :key="index">
                                     <el-row>
                                         <el-col :span="23">
@@ -124,17 +127,22 @@
                                                     <el-table-column label="分值" width="180">
                                                         <template slot-scope="scope">
                                                             <p v-show="!scope.row.isshow">{{ scope.row.score }}</p>
-                                                            <el-input v-model="scope.row.score" v-show="scope.row.isshow"></el-input>
+                                                            <el-input v-model="scope.row.score"
+                                                                v-show="scope.row.isshow"></el-input>
                                                         </template>
                                                     </el-table-column>
                                                     <el-table-column label="指标点">
                                                         <template slot-scope="scope">
-                                                            <div v-for="item1, index in scope.row.indicatorPoints" :key="index" v-show="!scope.row.isshow">
+                                                            <div v-for="item1, index in scope.row.indicatorPoints"
+                                                                :key="index" v-show="!scope.row.isshow">
                                                                 <p>{{ item1 }}</p>
                                                             </div>
-                                                            <el-select v-model="scope.row.indicatorPoints" style="width:100% ;" v-show="scope.row.isshow" multiple="true">
-                                                                <el-option v-for="item, index in currentExamineItem.indicatorPointsDetail"
-                                                                    :key="index" :value="item" >
+                                                            <el-select v-model="scope.row.indicatorPoints"
+                                                                style="width:100% ;" v-show="scope.row.isshow"
+                                                                multiple="true">
+                                                                <el-option
+                                                                    v-for="item, index in currentExamineItem.indicatorPointsDetail"
+                                                                    :key="index" :value="item">
                                                                     <span style="float: left">{{ item }}</span>
                                                                 </el-option>
                                                             </el-select>
@@ -142,13 +150,15 @@
                                                     </el-table-column>
                                                     <el-table-column label="课程目标">
                                                         <template slot-scope="scope">
-                                                            <div v-for="item, index in scope.row.courseTarget" :key="index" v-show="!scope.row.isshow">
+                                                            <div v-for="item, index in scope.row.courseTarget" :key="index"
+                                                                v-show="!scope.row.isshow">
                                                                 <p>{{ item }}</p>
                                                             </div>
                                                             <el-select v-model="scope.row.courseTarget" multiple="true"
-                                                                                        style="width:100% ;" v-show="scope.row.isshow">
-                                                                <el-option v-for="item, index in currentExamineItem.courseTarget"
-                                                                    :key="index" :value="item" >
+                                                                style="width:100% ;" v-show="scope.row.isshow">
+                                                                <el-option
+                                                                    v-for="item, index in currentExamineItem.courseTarget"
+                                                                    :key="index" :value="item">
                                                                     <span style="float: left">{{ item }}</span>
                                                                 </el-option>
                                                             </el-select>
@@ -159,7 +169,7 @@
                                                             <el-button style="margin-top:8px ;" type="primary" size="mini"
                                                                 @click="popUpUpdate(scope.row)">修改</el-button>
                                                             <el-button style="margin-top:8px ;" type="success" size="mini"
-                                                                @click="saveItem(scope.row,scope.$index),scope.row.isshow=false">保存</el-button>
+                                                                @click="saveItem(scope.row, scope.$index), scope.row.isshow = false">保存</el-button>
                                                             <el-button style="margin-top:8px ;" type="danger" size="mini"
                                                                 @click="deleteDetail(scope.row.id)">删除</el-button>
                                                         </template>
@@ -168,7 +178,8 @@
                                                 </el-table>
                                                 <el-button style="margin-top:8px ;" type="primary" size="mini"
                                                     @click="isAddDetail = !isAddDetail">添加</el-button>
-                                                <el-button  type="primary" size="mini" @click="add1(item,tableData.length)">自动添加小题</el-button>
+                                                <el-button type="primary" size="mini"
+                                                    @click="add1(item, tableData.length)">自动添加小题</el-button>
                                             </el-collapse-item>
                                         </el-col>
                                         <el-col :span="1">
@@ -299,6 +310,7 @@
 <script>
 import api from '@/api/api'
 import axios from 'axios';
+import global from '@/script/global';
 
 export default {
     name: "finalTable",
@@ -335,7 +347,7 @@ export default {
             //添加题型控件
             isAddPaperItem: false,
             //添加表单
-            addForm: {itemNum:0},
+            addForm: { itemNum: 0 },
             //删除题型按钮控件
             isDeletePaperItem: false,
             //修改题型按钮控件
@@ -343,7 +355,7 @@ export default {
             //修改表单弹出控件
             isUpdateForm: false,
             //修改小题
-            isUpdateDetail:false,
+            isUpdateDetail: false,
             //修改表单
             updateForm: {},
 
@@ -352,14 +364,14 @@ export default {
             //添加小题表单控件
             isAddDetail: false,
             //添加小题表单
-            addDetailForm: {titleNumber:0,Score:0,isshow: false},
+            addDetailForm: { titleNumber: 0, Score: 0, isshow: false },
             //修改小题表单控件
-            
+
             //修改小题表单
             updateDetailForm: {},
 
             //itemNumber:0,
-            
+
 
             //整体展示表格
             pdfUrl: null,
@@ -447,23 +459,11 @@ export default {
 
         //工作区关闭确认
         handleClose(done) {
-            // this.$confirm('是否关闭？请记得保存', '提示', {
-            //     confirmButtonText: '确定',
-            //     cancelButtonText: '取消',
-            //     type: 'warning'
-            // }).then(() => {
-            //     done();
-            // }).catch(() => {
-            //     this.$message({
-            //         type: 'info',
-            //         message: '已取消'
-            //     });
-            // });
             done();
         },
 
         //点击题型
-        handleChange(item) { 
+        handleChange(item) {
             this.currentTypeId = item;
             api.get("/courseExamPaper/detail/" + item, "", (resp) => {
                 if (resp.data.data) {
@@ -477,17 +477,17 @@ export default {
             })
             this.loading = false;
         },
-        addPaperItem1(index){
+        addPaperItem1(index) {
             this.itemNumber = index
             this.$confirm('是否添加 ?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
-            }),then(() => {
+            }), then(() => {
                 this.addPaperItem();
                 this.add(index);
-                if (this.tableData.length!=0) {
-                     this.$message({
+                if (this.tableData.length != 0) {
+                    this.$message({
                         type: 'success',
                         message: '添加成功!'
                     });
@@ -503,41 +503,41 @@ export default {
                     message: '已取消'
                 });
             });
-            
+
         },
         //自动添加的小题保存
-        saveItem(obj,index){  
+        saveItem(obj, index) {
             obj.primaryId = this.currentTypeId
             obj.indicatorPoints = JSON.stringify(obj.indicatorPoints);
             obj.courseTarget = JSON.stringify(obj.courseTarget);
-            api.post("/courseExamPaper/detail",obj,(resp)=>{
+            api.post("/courseExamPaper/detail", obj, (resp) => {
                 this.tableData[index].indicatorPoints = JSON.parse(obj.indicatorPoints)
                 this.tableData[index].courseTarget = JSON.parse(obj.courseTarget)
                 if (resp.data.flag) {
-                        this.$message({
-                            type: 'success',
-                            message: '添加成功!'
-                        });
-                       
-                        //this.handleChange(this.currentTypeId); 
-                    } else {
-                         this.$message({
-                            type: 'error',
-                            message: resp.data.message
-                        });
-                    }
+                    this.$message({
+                        type: 'success',
+                        message: '添加成功!'
+                    });
+
+                    //this.handleChange(this.currentTypeId); 
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: resp.data.message
+                    });
+                }
             })
         },
         //自动添加小题函数
-        add1(obj,len){
-           let index = obj.itemNumber
+        add1(obj, len) {
+            let index = obj.itemNumber
             this.addDetailForm.titleNumber = len
-            for(let i=0;i<(index-len)*1;i++){
+            for (let i = 0; i < (index - len) * 1; i++) {
                 this.addDetailForm.isshow = true
                 this.addDetailForm.titleNumber++
                 this.addForm.examChildMethodId = this.currentExamineItem.id;
-                this.addForm.indicatorPoints={}
-                this.addForm.courseTarget={}
+                this.addForm.indicatorPoints = {}
+                this.addForm.courseTarget = {}
                 this.tableData.push(JSON.parse(JSON.stringify(this.addDetailForm)))
             }
         },
@@ -555,7 +555,7 @@ export default {
                         if (resp.data.flag) {
                             let i = resp.data.data.length - 1
                             this.finllPaper = resp.data.data;
-                            this.finllPaper[i].itemNumber = index*1
+                            this.finllPaper[i].itemNumber = index * 1
                         }
                     })
                     this.isAddPaperItem = false;
@@ -734,7 +734,7 @@ export default {
                 url = this.courseList[this.currentCourse].id;
             }
             // axios.get("http://43.140.201.70:8080/courseExamPaper/Table/" + url, { responseType: 'blob' })
-            axios.get("/courseExamPaper/Table/" + url, { responseType: 'blob' })
+            axios.get("/courseExamPaper/" + url + "/1/Table", { responseType: 'blob' })
                 .then((response) => {
                     // 将响应数据转换为Blob对象
                     const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -743,6 +743,27 @@ export default {
                     this.pdfUrl = URL.createObjectURL(blob);
                     this.loading2 = false;
                 })
+        },
+
+        //导出XLS
+        exportXLS() {
+            var url = "";
+            if (this.currentId) {
+                url = this.currentId;
+            } else {
+                url = this.courseList[this.currentCourse].id;
+            }
+            window.location.href = global.BaseUrl + "/courseExamPaper/" + url + "/2/Table";
+        },
+
+        exportPDF() {
+            var url = "";
+            if (this.currentId) {
+                url = this.currentId;
+            } else {
+                url = this.courseList[this.currentCourse].id;
+            }
+            window.location.href = global.BaseUrl + "/courseExamPaper/" + url + "/1/Table";
         }
 
 

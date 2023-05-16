@@ -17,6 +17,7 @@
       <!-- 表格展示 -->
       <div>
         <el-button type="primary" @click="isShow = !isShow" style="margin: 1vh;">成绩分析</el-button>
+        <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
 
         <el-drawer title="成绩分析" :visible.sync="isShow" direction="btt" size="90%">
           <div v-loading="loading2" style="margin-top: 2vw;">
@@ -31,17 +32,17 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="学号" prop="studentNumber">
+          <el-table-column label="学号" prop="studentNumber" width="200px">
           </el-table-column>
-          <el-table-column label="姓名" prop="studentName">
+          <el-table-column label="姓名" prop="studentName" width="150px">
           </el-table-column>
-          <el-table-column label="班级" prop="className">
+          <el-table-column label="班级" prop="className" width="300px">
           </el-table-column>
-          <el-table-column label="平时成绩" prop="usualScore">
+          <el-table-column label="平时成绩" prop="usualScore" width="100px">
           </el-table-column>
-          <el-table-column label="卷面成绩" prop="finalScore">
+          <el-table-column label="卷面成绩" prop="finalScore" width="100px">
           </el-table-column>
-          <el-table-column label="综合成绩" prop="comprehensiveScore">
+          <el-table-column label="综合成绩" prop="comprehensiveScore" width="100px">
           </el-table-column>
         </el-table>
       </div>
@@ -53,7 +54,7 @@
 <script>
 import api from '@/api/api';
 import axios from 'axios';
-
+import global from '@/script/global';
 
 export default {
   name: "finalComprehensiveTable",
@@ -116,7 +117,7 @@ export default {
       } else {
         url = this.courseList[this.currentCourse].id;
       }
-      axios.get("/student/" + url + "/exportComprehensiveScore", { responseType: 'blob' })
+      axios.get("/student/" + url + "/exportComprehensiveScoreAnalyse", { responseType: 'blob' })
         .then((response) => {
           // 将响应数据转换为Blob对象
           const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -125,6 +126,9 @@ export default {
           this.pdfUrl = URL.createObjectURL(blob);
           this.loading2 = false;
         })
+    },
+    exportXLS() {
+      window.location.href = global.BaseUrl + "/student/" + this.currentId + "/exportComprehensiveScore";
     }
 
   },
