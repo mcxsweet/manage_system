@@ -94,7 +94,12 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="课程类别" prop="courseType">
-                    <el-input v-model="FormData.courseType"></el-input>
+                    <el-select v-model="FormData.courseType" placeholder="请选择课程类别">
+                        <el-option value="专业基础课"></el-option>
+                        <el-option value="专业特色课"></el-option>
+                        <el-option value="专业必修课课"></el-option>
+                    </el-select>
+                   
                 </el-form-item>
                 <el-form-item label="所选教材" prop="textBook">
                     <el-input v-model="FormData.textBook"></el-input>
@@ -107,8 +112,8 @@
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
                     <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
-                    <el-select v-model="FormData.indicatorPoints" :filterable="true" :multiple="true" placeholder="请选择指标点"
-                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum">
+                    <el-select v-model="FormData.indicatorPoints" filterable="true" :multiple="true" placeholder="请选择指标点(可创造词条)"
+                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum" allow-create="true">
                         <el-option v-for="item in indicators" :key="item.indicatorName" :label="item.indicatorName"
                             :value="item.indicatorName">
                             <span style="float: left">{{ item.indicatorName }}</span>
