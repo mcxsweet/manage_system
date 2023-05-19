@@ -16,12 +16,22 @@
 
       <!-- 表格展示 -->
       <div>
-        <el-button type="primary" @click="isShow = !isShow" style="margin: 1vh;">成绩分析</el-button>
+        <el-button type="primary" @click="open()" style="margin: 1vh;">成绩分析</el-button>
+        <el-button type="primary" @click="openAchievement()" style="margin: 1vh;">课程目标达成情况</el-button>
         <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
 
         <el-drawer title="成绩分析" :visible.sync="isShow" direction="btt" size="90%">
-          <div v-loading="loading2" style="margin-top: 2vw;">
+          <div v-loading="loading2 | loading" style="margin-top: 2vw;">
             <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
+            <embed :src="pdfUrl2" type="application/pdf" width="100%" height="500px" />
+          </div>
+        </el-drawer>
+
+        <el-drawer title="达成度分析" :visible.sync="isShow2" direction="btt" size="90%">
+          <div v-loading="loading3" style="margin-top: 2vw;" class="container">
+            <div v-for="item, index in data" :key="index" style="margin-top: 50px ">
+              <myChart :title="index + 1" :data="item"></myChart>
+            </div>
           </div>
         </el-drawer>
 
@@ -56,6 +66,8 @@ import api from '@/api/api';
 import axios from 'axios';
 import global from '@/script/global';
 
+import myChart from '@/components/analysePage/myChart'
+
 export default {
   name: "finalComprehensiveTable",
   data() {
@@ -68,13 +80,20 @@ export default {
       ischoose: false,
       //表格成绩
       tableData: [],
+      loading: true,
       loading2: true,
+      loading3: true,
       pdfUrl: "",
+      pdfUrl2: "",
 
       isShow: false,
+      isShow2: false,
+
+      data: [],
 
     }
   },
+  components: { myChart },
   methods: {
     tableHeader({ row, column, rowIndex, columnIndex }) {
       return 'text-align:center'
@@ -86,7 +105,6 @@ export default {
         this.currentId = this.courseList[this.currentCourse].id;
       }
       this.getComprehensiveScore();
-      this.initShowTable();
       this.ischoose = true;
     },
 
@@ -129,7 +147,44 @@ export default {
     },
     exportXLS() {
       window.location.href = global.BaseUrl + "/student/" + this.currentId + "/exportComprehensiveScore";
-    }
+    },
+    open() {
+      this.loading = true;
+      this.loading2 = true;
+      this.isShow = !this.isShow;
+      this.initShowTable();
+      setTimeout(() => {
+        this.getAchievementPDF();
+      }, 2000);
+    },
+    openAchievement() {
+      this.isShow2 = true;
+      this.getScatterData();
+    },
+    getScatterData() {
+      api.get("/student/" + this.currentId + "/scatterData", "", (resp) => {
+        var array = JSON.parse(resp.data.value);
+        this.data = array;
+      })
+      this.loading3 = false;
+    },
+    getAchievementPDF() {
+      var url = "";
+      if (this.currentId) {
+        url = this.currentId;
+      } else {
+        url = this.courseList[this.currentCourse].id;
+      }
+      axios.get("student/" + url + "/1/exportDegreeOfAchievement", { responseType: 'blob' })
+        .then((response) => {
+          // 将响应数据转换为Blob对象
+          const text = new Blob([response.data], { type: 'application/pdf' });
+
+          // 生成URL，将其分配给嵌入元素的src属性
+          this.pdfUrl2 = URL.createObjectURL(text);
+          this.loading = false;
+        })
+    },
 
   },
   mounted() {
@@ -143,4 +198,14 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.container {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  /* background-color: red; */
+}
+</style>

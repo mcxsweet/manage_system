@@ -19,85 +19,85 @@ import finalTable from '@/components/courseExamMethods/finalTable'
 import usualPreformanceTable from '@/components/studentScoreManager/usualPreformanceTable'
 import finalStatisticsTable from '@/components/studentScoreManager/finalStatisticsTable'
 import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
-import analysisTable from '@/components/classTables/analysisTable'
-import programTable from '@/components/classTables/programTable'
+import analysisTable from '@/components/analysePage/analysisTable'
+import programTable from '@/components/analysePage/programTable'
 import { Message } from "element-ui";
 
 const router = new VueRouter({
     routes: [{
-            path: "/",
-            component: LoginPage
+        path: "/",
+        component: LoginPage
+    },
+    {
+        path: "/MainPage",
+        component: MainPage,
+        children: [{
+            path: 'analysisTable',
+            component: analysisTable
         },
         {
-            path: "/MainPage",
-            component: MainPage,
-            children: [{
-                    path: 'analysisTable',
-                    component: analysisTable
-                },
-                {
-                    path: 'programTable',
-                    component: programTable
-                },
-                {
-                    path: 'finalStatisticsTable',
-                    component: finalStatisticsTable
-                },
-
-                {
-                    path: 'finalComprehensiveTable',
-                    component: finalComprehensiveTable
-                },
-                {
-                    path: 'finalTable',
-                    component: finalTable
-                },
-                {
-                    path: 'usualPreformanceTable',
-                    component: usualPreformanceTable
-                },
-                {
-                    path: 'basicInformationTable',
-                    component: basicInformationTable
-                },
-                {
-                    path: 'welcome', //  课程基本信息
-                    component: welcome
-                },
-                {
-                    path: 'courseBasicInformation', //  课程基本信息
-                    component: courseBasicInformation
-                },
-                {
-                    path: 'teachingPro', //教学大纲
-                    component: teachingPro
-                },
-                {
-                    path: 'sudoTeachingPro', //系主任教学大纲
-                    component: sudoTeachingPro,
-                    meta:{
-                        isAdmin:1 //此处仅作演示之用，可自行修改
-                    }
-                },
-                {
-                    path: 'SuperTeachingPro', //院长教学大纲
-                    component: SuperTeachingPro
-                },
-                {
-                    path: 'indexPoint', //毕业要求指标点
-                    component: indexPoint
-                },
-                {
-                    path: 'classInformation', //  课程详细基本信息
-                    component: classInformation,
-                    props: true,
-                    children: [{
-                        path: 'programObjective',
-                        component: programObjective,
-                    }]
-                },
-            ]
+            path: 'programTable',
+            component: programTable
         },
+        {
+            path: 'finalStatisticsTable',
+            component: finalStatisticsTable
+        },
+
+        {
+            path: 'finalComprehensiveTable',
+            component: finalComprehensiveTable
+        },
+        {
+            path: 'finalTable',
+            component: finalTable
+        },
+        {
+            path: 'usualPreformanceTable',
+            component: usualPreformanceTable
+        },
+        {
+            path: 'basicInformationTable',
+            component: basicInformationTable
+        },
+        {
+            path: 'welcome', //  课程基本信息
+            component: welcome
+        },
+        {
+            path: 'courseBasicInformation', //  课程基本信息
+            component: courseBasicInformation
+        },
+        {
+            path: 'teachingPro', //教学大纲
+            component: teachingPro
+        },
+        {
+            path: 'sudoTeachingPro', //系主任教学大纲
+            component: sudoTeachingPro,
+            meta: {
+                isAdmin: 1 //此处仅作演示之用，可自行修改
+            }
+        },
+        {
+            path: 'SuperTeachingPro', //院长教学大纲
+            component: SuperTeachingPro
+        },
+        {
+            path: 'indexPoint', //毕业要求指标点
+            component: indexPoint
+        },
+        {
+            path: 'classInformation', //  课程详细基本信息
+            component: classInformation,
+            props: true,
+            children: [{
+                path: 'programObjective',
+                component: programObjective,
+            }]
+        },
+        ]
+    },
     ]
 })
 
@@ -106,26 +106,26 @@ router.beforeEach((to, from, next) => {
     if (token) {
         if (to.path === '/') {
             // 登录，跳转首页
-            next({path: '/MainPage/courseBasicInformation'})
-        }else{
+            next({ path: '/MainPage/courseBasicInformation' })
+        } else {
             const auth = localStorage.getItem('Isadmin')
             //此处可做权限验证           
-            if(!to.meta.isAdmin){
+            if (!to.meta.isAdmin) {
                 next()
-            }else{
-                if(auth === to.meta.isAdmin){
+            } else {
+                if (auth === to.meta.isAdmin) {
                     next()
-                }else{
+                } else {
                     Message.warning('对不起您没有权限访问此页面')
                     next('/MainPage/courseBasicInformation')
                 }
             }
-            
+
         }
     } else {
         if (to.path === '/') {
             next()
-        }else{
+        } else {
             next('/')
         }
     }

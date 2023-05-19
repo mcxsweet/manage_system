@@ -99,7 +99,7 @@
                         <el-option value="专业特色课"></el-option>
                         <el-option value="专业必修课课"></el-option>
                     </el-select>
-                   
+
                 </el-form-item>
                 <el-form-item label="所选教材" prop="textBook">
                     <el-input v-model="FormData.textBook"></el-input>
@@ -112,8 +112,9 @@
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
                     <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
-                    <el-select v-model="FormData.indicatorPoints" filterable="true" :multiple="true" placeholder="请选择指标点(可创造词条)"
-                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum" allow-create="true">
+                    <el-select v-model="FormData.indicatorPoints" filterable="true" :multiple="true"
+                        placeholder="请选择指标点(可创造词条)" style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum"
+                        allow-create="true">
                         <el-option v-for="item in indicators" :key="item.indicatorName" :label="item.indicatorName"
                             :value="item.indicatorName">
                             <span style="float: left">{{ item.indicatorName }}</span>
@@ -282,7 +283,7 @@ export default {
         },
         //导出
         handleExportTest() {
-            window.location.href = "http://localhost:8080/student/12/exportDegreeOfAchievement";
+            window.location.href = "http://localhost:8080/student/12/2/exportDegreeOfAchievement";
         },
         //跳转到设置界面
         handleSetting(index, object) {

@@ -15,6 +15,11 @@ Vue.use(ElementUI);
 import VueCookies from "vue-cookies";
 Vue.use(VueCookies);
 
+//echarts
+import "echarts";
+import ECharts from 'vue-echarts'
+Vue.component("ECharts", ECharts);
+
 Vue.config.productionTip = false
 Vue.config.silent = true
 
