@@ -283,7 +283,7 @@ export default {
         },
         //导出
         handleExportTest() {
-            window.location.href = "http://localhost:8080/student/12/2/exportDegreeOfAchievement";
+            window.location.href = "http://localhost:8080/report";
         },
         //跳转到设置界面
         handleSetting(index, object) {
