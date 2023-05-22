@@ -131,6 +131,7 @@
                   <el-tooltip content="添加子项目" placement="bottom" effect="light">
                     <el-button type="primary" icon="el-icon-plus" :circle="true"
                       @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
+                      
                   </el-tooltip>
 
                 </div>
@@ -169,10 +170,7 @@ export default {
   name: "basicInformationTable",
   data() {
     return {
-      //子项目选项
-      childOptions: [{ label: '平时成绩考核项目', options: [{ value: '考勤' }, { value: '课题提问' }, { value: '作业' }, { value: '期中测试' }] },
-      { label: '实验考核项目', options: [{ value: '实验项目完成分' }, { value: '实验报告' }] },
-      { label: '期末考核项目', options: [{ value: '试卷' }, { value: '大报告' }, { value: '答辩' }] }],
+      addid:0,
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -242,11 +240,13 @@ export default {
     //初始化表格数据
     init() {
       if (this.currentId) {
+        this.addid = this.currentId*1
         //获取课程目标
         this.getCurrentCourseTarget(this.currentId);
         this.getIndicators(this.currentId);
         //获取表单数据
         api.get("/courseExam/courseExamineMethods/" + this.currentId, "", (resp) => {
+          console.log(resp.data.data)
           for (let index = 0; index < resp.data.data.length; index++) {
             resp.data.data[index].isExamineItem = true;
             resp.data.data[index].isPercentage = true;
@@ -267,7 +267,7 @@ export default {
           this.examItemArray = resp.data.data;
         })
       } else {
-
+        this.addid = this.courseList[this.currentCourse].id*1
         this.getCurrentCourseTarget(this.courseList[this.currentCourse].id);
         this.getIndicators(this.courseList[this.currentCourse].id);
 
@@ -301,7 +301,6 @@ export default {
       this.examItemArray[index].isExamineItem = false;
       this.examItemArray[index].isPercentage = false;
     },
-
     //保存考核项目
     saveExamItem(index) {
       if (!this.examItemArray[index].examineItem || !this.examItemArray[index].percentage) {
@@ -323,17 +322,20 @@ export default {
         //添加
         if (!this.examItemArray[index].id) {
           api.post("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => {
+            console.log(resp.data.data)
             if (resp.data.flag) {
-              //this.getCurrentCourseExam();
+              api.get("/courseExam/courseExamineMethods/" + this.addid, "", (resp2) => {
+                this.examItemArray[index].id = resp2.data.data[index].id
+              })
               if (resp.data.flag) {
-            this.$message({
-              type: 'success',
-              message: '成功!'
-            });
+                this.$message({
+                  type: 'success',
+                  message: '添加成功!'
+                });
           } else {
             this.$message({
               type: 'error',
-              message: '失败!'
+              message: '添加失败!'
             });
           }
             }
@@ -341,7 +343,20 @@ export default {
         }
         //修改
         else {
-          api.put("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => { })
+          api.put("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => {
+              if(resp.data.flag){
+                this.$message({
+                  type:'success',
+                  message:'修改成功'
+                })
+              }
+              else{
+                this.$message({
+                  type:'error',
+                  message:'修改失败'
+                })
+              }
+           })
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
@@ -365,13 +380,13 @@ export default {
             if (resp.data.flag) {
               this.$message({
                 type: 'success',
-                message: '成功!'
+                message: '删除成功!'
               });
               this.examItemArray.splice(index, 1);
             } else if (resp.status != 200) {
               this.$message({
                 type: 'error',
-                message: '失败!'
+                message: '删除失败!'
               });
             }
           })
@@ -404,7 +419,13 @@ export default {
           type: 'error',
           message: '考核项目和百分比为必填项！！！!'
         });
-      } else {
+      }else if(!this.examItemArray[index].id){
+        this.$message({
+          type:'error',
+          message:'请先保存考核项目！'
+        })
+      }
+       else {
         this.examItemArray[index].examChildItemArray[childIndex].isExamineChildItem = true;
         this.examItemArray[index].examChildItemArray[childIndex].isChildPercentage = true;
         this.examItemArray[index].examChildItemArray[childIndex].isCourseTarget = true;
@@ -414,11 +435,13 @@ export default {
         this.examItemArray[index].examChildItemArray[childIndex].courseTarget = JSON.stringify(this.examItemArray[index].examChildItemArray[childIndex].courseTarget);
         this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail = JSON.stringify(this.examItemArray[index].examChildItemArray[childIndex].indicatorPointsDetail);
         this.examItemArray[index].examChildItemArray[childIndex].courseExamineMethodsId = this.examItemArray[index].id;
-
         //添加
         if (!this.examItemArray[index].examChildItemArray[childIndex].id) {
           api.post("/courseExam/courseExamineChildMethods", this.examItemArray[index].examChildItemArray[childIndex], (resp) => {
             if (resp.data.flag) {
+              api.get("/courseExam/courseExamineChildMethods/" + this.examItemArray[index].id, "", (resp1) => {
+                this.examItemArray[index].examChildItemArray[childIndex].id = resp1.data.data[childIndex].id
+              })  
               this.$message({
                 type: 'success',
                 message: '添加成功!'
@@ -461,13 +484,13 @@ export default {
             if (resp.data.flag) {
               this.$message({
                 type: 'success',
-                message: '成功!'
+                message: '删除成功!'
               });
               this.examItemArray[index].examChildItemArray.splice(childIndex, 1);
             } else if (resp.status != 200) {
               this.$message({
                 type: 'error',
-                message: '失败!'
+                message: '删除失败!'
               });
             }
           })

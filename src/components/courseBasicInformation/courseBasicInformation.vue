@@ -53,7 +53,11 @@
                     <el-input v-model="FormData.courseName"></el-input>
                 </el-form-item>
                 <el-form-item label="开设专业">
-                    <el-input v-model="FormData.major"></el-input>
+                    <el-select v-model="FormData.major">
+                        <el-option value="计算机科学与技术"></el-option>
+                        <el-option value="电子信息工程"></el-option>
+                        <el-option value="数据科学与大数据技术"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="任课教师" prop="classroomTeacher">
                     <el-input v-model="FormData.classroomTeacher"></el-input>
@@ -113,7 +117,7 @@
                 <el-form-item label="指标点编号" prop="indicatorPoints">
                     <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
                     <el-select v-model="FormData.indicatorPoints" filterable="true" :multiple="true"
-                        placeholder="请选择指标点(可创造词条)" style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum"
+                        placeholder="数量与内容请与教学大纲一致！" style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum"
                         allow-create="true">
                         <el-option v-for="item in indicators" :key="item.indicatorName" :label="item.indicatorName"
                             :value="item.indicatorName">
@@ -177,6 +181,11 @@
                     @click="handleExport(null, currentObject)">导出文件</el-button>
                 <!-- <el-button style="margin: 3vh; width: 20vh;" type="primary"
                     @click="handleDelete(currentObject)">删除</el-button> -->
+                <p style="width: 100%;margin: 10px;">课程相关文档查看</p>
+                <el-button  style="margin: 3vh; width: 20vh;" type="primary" plain
+                    @click="goto('teachingPro',currentObject.id,currentObject.courseName)">课程大纲查看</el-button>
+                <el-button  style="margin: 3vh; width: 20vh;" type="primary" plain
+                    @click="goto('indexPoint',currentObject.id,currentObject.major)">专业课程目标总表查看</el-button>
 
                 <p style="width: 100%;margin: 10px;">该行项目设置</p>
 
