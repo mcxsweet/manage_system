@@ -90,12 +90,11 @@ const router = new VueRouter({
         {
             path: 'classInformation', //  课程详细基本信息
             component: classInformation,
-            props: true,
-            children: [{
-                path: 'programObjective',
-                component: programObjective,
-            }]
         },
+        {
+            path:'programObjective',  //课程目标设置
+            component:programObjective
+        }
         ]
     },
     ]

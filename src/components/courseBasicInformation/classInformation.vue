@@ -63,31 +63,16 @@
                 </el-form-item>
                 <el-form-item :inline="true" label="课程目标数量" prop="courseTargetNum" width="80%">
                     <template solt-scope="scope">
-                        <!-- <span>{{ scope.FormData.courseTargetNum}}</span> -->
                         <el-input v-model="FormData.courseTargetNum"></el-input>
-                        <router-link :to="{
-                            path: '/MainPage/classInformation/programObjective/',
-                            query: {
-                                courseId: FormData.id,
-                                courseTargetNum: FormData.courseTargetNum,
-                                courseName: FormData.courseName
-                            }
-                        }" tag="el-button" @click.native="settingbegain">设置课程目标</router-link>
-                        <el-button type="primary" v-show="showbt" @click="settingOver">设置完毕</el-button>
-                        <router-view v-show="showObjective"></router-view>
                     </template>
                 </el-form-item>
-                <!-- <el-form-item label="课程目标数量" prop="courseTargetNum" >
-                                            <el-input v-model="FormData.courseTargetNum"></el-input>
-                                            <el-form-item><el-button>设置课程目标</el-button></el-form-item>
-                                        </el-form-item> -->
                 <el-form-item label="指标点数量" prop="indicatorPointsNum">
                     <el-input v-model="FormData.indicatorPointsNum"></el-input>
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
                     <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
                     <el-select v-model="FormData.indicatorPoints" filterable multiple placeholder="数量与内容请与教学大纲一致！"
-                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum" allow-create="true">
+                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum">
                         <el-option v-for="item in indicators" :key="item.indicatorName" :value="item.indicatorName">
                             <span style="float: left">{{ item.indicatorName }}</span>
                             <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
@@ -210,9 +195,7 @@ export default {
         }
 
     },
-    components: {
-        programObjection
-    },
+   
     mounted() {
         this.initDataOptions();
         this.getIndicators();

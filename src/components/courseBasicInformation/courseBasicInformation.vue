@@ -177,6 +177,8 @@
                 <p style="width: 100%;margin: 10px;">课程内容设置</p>
                 <el-button style="margin: 3vh; width: 20vh;" type="primary" plain
                     @click="goto('classInformation', currentObject.id)">详细课程信息设置</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" type="primary" plain
+                    @click="goto1('programObjective', currentObject.id,currentObject.courseName,currentObject.courseTargetNum)">课程目标设置</el-button>
                 <el-button style="margin: 3vh; width: 20vh;" type="success" plain
                     @click="handleExport(null, currentObject)">导出文件</el-button>
                 <!-- <el-button style="margin: 3vh; width: 20vh;" type="primary"
@@ -256,6 +258,16 @@ export default {
                     name: data2
                 }
             });
+        },
+        goto1(url,data,data1,data2){
+            this.$router.push({
+                path:'/MainPage/' + url,
+                query:{
+                    id:data,
+                    name:data1,
+                    Num:data2
+                }
+            })
         },
 
         //点击搜索内容

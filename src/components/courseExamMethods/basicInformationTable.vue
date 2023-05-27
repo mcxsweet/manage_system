@@ -424,6 +424,7 @@ export default {
           type:'error',
           message:'请先保存考核项目！'
         })
+        this.examItemArray[index].examChildItemArray.splice(childIndex, 1);
       }
        else {
         this.examItemArray[index].examChildItemArray[childIndex].isExamineChildItem = true;
