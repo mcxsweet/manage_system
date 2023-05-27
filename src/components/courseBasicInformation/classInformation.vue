@@ -7,7 +7,11 @@
                     <el-input v-model="FormData.courseName"></el-input>
                 </el-form-item>
                 <el-form-item label="开设专业">
-                    <el-input v-model="FormData.major"></el-input>
+                    <el-select v-model="FormData.major">
+                        <el-option value="计算机科学与技术"></el-option>
+                        <el-option value="电子信息工程"></el-option>
+                        <el-option value="数据科学与大数据技术"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="任课教师" prop="classroomTeacher">
                     <el-input v-model="FormData.classroomTeacher"></el-input>
@@ -59,31 +63,16 @@
                 </el-form-item>
                 <el-form-item :inline="true" label="课程目标数量" prop="courseTargetNum" width="80%">
                     <template solt-scope="scope">
-                        <!-- <span>{{ scope.FormData.courseTargetNum}}</span> -->
                         <el-input v-model="FormData.courseTargetNum"></el-input>
-                        <router-link :to="{
-                            path: '/MainPage/classInformation/programObjective/',
-                            query: {
-                                courseId: FormData.id,
-                                courseTargetNum: FormData.courseTargetNum,
-                                courseName: FormData.courseName
-                            }
-                        }" tag="el-button" @click.native="settingbegain">设置课程目标</router-link>
-                        <el-button type="primary" v-show="showbt" @click="settingOver">设置完毕</el-button>
-                        <router-view v-show="showObjective"></router-view>
                     </template>
                 </el-form-item>
-                <!-- <el-form-item label="课程目标数量" prop="courseTargetNum" >
-                                            <el-input v-model="FormData.courseTargetNum"></el-input>
-                                            <el-form-item><el-button>设置课程目标</el-button></el-form-item>
-                                        </el-form-item> -->
                 <el-form-item label="指标点数量" prop="indicatorPointsNum">
                     <el-input v-model="FormData.indicatorPointsNum"></el-input>
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
                     <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
-                    <el-select v-model="FormData.indicatorPoints" filterable multiple placeholder="请选择指标点(可创造词条)"
-                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum" allow-create="true">
+                    <el-select v-model="FormData.indicatorPoints" filterable multiple placeholder="数量与内容请与教学大纲一致！"
+                        style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum">
                         <el-option v-for="item in indicators" :key="item.indicatorName" :value="item.indicatorName">
                             <span style="float: left">{{ item.indicatorName }}</span>
                             <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
@@ -178,13 +167,15 @@ export default {
                     if (resp.data.flag) {
                         this.$message({
                             type: 'success',
-                            message: '成功!'
+                            message: '保存成功!'
                         });
-                        this.goto('courseBasicInformation');
+                        this.initDataOptions();
+                        this.getIndicators();
+                        this.getMessage();
                     } else if (resp.status != 200) {
                         this.$message({
                             type: 'error',
-                            message: '失败!'
+                            message: '保存失败!'
                         });
                     }
                 })
@@ -204,9 +195,7 @@ export default {
         }
 
     },
-    components: {
-        programObjection
-    },
+   
     mounted() {
         this.initDataOptions();
         this.getIndicators();
