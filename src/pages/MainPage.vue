@@ -26,53 +26,17 @@
 
         <el-container>
             <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
-                <el-menu v-if="false">
-                    <el-submenu index="1">
-                        <template slot="title"><i class="el-icon-message"></i>课程管理</template>
-                        <el-menu-item-group>
-                            <template slot="title">分组一</template>
-                            <el-menu-item index="1-1" @click="goto('sudoInformationTable')">课程基本信息</el-menu-item>
-                            <el-menu-item index="1-2" @click="goto('programObjective')">课程目标设置</el-menu-item>
-                            <el-menu-item index="1-3" @click="goto('sudoInformationTable')">教学大纲</el-menu-item>
-                            <el-menu-item index="1-4" @click="goto('sudoInformationTable')">课程毕业指标点</el-menu-item>
-                            <el-menu-item index="1-5" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
-                        </el-menu-item-group>
-                    </el-submenu>
-                    <el-submenu index="2">
-                        <template slot="title"><i class="el-icon-menu"></i>试卷管理</template>
-                        <el-menu-item-group>
-                            <el-menu-item index="2-1" @click="goto('finalTable')">课程期末考试命题与课程目标、指标点分数对应表</el-menu-item>
-                        </el-menu-item-group>
-                    </el-submenu>
-                    <el-submenu index="3">
-                        <template slot="title"><i class="el-icon-setting"></i>成绩管理</template>
-                        <el-menu-item-group>
-                            <template slot="title">平时成绩</template>
-                            <el-menu-item index="3-1" @click="goto('usualPreformanceTable')">平时考核成绩统计表</el-menu-item>
-                            <el-menu-item index="3-2" @click="goto('finalStatisticsTable')">课程期末试卷成绩</el-menu-item>
-                        </el-menu-item-group>
-                        <el-menu-item-group title="分组2">
-                            <el-menu-item index="3-3" @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
-                        </el-menu-item-group>
-                        <el-submenu index="3-4">
-                            <template slot="title">成绩分析报告</template>
-                            <el-menu-item index="3-4-1" @click="goto('analysisTable')">期末综合成绩分析表</el-menu-item>
-                            <el-menu-item index="3-4-1" @click="goto('programTable')">课程达成度成绩计算表</el-menu-item>
-                        </el-submenu>
-
-                    </el-submenu>
-                </el-menu>
                 <el-menu>
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
-                            <el-menu-item index="1-2" @click="goto('programObjective')">课程目标设置</el-menu-item>
-                            <el-menu-item v-if="isadmin == 0" index="1-2" @click="goto('teachingPro')">教学大纲</el-menu-item>
-                            <el-menu-item v-if="isadmin == 1" index="1-2" @click="goto('sudoTeachingPro')">教学大纲</el-menu-item>
-                            <el-menu-item v-if="isadmin == 2" index="1-2" @click="goto('SuperTeachingPro')">教学大纲</el-menu-item>
-                            <el-menu-item index="1-3" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item>
-                            <el-menu-item index="1-4" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
+                            <el-menu-item v-if="isadmin == 0" index="1-2" @click="goto('programObjective')">课程目标设置</el-menu-item>
+                            <el-menu-item v-if="isadmin == 0" index="1-3" @click="goto('teachingPro')">教学大纲</el-menu-item>
+                            <el-menu-item v-if="isadmin == 1" index="1-3" @click="goto('sudoTeachingPro')">教学大纲</el-menu-item>
+                            <el-menu-item v-if="isadmin == 2" index="1-3" @click="goto('SuperTeachingPro')">教学大纲</el-menu-item>
+                            <el-menu-item index="1-4" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item>
+                            <el-menu-item index="1-5" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
                     <el-submenu index="2">

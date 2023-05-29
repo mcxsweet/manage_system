@@ -10,12 +10,14 @@
     item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" :circle="true" style="margin-left: 10px"
-        @click="getCurrentCourseExam()"></el-button>
-      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回</el-button>
+      <el-button icon="el-icon-search" style="margin-right;: 10px"
+        @click="getCurrentCourseExam()">确定</el-button>
+      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
+      <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
     <el-main v-show="ischoose">
+      
       <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true"
         :header-cell-style="tableHeader">
         <el-table-column label="考核项目" width="200px">

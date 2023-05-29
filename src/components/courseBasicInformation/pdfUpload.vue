@@ -19,6 +19,7 @@
         <el-button slot="trigger" size="small" type="primary">选择文件</el-button>
       </el-upload>
     </el-header>
+    <el-empty v-if="!showPDF" description="请先选择课程"></el-empty>
     <el-main v-if="showPDF">
       <div>
         <embed :src="pdfUrl" type="application/pdf" width="100%" height="800px" />

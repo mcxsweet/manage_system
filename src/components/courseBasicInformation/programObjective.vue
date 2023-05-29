@@ -10,15 +10,12 @@
       </el-select>
       <el-button icon="el-icon-search" style="margin-right;: 10px"
         @click="getCurrentCourseExam()">确定</el-button>
-          <span v-show="isNumber">课程目标数为:</span><el-input-number v-show="isNumber" :min="0"
-          v-model="newcourseTargetNum" controls-position="right" size="mini"></el-input-number>
-          <el-button  v-show="isNumber" icon="el-icon-search" style="margin-right;: 10px" size="mini" @click="savaNum(newcourseTargetNum)">保存</el-button>
-       
-      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回</el-button>
-    </el-header>
-    <el-main>
+      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
-      <el-table :data="tableData1" border style="width: 100%" v-show="ischoose">
+    </el-header>
+    
+    <el-main v-show="ischoose">
+      <el-table :data="tableData1" border style="width: 100%" >
         <el-table-column prop="index" label="序号" width="118">
           <template slot-scope="scope">
             <el-input v-model="scope.row.targetName" v-show="scope.row.ised"></el-input>
@@ -80,8 +77,9 @@
         </el-table-column>
       </el-table>
       <el-button icon="el-icon-plus" type="primary" @click="add" v-show="ischoose">添加课程目标</el-button>
-      <el-form>
-        <el-form-item label="指标点">
+      <el-divider v-show="isNumber"></el-divider>
+      <el-form inline v-show="isNumber" style="margin-top: 50px;">
+        <el-form-item label="指标点" width="200px">
           <el-select v-model="indicators" filterable multiple style="width:100% ;" :multiple-limit="indicatorPointsNum" >
               <el-option v-for="item in indicatorPoints1" :key="item.indicatorName" :value="item.indicatorName">
                   <span style="float: left">{{ item.indicatorName }}</span>
@@ -90,6 +88,10 @@
                   </span>
               </el-option>
         </el-select>
+        </el-form-item>
+        <el-form-item label="课程目标数">
+          <el-input-number v-show="isNumber" :min="0" v-model="newcourseTargetNum" controls-position="right"></el-input-number>
+          <el-button icon="el-icon-search" style="margin-right;: 10px"  @click="savaNum(newcourseTargetNum)">确定</el-button>
         </el-form-item>
       </el-form>
      
@@ -112,6 +114,7 @@ export default {
       //显示页面
       ischoose:false,
       isNumber:false,
+      isReturn:false,
       //用户课程列表
       courseList:[],
       //选择框索引
@@ -164,11 +167,13 @@ export default {
       this.obj.courseId = this.courseList[this.currentCourse].id
       this.newcourseTargetNum = this.tableLength
     },
+    goto(url) {
+        this.$router.push({path: '/MainPage/' + url,});
+        },
     //获取用户课程信息
     getMessage() {
       api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
         this.courseList = resp.data.data;
-        console.log(this.courseList[this.currentCourse])
       })
     },
     //初始化表格
@@ -227,7 +232,7 @@ export default {
                 this.indicatorPoints1 = resp.data.data;
             })
         },
-      //保存新课程目标数
+      //修改新课程目标数
       savaNum(index){
         this.newObj = this.courseList[this.currentCourse]
         this.newObj.courseTargetNum = this.newcourseTargetNum
@@ -235,7 +240,7 @@ export default {
           if(resp.data.flag){
             this.$message({
                 type: 'success',
-                message: '保存成功!'
+                message: '修改成功!'
               });
               this.getCurrentCourseExam();
           }
@@ -356,10 +361,12 @@ export default {
     this.getMessage();
     this.getIndicators1();
     if (this.$route.query.id) {
+      this.isReturn=true
       this.id = this.$route.query.id;
       this.obj.courseId = this.$route.query.id;
       this.courseName = this.$route.query.name
       this.tableLength = this.$route.query.Num
+      this.newcourseTargetNum = this.$route.query.Num
       this.getCurrentCourseExam();
     }
     this.init();

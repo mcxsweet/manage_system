@@ -10,12 +10,13 @@
         item.term }}</span>
                 </el-option>
             </el-select>
-            <el-button icon="el-icon-search" :circle="true" style="margin-left: 10px"
-                @click="getCurrentCourseExam()"></el-button>
+            <el-button icon="el-icon-search" style="margin-right;: 10px"
+        @click="getCurrentCourseExam()">确定</el-button>
+                <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
 
-        <el-main v-show="ischoose">
-
+        <el-main>
+            
             <el-divider content-position="left">考核方式展示</el-divider>
             <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true">
                 <el-table-column label="考核方式" width="200px">
@@ -91,13 +92,13 @@
                         <div style="height: 500px;">
 
                             <el-row>
-                                <el-button style="margin: 1vw;" type="primary" @click="isAddPaperItem = true">添加</el-button>
+                                <el-button style="margin: 1vw;" type="primary" @click="isAddPaperItem = true">题型添加</el-button>
                             </el-row>
                             <el-row>
-                                <el-button style="margin: 1vw;" type="success" @click="updateItem()">修改</el-button>
+                                <el-button style="margin: 1vw;" type="success" @click="updateItem()">题型修改</el-button>
                             </el-row>
                             <el-row>
-                                <el-button style="margin: 1vw;" type="danger" @click="deleteItem()">删除</el-button>
+                                <el-button style="margin: 1vw;" type="danger" @click="deleteItem()">题型删除</el-button>
                             </el-row>
 
                         </div>
@@ -180,6 +181,7 @@
                                                     @click="isAddDetail = !isAddDetail">添加</el-button>
                                                 <el-button type="primary" size="mini"
                                                     @click="add1(item, tableData.length)">自动添加小题</el-button>
+                                                <el-button @click="svaeAll()" type="success" size="mini" align="right">全部保存</el-button>
                                             </el-collapse-item>
                                         </el-col>
                                         <el-col :span="1">
@@ -364,7 +366,7 @@ export default {
             //添加小题表单控件
             isAddDetail: false,
             //添加小题表单
-            addDetailForm: { titleNumber: 0, Score: 0, isshow: false },
+            addDetailForm: { titleNumber: 0, score: 0, isshow: false },
             //修改小题表单控件
 
             //修改小题表单
@@ -430,7 +432,6 @@ export default {
             this.ischoose = true;
             this.init();
             this.initShowTable();
-
         },
 
         //relode
@@ -505,6 +506,13 @@ export default {
             });
 
         },
+        //全部小题保存
+        svaeAll(){
+            for(let i=0;i<this.tableData.length;i++){
+                this.tableData[i].isshow = false;
+                this.saveItem(this.tableData[i],i)
+            }
+        },
         //自动添加的小题保存
         saveItem(obj, index) {
             obj.primaryId = this.currentTypeId
@@ -518,7 +526,6 @@ export default {
                         type: 'success',
                         message: '添加成功!'
                     });
-
                     //this.handleChange(this.currentTypeId); 
                 } else {
                     this.$message({
@@ -532,18 +539,21 @@ export default {
         add1(obj, len) {
             let index = obj.itemNumber
             this.addDetailForm.titleNumber = len
+            let score1 = obj.itemScore/obj.itemNumber
+            this.addDetailForm.score = score1
             for (let i = 0; i < (index - len) * 1; i++) {
                 this.addDetailForm.isshow = true
                 this.addDetailForm.titleNumber++
-                this.addForm.examChildMethodId = this.currentExamineItem.id;
-                this.addForm.indicatorPoints = {}
-                this.addForm.courseTarget = {}
+                this.addDetailForm.examChildMethodId = this.currentExamineItem.id;
+                this.addDetailForm.indicatorPoints = {}
+                this.addDetailForm.courseTarget = {}
                 this.tableData.push(JSON.parse(JSON.stringify(this.addDetailForm)))
             }
+            
         },
         //添加题型
         addPaperItem(index) {
-            //this.itemNumber = index
+            
             this.addForm.examChildMethodId = this.currentExamineItem.id;
             api.post("/courseExamPaper", this.addForm, (resp) => {
                 if (resp.data.flag) {

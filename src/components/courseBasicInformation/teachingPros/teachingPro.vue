@@ -1,5 +1,5 @@
 <template>
-  <pdf-upload pfdType="teachingPro"></pdf-upload>
+  <pdf-upload pfdType="teachingPro"></pdf-upload>  
 </template>
 
 <script>
@@ -9,7 +9,7 @@ export default {
     components:{pdfUpload},
     data(){
         return{
-
+          ischoose:false
         }
     }
 }
