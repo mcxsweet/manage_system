@@ -10,16 +10,10 @@
       </el-select>
       <el-button icon="el-icon-search" style="margin-right;: 10px"
         @click="getCurrentCourseExam()">确定</el-button>
-          <span v-show="isNumber">课程目标数为:</span><el-input-number v-show="isNumber" v-model="tableLength" controls-position="right" size="mini"></el-input-number>
-          <el-button  v-show="isNumber" icon="el-icon-search" style="margin-right;: 10px" size="mini">保存</el-button>
-        <el-select v-model="indicatorPoints1" filterable multiple style="width:100% ;" :multiple-limit="indicatorPointsNum" v-show="isNumber">
-              <el-option v-for="item in indicators" :key="item.indicatorName" :value="item.indicatorName">
-                  <span style="float: left">{{ item.indicatorName }}</span>
-                  <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                        {{ item.indicatorContent }}
-                  </span>
-              </el-option>
-        </el-select>
+          <span v-show="isNumber">课程目标数为:</span><el-input-number v-show="isNumber" :min="0"
+          v-model="newcourseTargetNum" controls-position="right" size="mini"></el-input-number>
+          <el-button  v-show="isNumber" icon="el-icon-search" style="margin-right;: 10px" size="mini" @click="savaNum(newcourseTargetNum)">保存</el-button>
+       
       <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回</el-button>
     </el-header>
     <el-main>
@@ -86,6 +80,19 @@
         </el-table-column>
       </el-table>
       <el-button icon="el-icon-plus" type="primary" @click="add" v-show="ischoose">添加课程目标</el-button>
+      <el-form>
+        <el-form-item label="指标点">
+          <el-select v-model="indicators" filterable multiple style="width:100% ;" :multiple-limit="indicatorPointsNum" >
+              <el-option v-for="item in indicatorPoints1" :key="item.indicatorName" :value="item.indicatorName">
+                  <span style="float: left">{{ item.indicatorName }}</span>
+                  <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
+                        {{ item.indicatorContent }}
+                  </span>
+              </el-option>
+        </el-select>
+        </el-form-item>
+      </el-form>
+     
     </el-main>
   </el-container>
 </template>
@@ -100,6 +107,7 @@ export default {
       newObj: [],
       kecheng: '课程目标',
       indicatorPointsNum:0,
+      newcourseTargetNum:0,
       indicatorPoints1:[],
       //显示页面
       ischoose:false,
@@ -132,7 +140,7 @@ export default {
       courseName: "",
       tableData1: [],
       indicators: [],
-     
+      
     }
   },
   methods: {
@@ -145,6 +153,7 @@ export default {
       this.$route.query.id = ""
       //this.tableLength = 0
       this.currentCourse = ""
+      this.indicators=[]
     },
     //点击按钮
     getCurrentCourseExam() {
@@ -153,18 +162,18 @@ export default {
       this.init();
       this.courseName = this.courseList[this.currentCourse].courseName
       this.obj.courseId = this.courseList[this.currentCourse].id
+      this.newcourseTargetNum = this.tableLength
     },
     //获取用户课程信息
     getMessage() {
       api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
         this.courseList = resp.data.data;
-        
+        console.log(this.courseList[this.currentCourse])
       })
     },
     //初始化表格
     init() {
       if(this.$route.query.id){
-        this.getIndicators(this.$route.query.id);
         this.tableLength = this.$route.query.Num
         api.get("/courseInfo/courseTarget/" + this.id, "", (resp) => {
          for (let index = 0; index < resp.data.data.length; index++) {
@@ -181,7 +190,7 @@ export default {
           }
         })
         this.currentCourse = this.$route.query.name;
-        this.getIndicators();
+        this.getIndicators(this.$route.query.id);
       }else{
         this.tableLength = this.courseList[this.currentCourse].courseTargetNum
         this.id = this.courseList[this.currentCourse].id
@@ -194,6 +203,7 @@ export default {
             resp.data.data[index].ised = false;
           }
           this.tableData1 = resp.data.data;
+          this.newObj = resp.data.data
          if (this.tableLength > this.tableData1.length) {
             let i = 0
             i = (this.tableLength - this.tableData1.length) * 1
@@ -211,7 +221,26 @@ export default {
         this.indicators = JSON.parse(resp.data.data.indicatorPoints);
       })
     },
-
+      //获取指标点列表
+      getIndicators1() {
+            api.get("/courseInfo/indicators", "", (resp) => {
+                this.indicatorPoints1 = resp.data.data;
+            })
+        },
+      //保存新课程目标数
+      savaNum(index){
+        this.newObj = this.courseList[this.currentCourse]
+        this.newObj.courseTargetNum = this.newcourseTargetNum
+        api.put("/courseInfo",this.newObj , (resp) => {
+          if(resp.data.flag){
+            this.$message({
+                type: 'success',
+                message: '保存成功!'
+              });
+              this.getCurrentCourseExam();
+          }
+        })
+      },
     editta(row, index) {
       row.ised = true;
     },
@@ -323,11 +352,10 @@ export default {
       }
     }
   },
-
   mounted() {
     this.getMessage();
+    this.getIndicators1();
     if (this.$route.query.id) {
-      //this.isReturn = true
       this.id = this.$route.query.id;
       this.obj.courseId = this.$route.query.id;
       this.courseName = this.$route.query.name
