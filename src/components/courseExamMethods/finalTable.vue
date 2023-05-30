@@ -15,9 +15,9 @@
                 <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
 
-        <el-main>
+        <el-main v-show="ischoose">
             
-            <el-divider content-position="left">考核方式展示</el-divider>
+            <el-divider content-position="center">考核方式展示</el-divider>
             <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true">
                 <el-table-column label="考核方式" width="200px">
                     <template slot-scope="scope">
@@ -75,7 +75,7 @@
             </el-table>
 
             <!-- 题型与指标点对应关系 -->
-            <el-divider content-position="left">全局展示</el-divider>
+            <el-divider content-position="center">全局展示</el-divider>
             <el-button type="primary" @click="exportPDF()" style="margin: 1vh;">导出PDF</el-button>
             <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
 
@@ -512,6 +512,7 @@ export default {
                 this.tableData[i].isshow = false;
                 this.saveItem(this.tableData[i],i)
             }
+            this.handleChange(this.currentTypeId);
         },
         //自动添加的小题保存
         saveItem(obj, index) {
@@ -526,7 +527,6 @@ export default {
                         type: 'success',
                         message: '添加成功!'
                     });
-                    //this.handleChange(this.currentTypeId); 
                 } else {
                     this.$message({
                         type: 'error',
@@ -553,7 +553,7 @@ export default {
         },
         //添加题型
         addPaperItem(index) {
-            
+
             this.addForm.examChildMethodId = this.currentExamineItem.id;
             api.post("/courseExamPaper", this.addForm, (resp) => {
                 if (resp.data.flag) {
@@ -679,6 +679,7 @@ export default {
 
         //弹出修改界面
         popUpUpdate(item) {
+            console.log(item)
             this.updateDetailForm = item;
             this.isUpdateDetail = !this.isUpdateDetail;
         },
@@ -688,6 +689,7 @@ export default {
             //转码
             this.updateDetailForm.indicatorPoints = JSON.stringify(this.updateDetailForm.indicatorPoints);
             this.updateDetailForm.courseTarget = JSON.stringify(this.updateDetailForm.courseTarget);
+            console.log(this.updateDetailForm)
             api.put("/courseExamPaper/detail", this.updateDetailForm, (resp) => {
                 if (resp.data.flag) {
                     this.$message({
@@ -700,7 +702,7 @@ export default {
                 } else {
                     this.$message({
                         type: 'error',
-                        message: resp.data.message
+                        message: '修改失败'
                     });
                 }
             })

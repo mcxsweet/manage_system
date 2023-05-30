@@ -9,7 +9,7 @@
         </el-option>
       </el-select>
       <el-button icon="el-icon-search" style="margin-right;: 10px"
-        @click="getCurrentCourseExam()">确定</el-button>
+        @click="getCurrentCourseItem()">确定</el-button>
         <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 

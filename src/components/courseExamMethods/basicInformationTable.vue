@@ -131,7 +131,7 @@
                   </el-table>
 
                   <el-tooltip content="添加子项目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-plus" :circle="true"
+                    <el-button type="primary" icon="el-icon-plus" :circle="true" v-show="examItemArray[index2].isbuttonshow"
                       @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
                       
                   </el-tooltip>
@@ -173,6 +173,7 @@ export default {
   data() {
     return {
       addid:0,
+      index2:0,
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -201,7 +202,7 @@ export default {
         //考核项目百分比
         percentage: "",
         isPercentage: false,
-
+        isbuttonshow:false,
         //课程考试子项目
         examChildItemArray: [],
       },
@@ -252,6 +253,7 @@ export default {
           for (let index = 0; index < resp.data.data.length; index++) {
             resp.data.data[index].isExamineItem = true;
             resp.data.data[index].isPercentage = true;
+            resp.data.data[index].isbuttonshow = false
             api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
               for (let j = 0; j < resp2.data.data.length; j++) {
                 resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
@@ -300,6 +302,7 @@ export default {
     },
     //编辑考核项目
     editExamItem(index) {
+      this.examItemArray[index].isbuttonshow = true;
       this.examItemArray[index].isExamineItem = false;
       this.examItemArray[index].isPercentage = false;
     },
@@ -362,6 +365,7 @@ export default {
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
+        this.examItemArray[index].isbuttonshow = false;
       }
     },
 
