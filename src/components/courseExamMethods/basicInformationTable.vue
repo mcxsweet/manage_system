@@ -10,12 +10,14 @@
     item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" :circle="true" style="margin-left: 10px"
-        @click="getCurrentCourseExam()"></el-button>
-      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回</el-button>
+      <el-button icon="el-icon-search" style="margin-right;: 10px"
+        @click="getCurrentCourseExam()">确定</el-button>
+      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
+      <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
     <el-main v-show="ischoose">
+      
       <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true"
         :header-cell-style="tableHeader">
         <el-table-column label="考核项目" width="200px">
@@ -129,7 +131,7 @@
                   </el-table>
 
                   <el-tooltip content="添加子项目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-plus" :circle="true"
+                    <el-button type="primary" icon="el-icon-plus" :circle="true" v-show="examItemArray[index2].isbuttonshow"
                       @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
                       
                   </el-tooltip>
@@ -171,6 +173,7 @@ export default {
   data() {
     return {
       addid:0,
+      index2:0,
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -199,7 +202,7 @@ export default {
         //考核项目百分比
         percentage: "",
         isPercentage: false,
-
+        isbuttonshow:false,
         //课程考试子项目
         examChildItemArray: [],
       },
@@ -250,6 +253,7 @@ export default {
           for (let index = 0; index < resp.data.data.length; index++) {
             resp.data.data[index].isExamineItem = true;
             resp.data.data[index].isPercentage = true;
+            resp.data.data[index].isbuttonshow = false
             api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
               for (let j = 0; j < resp2.data.data.length; j++) {
                 resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
@@ -298,6 +302,7 @@ export default {
     },
     //编辑考核项目
     editExamItem(index) {
+      this.examItemArray[index].isbuttonshow = true;
       this.examItemArray[index].isExamineItem = false;
       this.examItemArray[index].isPercentage = false;
     },
@@ -360,6 +365,7 @@ export default {
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
+        this.examItemArray[index].isbuttonshow = false;
       }
     },
 

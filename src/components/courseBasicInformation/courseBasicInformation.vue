@@ -179,22 +179,18 @@
                     @click="goto('classInformation', currentObject.id)">详细课程信息设置</el-button>
                 <el-button style="margin: 3vh; width: 20vh;" type="primary" plain
                     @click="goto1('programObjective', currentObject.id,currentObject.courseName,currentObject.courseTargetNum)">课程目标设置</el-button>
+                    <el-button style="margin: 3vh; width: 20vh;" type="primary" plain
+                    @click="goto('basicInformationTable', currentObject.id, currentObject.courseName)">课程考核评价方式</el-button>
+                <el-button style="margin: 3vh; width: 20vh;" type="info" plain
+                    @click="goto('finalTable', currentObject.id, currentObject.courseName)">试卷设置</el-button>
                 <el-button style="margin: 3vh; width: 20vh;" type="success" plain
                     @click="handleExport(null, currentObject)">导出文件</el-button>
-                <!-- <el-button style="margin: 3vh; width: 20vh;" type="primary"
-                    @click="handleDelete(currentObject)">删除</el-button> -->
+
                 <p style="width: 100%;margin: 10px;">课程相关文档查看</p>
                 <el-button  style="margin: 3vh; width: 20vh;" type="primary" plain
                     @click="goto('teachingPro',currentObject.id,currentObject.courseName)">课程大纲查看</el-button>
                 <el-button  style="margin: 3vh; width: 20vh;" type="primary" plain
                     @click="goto('indexPoint',currentObject.id,currentObject.major)">专业课程目标总表查看</el-button>
-
-                <p style="width: 100%;margin: 10px;">该行项目设置</p>
-
-                <el-button style="margin: 3vh; width: 20vh;" type="primary" plain
-                    @click="goto('basicInformationTable', currentObject.id, currentObject.courseName)">课程考核评价方式</el-button>
-                <el-button style="margin: 3vh; width: 20vh;" type="info" plain
-                    @click="goto('finalTable', currentObject.id, currentObject.courseName)">试卷设置</el-button>
 
                 <p style="width: 100%;margin: 10px;">课程成绩管理</p>
                 <el-button style="margin: 3vh; width: 20vh;"
