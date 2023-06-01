@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 import MainPage from '@/pages/MainPage'
 import LoginPage from '@/pages/LoginPage2'
 import courseBasicInformation from '@/components/courseBasicInformation/courseBasicInformation'
+import sudoCourseInformation from '@/components/courseBasicInformation/sudoCourseInformation'  
 import programObjective from '@/components/courseBasicInformation/programObjective'
 
 import classInformation from '@/components/courseBasicInformation/classInformation'
@@ -67,6 +68,10 @@ const router = new VueRouter({
         {
             path: 'courseBasicInformation', //  课程基本信息
             component: courseBasicInformation
+        },
+        {
+            path: 'sudoCourseInformation', //  管理员课程基本信息
+            component: sudoCourseInformation
         },
         {
             path: 'teachingPro', //教学大纲

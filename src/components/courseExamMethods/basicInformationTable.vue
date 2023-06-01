@@ -12,7 +12,8 @@
       </el-select>
       <el-button icon="el-icon-search" style="margin-right;: 10px"
         @click="getCurrentCourseExam()">确定</el-button>
-      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
+        <el-button type="danger" v-if="isadmin == 0" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
+      <el-button type="danger" v-if="isadmin == 1" v-show="isReturn" @click="goto('sudoCourseInformation')">返回首页</el-button>
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
@@ -174,6 +175,7 @@ export default {
     return {
       addid:0,
       index2:0,
+      isadmin:0,
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -557,7 +559,7 @@ export default {
   },
   mounted() {
     this.$set(this.examItemArray, "examChildItemArray", []);
-
+    this.isadmin = localStorage.getItem('Isadmin');
     this.getMessage();
     if (this.$route.query.id) {
       this.isReturn = true
