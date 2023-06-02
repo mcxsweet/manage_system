@@ -1,5 +1,6 @@
 <template>
     <el-container>
+        <P style="margin: 10px; text-align: center;color: red;">如果发现理应有数据的表格没数据 请打开浏览器开发者工具刷新界面试试 如若造成操作不便请见谅！！</P>
 
         <el-header style="background-color: #fff;height: 50px;">
             <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
@@ -18,7 +19,7 @@
         </el-header>
 
         <el-main v-show="ischoose">
-            
+
             <el-divider content-position="center">考核方式展示</el-divider>
             <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true">
                 <el-table-column label="考核方式" width="200px">
@@ -94,7 +95,8 @@
                         <div style="height: 500px;">
 
                             <el-row>
-                                <el-button style="margin: 1vw;" type="primary" @click="isAddPaperItem = true">题型添加</el-button>
+                                <el-button style="margin: 1vw;" type="primary"
+                                    @click="isAddPaperItem = true">题型添加</el-button>
                             </el-row>
                             <el-row>
                                 <el-button style="margin: 1vw;" type="success" @click="updateItem()">题型修改</el-button>
@@ -183,7 +185,8 @@
                                                     @click="isAddDetail = !isAddDetail">添加</el-button>
                                                 <el-button type="primary" size="mini"
                                                     @click="add1(item, tableData.length)">自动添加小题</el-button>
-                                                <el-button @click="svaeAll()" type="success" size="mini" align="right">全部保存</el-button>
+                                                <el-button @click="svaeAll()" type="success" size="mini"
+                                                    align="right">全部保存</el-button>
                                             </el-collapse-item>
                                         </el-col>
                                         <el-col :span="1">
@@ -510,10 +513,10 @@ export default {
 
         },
         //全部小题保存
-        svaeAll(){
-            for(let i=0;i<this.tableData.length;i++){
+        svaeAll() {
+            for (let i = 0; i < this.tableData.length; i++) {
                 this.tableData[i].isshow = false;
-                this.saveItem(this.tableData[i],i)
+                this.saveItem(this.tableData[i], i)
             }
             this.handleChange(this.currentTypeId);
         },
@@ -542,7 +545,7 @@ export default {
         add1(obj, len) {
             let index = obj.itemNumber
             this.addDetailForm.titleNumber = len
-            let score1 = obj.itemScore/obj.itemNumber
+            let score1 = obj.itemScore / obj.itemNumber
             this.addDetailForm.score = score1
             for (let i = 0; i < (index - len) * 1; i++) {
                 this.addDetailForm.isshow = true
@@ -552,7 +555,7 @@ export default {
                 this.addDetailForm.courseTarget = {}
                 this.tableData.push(JSON.parse(JSON.stringify(this.addDetailForm)))
             }
-            
+
         },
         //添加题型
         addPaperItem(index) {

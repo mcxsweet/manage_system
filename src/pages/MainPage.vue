@@ -4,12 +4,14 @@
         <el-header>
             <el-row>
                 <el-col :span="12">
-                    <div>
-                        <el-button icon="el-icon-back" :circle="true" @click="goBack()"></el-button>
+                    <div style="display: flex;align-items: center;height: 60px;">
+                        <!-- <el-button icon=" el-icon-back" :circle="true" @click="goBack()"></el-button> -->
+                        <el-page-header @back="goBack()" content="详情页面">
+                        </el-page-header>
                     </div>
                 </el-col>
                 <el-col :span="12">
-                    <div style="font-size: 20px;text-align: right; ">
+                    <div style="font-size: 20px;text-align: right;">
                         <el-dropdown @command="handleCommand" trigger="click">
                             <el-button icon="el-icon-user" size="mini" style="margin-right: 15px;"></el-button>
                             <el-dropdown-menu slot="dropdown">
@@ -97,6 +99,9 @@
 
                     </el-submenu>
                 </el-menu>
+
+
+
             </el-aside>
             <!-- <h1 style="font-size: 50px; justify-content: space-between;text-align: center;height: 200px;">欢迎使用</h1> -->
             <router-view></router-view>

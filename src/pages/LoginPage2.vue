@@ -2,7 +2,7 @@
     <div class="box">
         <div class="content">
             <div class="login-wrapper">
-                <h1>登录</h1>
+                <h1>专业工程认证系统</h1>
                 <div class="login-form">
                     <div class="username form-item">
                         <span>用户名</span>
@@ -140,8 +140,8 @@ export default {
     .box .content {
         width: 85vw;
         height: 90vh;
-        background: url("../assets/login_two.jpg") no-repeat;
-        background-size: 90% 100%;
+        background: url("../assets/login_two.png") no-repeat;
+        background-size: 110% 100%;
         position: absolute;
         right: 15%;
         top: 50%;
