@@ -1,7 +1,7 @@
 <template>
   <!-- <pdf-upload pfdType="indexPoint"></pdf-upload> -->
   <div v-loading="loading" style="width: 100vw;">
-    <embed :src="pdfUrl" type="application/pdf" width="100%" height="800px" />
+    <embed :src="pdfUrl" type="application/pdf" width="100%" height="100%" />
   </div>
 </template>
 

@@ -1,0 +1,7 @@
+.table .el-table__body {
+    border-collapse: separate;
+    border-spacing: 0 5px;
+    border-top: 1px dashed rgb(165, 161, 161);
+    /* padding: 10px 0; */
+    /* 设置内边距，此处示例为上下各 5px */
+}

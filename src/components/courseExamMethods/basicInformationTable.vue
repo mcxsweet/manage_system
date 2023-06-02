@@ -1,6 +1,6 @@
 <template>
   <el-container>
-
+    <P style="margin: 10px; text-align: center;color: red;">如果发现理应有数据的表格没数据 请打开浏览器开发者工具刷新界面试试 如若造成操作不便请见谅！！</P>
     <el-header style="background-color: #fff;height: 50px;">
       <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
@@ -10,20 +10,19 @@
     item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" style="margin-right;: 10px"
-        @click="getCurrentCourseExam()">确定</el-button>
+      <el-button icon="el-icon-search" style="margin-right;: 10px" @click="getCurrentCourseExam()">确定</el-button>
       <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
     <el-main v-show="ischoose">
-      
-      <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true"
+
+      <el-table :data="examItemArray" class="table" :border="true" style="width: 100%" default-expand-all="true"
         :header-cell-style="tableHeader">
         <el-table-column label="考核项目" width="200px">
           <template slot-scope="scope">
-            <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%" allow-create="true" filterable="true"
-              v-show="!scope.row.isExamineItem">
+            <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%" allow-create="true"
+              filterable="true" v-show="!scope.row.isExamineItem">
               <el-option value="平时考核成绩"></el-option>
               <el-option value="实验考核成绩"></el-option>
               <el-option value="期末考核成绩"></el-option>
@@ -37,7 +36,7 @@
             <el-input type="number" v-model="scope.row.percentage" v-show="!scope.row.isPercentage">
               <template slot="append">%</template>
             </el-input>
-            <p v-show="scope.row.isPercentage">{{ scope.row.percentage }} %</p>
+            <el-tag style="font-weight: 200px" v-show="scope.row.isPercentage">{{ scope.row.percentage }} %</el-tag>
           </template>
         </el-table-column>
 
@@ -45,13 +44,18 @@
         <el-table-column label="考核子项目" :v-if="reloadPage">
           <template slot-scope="scope1">
             <el-collapse>
-              <el-collapse-item title=" 点击展开">
+              <el-collapse-item>
+                <template slot="title">
+                  <p @click="test(scope1.row, scope1.$index)" style="width: 100%;text-align: center;color: green;">点击展开
+                  </p>
+                </template>
                 <div>
                   <el-table :data="scope1.row.examChildItemArray" :stripe="true">
                     <el-table-column label="子项目名称" width="170">
 
                       <template slot-scope="scope2">
-                        <el-input v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"></el-input>
+                        <el-input v-model="scope2.row.examineChildItem"
+                          v-show="!scope2.row.isExamineChildItem"></el-input>
                         <!-- <el-select v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"
                           placeholder="请选择" style="width:100%">
                           <el-option-group v-for="group in childOptions" :key="group.label" :label="group.label">
@@ -131,9 +135,10 @@
                   </el-table>
 
                   <el-tooltip content="添加子项目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-plus" :circle="true" v-show="examItemArray[index2].isbuttonshow"
+                    <el-button type="primary" icon="el-icon-plus" :circle="true"
+                      v-show="examItemArray[index2].isbuttonshow"
                       @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
-                      
+
                   </el-tooltip>
 
                 </div>
@@ -172,8 +177,8 @@ export default {
   name: "basicInformationTable",
   data() {
     return {
-      addid:0,
-      index2:0,
+      addid: 0,
+      index2: 0,
       //选择课程后再显示界面
       ischoose: false,
       //当前选择课程索引
@@ -202,7 +207,7 @@ export default {
         //考核项目百分比
         percentage: "",
         isPercentage: false,
-        isbuttonshow:false,
+        isbuttonshow: false,
         //课程考试子项目
         examChildItemArray: [],
       },
@@ -243,7 +248,7 @@ export default {
     //初始化表格数据
     init() {
       if (this.currentId) {
-        this.addid = this.currentId*1
+        this.addid = this.currentId * 1
         //获取课程目标
         this.getCurrentCourseTarget(this.currentId);
         this.getIndicators(this.currentId);
@@ -271,7 +276,7 @@ export default {
           this.examItemArray = resp.data.data;
         })
       } else {
-        this.addid = this.courseList[this.currentCourse].id*1
+        this.addid = this.courseList[this.currentCourse].id * 1
         this.getCurrentCourseTarget(this.courseList[this.currentCourse].id);
         this.getIndicators(this.courseList[this.currentCourse].id);
 
@@ -337,31 +342,31 @@ export default {
                   type: 'success',
                   message: '添加成功!'
                 });
-          } else {
-            this.$message({
-              type: 'error',
-              message: '添加失败!'
-            });
-          }
+              } else {
+                this.$message({
+                  type: 'error',
+                  message: '添加失败!'
+                });
+              }
             }
           })
         }
         //修改
         else {
           api.put("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => {
-              if(resp.data.flag){
-                this.$message({
-                  type:'success',
-                  message:'修改成功'
-                })
-              }
-              else{
-                this.$message({
-                  type:'error',
-                  message:'修改失败'
-                })
-              }
-           })
+            if (resp.data.flag) {
+              this.$message({
+                type: 'success',
+                message: '修改成功'
+              })
+            }
+            else {
+              this.$message({
+                type: 'error',
+                message: '修改失败'
+              })
+            }
+          })
         }
         this.examItemArray[index].isExamineItem = true;
         this.examItemArray[index].isPercentage = true;
@@ -425,14 +430,14 @@ export default {
           type: 'error',
           message: '考核项目和百分比为必填项！！！!'
         });
-      }else if(!this.examItemArray[index].id){
+      } else if (!this.examItemArray[index].id) {
         this.$message({
-          type:'error',
-          message:'请先保存考核项目！'
+          type: 'error',
+          message: '请先保存考核项目！'
         })
         this.examItemArray[index].examChildItemArray.splice(childIndex, 1);
       }
-       else {
+      else {
         this.examItemArray[index].examChildItemArray[childIndex].isExamineChildItem = true;
         this.examItemArray[index].examChildItemArray[childIndex].isChildPercentage = true;
         this.examItemArray[index].examChildItemArray[childIndex].isCourseTarget = true;
@@ -448,7 +453,7 @@ export default {
             if (resp.data.flag) {
               api.get("/courseExam/courseExamineChildMethods/" + this.examItemArray[index].id, "", (resp1) => {
                 this.examItemArray[index].examChildItemArray[childIndex].id = resp1.data.data[childIndex].id
-              })  
+              })
               this.$message({
                 type: 'success',
                 message: '添加成功!'
@@ -569,4 +574,5 @@ export default {
 }
 </script>
 
-<style></style>
+<style src="@/style/tableStyle.css"></style>
+
