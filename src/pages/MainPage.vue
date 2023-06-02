@@ -29,14 +29,14 @@
         <el-container>
             <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
                 <el-menu v-if="isadmin == 2">
-                    <el-submenu index="1">
+                    <el-submenu index="1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
                 </el-menu>
-                <el-menu v-if="isadmin == 1">
+                <el-menu v-if="isadmin == 1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
@@ -67,7 +67,7 @@
 
                     </el-submenu>
                 </el-menu>
-                <el-menu v-if="isadmin == 0">
+                <el-menu v-if="isadmin == 0" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
@@ -149,6 +149,8 @@ export default {
 </script>
 
 <style>
+@import '@/style/tableStyle.css';
+
 .el-header {
     background-color: #B3C0D1;
     color: #333;
