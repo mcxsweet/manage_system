@@ -11,11 +11,12 @@
         item.term }}</span>
                 </el-option>
             </el-select>
-            <el-button icon="el-icon-search" style="margin-right;: 10px"
-        @click="getCurrentCourseExam()">确定</el-button>
-        <el-button type="danger" v-if="isadmin == 0" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
-        <el-button type="danger" v-if="isadmin == 1" v-show="isReturn" @click="goto('sudoCourseInformation')">返回首页</el-button>
-                <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
+            <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()">确定</el-button>
+            <el-button type="danger" v-if="isadmin == 0" v-show="isReturn"
+                @click="goto('courseBasicInformation')">返回首页</el-button>
+            <el-button type="danger" v-if="isadmin == 1" v-show="isReturn"
+                @click="goto('sudoCourseInformation')">返回首页</el-button>
+            <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
 
         <el-main v-show="ischoose">
@@ -323,8 +324,8 @@ export default {
     name: "finalTable",
     data() {
         return {
-            isadmin:0,
-            isReturn:false,
+            isadmin: 0,
+            isReturn: false,
             //选择课程后再显示界面
             ischoose: false,
             //当前选择课程索引
@@ -775,7 +776,7 @@ export default {
         },
 
         goto(url) {
-        this.$router.push({path: '/MainPage/' + url,});
+            this.$router.push({ path: '/MainPage/' + url, });
         },
 
         exportPDF() {

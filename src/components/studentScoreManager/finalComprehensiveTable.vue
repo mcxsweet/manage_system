@@ -8,13 +8,12 @@
             {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" style="margin-right;: 10px"
-        @click="getCurrentCourseItem()">确定</el-button>
-        <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
+      <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()">确定</el-button>
+      <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
     <el-main v-if="ischoose">
-      
+
       <!-- 表格展示 -->
       <div>
         <el-button type="primary" @click="open()" style="margin: 1vh;">成绩分析</el-button>
