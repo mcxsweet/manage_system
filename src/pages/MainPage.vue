@@ -27,7 +27,7 @@
         </el-header>
 
         <el-container>
-            <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+            <el-aside width="200px">
                 <el-menu v-if="isadmin == 2">
                     <el-submenu index="1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
@@ -73,7 +73,7 @@
                         <el-menu-item-group>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
                             <el-menu-item index="1-2" @click="goto('programObjective')">课程目标设置</el-menu-item>
-                            <el-menu-item index="1-3" @click="goto('teachingPro')">教学大纲</el-menu-item>          
+                            <el-menu-item index="1-3" @click="goto('teachingPro')">教学大纲</el-menu-item>
                             <el-menu-item index="1-4" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item>
                             <el-menu-item index="1-5" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                         </el-menu-item-group>
@@ -99,8 +99,6 @@
 
                     </el-submenu>
                 </el-menu>
-
-
 
             </el-aside>
             <!-- <h1 style="font-size: 50px; justify-content: space-between;text-align: center;height: 200px;">欢迎使用</h1> -->
@@ -158,6 +156,7 @@ export default {
 }
 
 .el-aside {
-    color: #333;
+    background-color: #545c64;
+    border: 1px solid black;
 }
 </style>
