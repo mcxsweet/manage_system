@@ -2,8 +2,7 @@
     <el-container>
         <el-header style="background-color: #fff;height: 50px;">
             <el-row>
-                <el-button plain @click="isShow = !isShow" v-if="isadmin == 0">添加</el-button>
-                <!-- <el-button type="danger" plain>删除</el-button> -->
+                <el-button plain @click="isShow = !isShow" v-if="isadmin == 0">添加课程</el-button>
                 <el-button type="success" plain @click="isShowSearch = !isShowSearch">筛选</el-button>
                 <el-button type="primary" @click="over()" v-show="isover">筛选完毕</el-button>
             </el-row>
@@ -169,7 +168,6 @@
                 </el-table-column>
             </el-table>
         </el-dialog>
-
         <!-- 操作弹出层 -->
         <!-- <el-dialog title="操作" :visible.sync="isOperation" :show-close="false" width="40%"> -->
         <el-drawer title="我是标题" :visible.sync="isOperation" :with-header="false" direction="ltr">

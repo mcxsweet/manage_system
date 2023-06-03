@@ -10,7 +10,8 @@
       </el-select>
       <el-button icon="el-icon-search" style="margin-right;: 10px"
         @click="getCurrentCourseExam()">确定</el-button>
-      <el-button type="danger" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
+      <el-button type="danger" v-if="isadmin == 0" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
+      <el-button type="danger" v-if="isadmin == 1" v-show="isReturn" @click="goto('sudoCourseInformation')">返回首页</el-button>
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
     
@@ -143,7 +144,7 @@ export default {
       courseName: "",
       tableData1: [],
       indicators: [],
-      
+      isadmin:0,
     }
   },
   methods: {
@@ -358,6 +359,7 @@ export default {
     }
   },
   mounted() {
+    this.isadmin = localStorage.getItem('Isadmin');
     this.getMessage();
     this.getIndicators1();
     if (this.$route.query.id) {
