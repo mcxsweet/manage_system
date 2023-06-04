@@ -9,7 +9,7 @@
         item.term }}</span>
                 </el-option>
             </el-select>
-            <el-button icon="el-icon-search" style="margin-left: 10px"
+            <el-button icon="el-icon-search" style="margin: 10px"
         @click="getCurrentCourseExam()">确定</el-button>
         
         <el-button type="danger" v-if="isadmin == 0" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
