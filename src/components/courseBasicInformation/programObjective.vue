@@ -5,18 +5,20 @@
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
           <span style="float: left">{{ item.courseName }}</span>
           <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
-            item.termEnd }}.{{item.term }}</span>
+            item.termEnd }}.{{ item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" style="margin-left: 10px"
-        @click="getCurrentCourseExam()">确定</el-button>
-      <el-button type="danger" v-if="isadmin == 0" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
-      <el-button type="danger" v-if="isadmin == 1" v-show="isReturn" @click="goto('sudoCourseInformation')">返回首页</el-button>
+
+      <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()">确定</el-button>
+      <el-button type="danger" v-if="isadmin == 0" v-show="isReturn"
+        @click="goto('courseBasicInformation')">返回首页</el-button>
+      <el-button type="danger" v-if="isadmin == 1" v-show="isReturn"
+        @click="goto('sudoCourseInformation')">返回首页</el-button>
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
-    
+
     <el-main v-show="ischoose">
-      <el-table :data="tableData1" border style="width: 100%" >
+      <el-table :data="tableData1" border style="width: 100%">
         <el-table-column prop="index" label="序号" width="118">
           <template slot-scope="scope">
             <el-input v-model="scope.row.targetName" v-show="scope.row.ised"></el-input>
@@ -81,21 +83,22 @@
       <el-divider v-show="isNumber"></el-divider>
       <el-form inline v-show="isNumber" style="margin-top: 50px;">
         <el-form-item label="指标点" width="200px">
-          <el-select v-model="indicators" filterable multiple style="width:100% ;" :multiple-limit="indicatorPointsNum" >
-              <el-option v-for="item in indicatorPoints1" :key="item.indicatorName" :value="item.indicatorName">
-                  <span style="float: left">{{ item.indicatorName }}</span>
-                  <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                        {{ item.indicatorContent }}
-                  </span>
-              </el-option>
-        </el-select>
+          <el-select v-model="indicators" filterable multiple style="width:100% ;" :multiple-limit="indicatorPointsNum">
+            <el-option v-for="item in indicatorPoints1" :key="item.indicatorName" :value="item.indicatorName">
+              <span style="float: left">{{ item.indicatorName }}</span>
+              <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
+                {{ item.indicatorContent }}
+              </span>
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="课程目标数">
-          <el-input-number v-show="isNumber" :min="0" v-model="newcourseTargetNum" controls-position="right"></el-input-number>
-          <el-button icon="el-icon-search" style="margin-right;: 10px"  @click="savaNum(newcourseTargetNum)">确定</el-button>
+          <el-input-number v-show="isNumber" :min="0" v-model="newcourseTargetNum"
+            controls-position="right"></el-input-number>
+          <el-button icon="el-icon-search" style="margin-right;: 10px" @click="savaNum(newcourseTargetNum)">确定</el-button>
         </el-form-item>
       </el-form>
-     
+
     </el-main>
   </el-container>
 </template>
@@ -109,20 +112,20 @@ export default {
     return {
       newObj: [],
       kecheng: '课程目标',
-      indicatorPointsNum:0,
-      newcourseTargetNum:0,
-      indicatorPoints1:[],
+      indicatorPointsNum: 0,
+      newcourseTargetNum: 0,
+      indicatorPoints1: [],
       //显示页面
-      ischoose:false,
-      isNumber:false,
-      isReturn:false,
+      ischoose: false,
+      isNumber: false,
+      isReturn: false,
       //用户课程列表
-      courseList:[],
+      courseList: [],
       //选择框索引
-      currentCourse:"",
+      currentCourse: "",
       //课程ID
       currentId: "",
-      isReturn:false,
+      isReturn: false,
       obj: {
         index: 0,
         ised: true,
@@ -144,7 +147,9 @@ export default {
       courseName: "",
       tableData1: [],
       indicators: [],
-      isadmin:0,
+
+      isadmin: 0,
+
     }
   },
   methods: {
@@ -157,7 +162,7 @@ export default {
       this.$route.query.id = ""
       //this.tableLength = 0
       this.currentCourse = ""
-      this.indicators=[]
+      this.indicators = []
     },
     //点击按钮
     getCurrentCourseExam() {
@@ -169,8 +174,8 @@ export default {
       this.newcourseTargetNum = this.tableLength
     },
     goto(url) {
-        this.$router.push({path: '/MainPage/' + url,});
-        },
+      this.$router.push({ path: '/MainPage/' + url, });
+    },
     //获取用户课程信息
     getMessage() {
       api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
@@ -179,30 +184,30 @@ export default {
     },
     //初始化表格
     init() {
-      if(this.$route.query.id){
+      if (this.$route.query.id) {
         this.tableLength = this.$route.query.Num
         api.get("/courseInfo/courseTarget/" + this.id, "", (resp) => {
-         for (let index = 0; index < resp.data.data.length; index++) {
-           resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
+          for (let index = 0; index < resp.data.data.length; index++) {
+            resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
             resp.data.data[index].evaluationMethod = JSON.parse(resp.data.data[index].evaluationMethod);
             resp.data.data[index].index = index;
             resp.data.data[index].ised = false;
           }
           this.tableData1 = resp.data.data;
-         if (this.tableLength > this.tableData1.length) {
+          if (this.tableLength > this.tableData1.length) {
             let i = 0
             i = (this.tableLength - this.tableData1.length) * 1
-           this.add1(i);
+            this.add1(i);
           }
         })
         this.currentCourse = this.$route.query.name;
         this.getIndicators(this.$route.query.id);
-      }else{
+      } else {
         this.tableLength = this.courseList[this.currentCourse].courseTargetNum
         this.id = this.courseList[this.currentCourse].id
         api.get("/courseInfo/courseTarget/" + this.id, "", (resp) => {
-         for (let index = 0; index < resp.data.data.length; index++) {
-           resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
+          for (let index = 0; index < resp.data.data.length; index++) {
+            resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
             resp.data.data[index].evaluationMethod = JSON.parse(resp.data.data[index].evaluationMethod);
             // this.tableData1[index] = resp.data.data[index];
             resp.data.data[index].index = index;
@@ -210,15 +215,15 @@ export default {
           }
           this.tableData1 = resp.data.data;
           this.newObj = resp.data.data
-         if (this.tableLength > this.tableData1.length) {
+          if (this.tableLength > this.tableData1.length) {
             let i = 0
             i = (this.tableLength - this.tableData1.length) * 1
-           this.add1(i);
+            this.add1(i);
           }
         })
-       this.getIndicators(this.id);
+        this.getIndicators(this.id);
       }
-      
+
     },
 
     //获取指标点列表
@@ -227,26 +232,26 @@ export default {
         this.indicators = JSON.parse(resp.data.data.indicatorPoints);
       })
     },
-      //获取指标点列表
-      getIndicators1() {
-            api.get("/courseInfo/indicators", "", (resp) => {
-                this.indicatorPoints1 = resp.data.data;
-            })
-        },
-      //修改新课程目标数
-      savaNum(index){
-        this.newObj = this.courseList[this.currentCourse]
-        this.newObj.courseTargetNum = this.newcourseTargetNum
-        api.put("/courseInfo",this.newObj , (resp) => {
-          if(resp.data.flag){
-            this.$message({
-                type: 'success',
-                message: '修改成功!'
-              });
-              this.getCurrentCourseExam();
-          }
-        })
-      },
+    //获取指标点列表
+    getIndicators1() {
+      api.get("/courseInfo/indicators", "", (resp) => {
+        this.indicatorPoints1 = resp.data.data;
+      })
+    },
+    //修改新课程目标数
+    savaNum(index) {
+      this.newObj = this.courseList[this.currentCourse]
+      this.newObj.courseTargetNum = this.newcourseTargetNum
+      api.put("/courseInfo", this.newObj, (resp) => {
+        if (resp.data.flag) {
+          this.$message({
+            type: 'success',
+            message: '修改成功!'
+          });
+          this.getCurrentCourseExam();
+        }
+      })
+    },
     editta(row, index) {
       row.ised = true;
     },
@@ -321,33 +326,34 @@ export default {
     },
     add() {
       let j = 0
-      if(this.$route.query.id){
+      if (this.$route.query.id) {
         this.tableLength = this.$route.query.Num
         if (this.tableLength > this.tableData1.length) {
-        this.obj.index = this.tableData1.length
-        j = this.obj.index + 1
-        this.obj.targetName = "课程目标" + j
-        this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+          this.obj.index = this.tableData1.length
+          j = this.obj.index + 1
+          this.obj.targetName = "课程目标" + j
+          this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+        } else {
+          this.$message({
+            type: 'error',
+            message: '不可再添加空白项！'
+          })
+        }
       } else {
-        this.$message({
-          type: 'error',
-          message: '不可再添加空白项！'
-        })
+        this.tableLength = this.courseList[this.currentCourse].courseTargetNum
+        if (this.tableLength > this.tableData1.length) {
+          this.obj.index = this.tableData1.length
+          j = this.obj.index + 1
+          this.obj.targetName = "课程目标" + j
+          this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+        } else {
+          this.$message({
+            type: 'error',
+            message: '不可再添加空白项！'
+          })
+        }
       }
-      }else{
-       this.tableLength = this.courseList[this.currentCourse].courseTargetNum
-       if (this.tableLength > this.tableData1.length) {
-        this.obj.index = this.tableData1.length
-        j = this.obj.index + 1
-        this.obj.targetName = "课程目标" + j
-        this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
-      } else {
-        this.$message({
-          type: 'error',
-          message: '不可再添加空白项！'
-        })
-      } 
-    }},
+    },
     add1(index) {
       let j = 0
       for (let i = 0; i < index; i++) {
@@ -363,7 +369,7 @@ export default {
     this.getMessage();
     this.getIndicators1();
     if (this.$route.query.id) {
-      this.isReturn=true
+      this.isReturn = true
       this.id = this.$route.query.id;
       this.obj.courseId = this.$route.query.id;
       this.courseName = this.$route.query.name

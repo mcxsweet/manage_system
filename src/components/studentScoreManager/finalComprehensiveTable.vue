@@ -14,7 +14,7 @@
     </el-header>
 
     <el-main v-if="ischoose">
-      
+
       <!-- 表格展示 -->
       <div>
         <el-button type="primary" @click="open()" style="margin: 1vh;">成绩分析</el-button>

@@ -324,8 +324,8 @@ export default {
     name: "finalTable",
     data() {
         return {
-            isadmin:0,
-            isReturn:false,
+            isadmin: 0,
+            isReturn: false,
             //选择课程后再显示界面
             ischoose: false,
             //当前选择课程索引
@@ -776,7 +776,7 @@ export default {
         },
 
         goto(url) {
-        this.$router.push({path: '/MainPage/' + url,});
+            this.$router.push({ path: '/MainPage/' + url, });
         },
 
         exportPDF() {
