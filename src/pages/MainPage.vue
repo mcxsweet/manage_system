@@ -36,6 +36,7 @@
                         </el-menu-item-group>
                     </el-submenu>
                 </el-menu>
+                <!-- 管理员 -->
                 <el-menu v-if="isadmin == 1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
@@ -62,11 +63,12 @@
                         <el-submenu index="3-4">
                             <template slot="title">成绩分析报告</template>
                             <el-menu-item index="3-4-1" @click="goto('analysisTable')">期末综合成绩分析表</el-menu-item>
-                            <el-menu-item index="3-4-1" @click="goto('programTable')">课程达成度成绩计算表</el-menu-item>
+                            <el-menu-item index="3-4-2" @click="goto('programTable')">课程达成度成绩计算表</el-menu-item>
                         </el-submenu>
 
                     </el-submenu>
                 </el-menu>
+                <!-- 教师 -->
                 <el-menu v-if="isadmin == 0" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
@@ -94,7 +96,7 @@
                         <el-submenu index="3-4">
                             <template slot="title">成绩分析报告</template>
                             <el-menu-item index="3-4-1" @click="goto('analysisTable')">期末综合成绩分析表</el-menu-item>
-                            <el-menu-item index="3-4-1" @click="goto('programTable')">课程达成度成绩计算表</el-menu-item>
+                            <el-menu-item index="3-4-2" @click="goto('programTable')">课程达成度成绩计算表</el-menu-item>
                         </el-submenu>
 
                     </el-submenu>
@@ -147,7 +149,6 @@ export default {
 </script>
 
 <style>
-@import '@/style/tableStyle.css';
 
 .el-header {
     background-color: #B3C0D1;

@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <P style="margin: 10px; text-align: center;color: red;">如果发现理应有数据的表格没数据 请打开浏览器开发者工具刷新界面试试 如若造成操作不便请见谅！！</P>
+  
     <el-header style="background-color: #fff;height: 50px;">
       <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
@@ -10,17 +10,15 @@
     item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()">确定</el-button>
-      <el-button type="danger" v-if="isadmin == 0" v-show="isReturn"
-        @click="goto('courseBasicInformation')">返回首页</el-button>
-      <el-button type="danger" v-if="isadmin == 1" v-show="isReturn"
-        @click="goto('sudoCourseInformation')">返回首页</el-button>
-
+      <el-button icon="el-icon-search" style="margin: 10px"
+        @click="getCurrentCourseExam()">确定</el-button>
+        <el-button type="danger" v-if="isadmin == 0" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
+      <el-button type="danger" v-if="isadmin == 1" v-show="isReturn" @click="goto('sudoCourseInformation')">返回首页</el-button>
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
     <el-main v-show="ischoose">
-
+      <P style="margin: 10px; text-align: center;color: red; font-size: 1.2em;">如果发现理应有数据的表格没数据 请双击F11或F12试试 如若造成操作不便请见谅！！</P>
       <el-table :data="examItemArray" class="table" :border="true" style="width: 100%" default-expand-all="true"
         :header-cell-style="tableHeader">
         <el-table-column label="考核项目" width="200px">
@@ -140,7 +138,7 @@
 
                   <el-tooltip content="添加子项目" placement="bottom" effect="light">
                     <el-button type="primary" icon="el-icon-plus" :circle="true"
-                      v-show="examItemArray[index2].isbuttonshow"
+                      v-show="scope1.row.isbuttonshow"
                       @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
 
                   </el-tooltip>
