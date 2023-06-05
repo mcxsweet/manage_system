@@ -171,26 +171,29 @@
         <!-- 操作弹出层 -->
         <!-- <el-dialog title="操作" :visible.sync="isOperation" :show-close="false" width="40%"> -->
         <el-drawer title="我是标题" :visible.sync="isOperation" :with-header="false" direction="ltr">
-            <div style="display: flex;flex-wrap: wrap;">
-                <p class="drawer-p">课程内容设置</p>
+            <div>
+                <p style="font-size: 1.5em; ">课程内容设置</p>
+
                 <el-button style="margin: 3vh; width: 20vh; font-size: 1em; color: black;" type="primary" plain
                     @click="goto('classInformation', currentObject.id)">详细课程信息设置</el-button>
                 <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;" type="warning" plain
                     @click="goto1('programObjective', currentObject.id,currentObject.courseName,currentObject.courseTargetNum)">课程目标设置</el-button>
-                    <el-button style="margin: 3vh; width: 20vh; font-size: 1em; color: black;" type="success" plain
+                <el-button style="margin: 3vh; width: 20vh; font-size: 1em; color: black;" type="success" plain
                     @click="goto('basicInformationTable', currentObject.id, currentObject.courseName)">课程考核评价方式</el-button>
                 <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;" type="info" plain
                     @click="goto('finalTable', currentObject.id, currentObject.courseName)">试卷设置</el-button>
                 <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;" type="danger" plain
                     @click="handleExport(null, currentObject)">导出文件</el-button>
 
-                <p class="drawer-p">课程相关文档查看</p>
-                <el-button  style="margin: 3vh; width: 22vh; font-size: 1.2em; color: black;" type="success" plain
+                <p style="font-size: 1.5em; margin-bottom: 15px;">课程相关文档查看</p>
+
+                <el-button  style="margin: 3vh; width: 22vh; font-size: 1em; color: black;" type="success" plain
                     @click="goto('teachingPro',currentObject.id,currentObject.courseName)">课程大纲查看</el-button>
                 <el-button  style="margin: 3vh; width: 24vh; font-size: 1em; color: black;" type="primary" plain
                     @click="goto('indexPoint',currentObject.id,currentObject.major)">专业课程目标总表查看</el-button>
 
-                <p class="drawer-p">课程成绩管理</p>
+                <p style="font-size: 1.5em; margin: 15px;">课程成绩管理</p>
+                
                 <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;"
                     @click="goto('usualPreformanceTable', currentObject.id, currentObject.courseName)" type="primary"
                     plain>平时成绩管理</el-button>
