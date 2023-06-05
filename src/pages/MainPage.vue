@@ -110,15 +110,23 @@
 </template>
 
 <script>
-
+import {mapGetters} from 'vuex'
 export default {
     name: "MainPage",
     data() {
         return {
-            username: '',
-            id: 1,
-            isadmin: "",
+            // username: '',
+            // id: 1,
+            // isadmin: "",
         }
+    },
+    computed: {
+        /*
+            此处为获取 vuex 数据，可以获取 state数据也可以获取getters数据
+            state：...mapState('user',['user'])
+            也可以使用 this.$store.state.user.user获取
+        */
+        ...mapGetters(['username','id','isadmin'])
     },
     methods: {
         goto(url) {
@@ -139,10 +147,10 @@ export default {
         }
     },
     mounted() {
-        this.username = localStorage.getItem("TeacherName");
-        this.id = localStorage.getItem('isadmin')
-        // this.$router.push({ path: '/MainPage/welcome' });
-        this.isadmin = localStorage.getItem('Isadmin');
+        // this.username = localStorage.getItem("TeacherName");
+        // this.id = localStorage.getItem('isadmin')
+        // // this.$router.push({ path: '/MainPage/welcome' });
+        // this.isadmin = localStorage.getItem('Isadmin');
     },
 
 }

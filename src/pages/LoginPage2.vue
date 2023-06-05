@@ -40,7 +40,7 @@ export default {
             }, 2000);
         },
         submit() {
-            api.post("/user", this.formData, (resp) => {
+            api.post("/user/doLogin", this.formData, (resp) => {
                 if (resp.data.flag == true) {
 
                     localStorage.clear();
