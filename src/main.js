@@ -4,6 +4,7 @@ import App from './App.vue'
 //vue-router
 import VueRouter from 'vue-router'
 import router from './router'
+import store from './store'
 Vue.use(VueRouter)
 
 //element-ui
@@ -26,6 +27,7 @@ Vue.config.silent = true
 new Vue({
   render: h => h(App),
   router,
+  store,
   beforeCreate() {
     Vue.prototype.$bus = this; //安装全局事件总线，$bus相当于vm
   }
