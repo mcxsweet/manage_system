@@ -19,7 +19,7 @@
                                 <el-dropdown-item command="signOut">退出</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                        <span style="color: black;">{{ username }}</span>
+                        <span style="color: black;">{{ teacherName }}</span>
                     </div>
                 </el-col>
             </el-row>
@@ -110,7 +110,9 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
+import cookie from "vue-cookies"
+
 export default {
     name: "MainPage",
     data() {
@@ -126,7 +128,7 @@ export default {
             state：...mapState('user',['user'])
             也可以使用 this.$store.state.user.user获取
         */
-        ...mapGetters(['username','id','isadmin'])
+        ...mapGetters(['username', 'id', 'isadmin', 'teacherName'])
     },
     methods: {
         goto(url) {
@@ -135,6 +137,7 @@ export default {
         signOut() {
             localStorage.clear();
             sessionStorage.clear();
+            cookie.remove('satoken');
             this.$router.push({ path: '/' });
         },
         handleCommand(command) {
@@ -157,7 +160,6 @@ export default {
 </script>
 
 <style>
-
 .el-header {
     background-color: #B3C0D1;
     color: #333;
