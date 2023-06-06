@@ -21,8 +21,6 @@
         </el-header>
 
         <el-main v-show="ischoose">
-            <P style="margin: 10px; text-align: center;color: red; font-size: 1.2em;">如果发现理应有数据的表格没数据 请双击F11或F12试试
-                如若造成操作不便请见谅！！</P>
             <el-divider content-position="center">考核方式展示</el-divider>
             <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true">
                 <el-table-column label="考核方式" width="200px">

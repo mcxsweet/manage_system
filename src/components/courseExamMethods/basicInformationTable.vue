@@ -19,8 +19,6 @@
     </el-header>
 
     <el-main v-show="ischoose">
-      <P style="margin: 10px; text-align: center;color: red; font-size: 1.2em;">如果发现理应有数据的表格没数据 请双击F11或F12试试 如若造成操作不便请见谅！！
-      </P>
       <el-table :data="examItemArray" class="table" :border="true" style="width: 100%" default-expand-all="true"
         :header-cell-style="tableHeader">
 

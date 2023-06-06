@@ -140,8 +140,8 @@ export default {
     .box .content {
         width: 85vw;
         height: 90vh;
-        background: url("../assets/login_two.png") no-repeat;
-        background-size: 110% 100%;
+        background: url("../assets/test.jpg") no-repeat;
+        background-size: 76% 100%;
         position: absolute;
         right: 15%;
         top: 50%;
