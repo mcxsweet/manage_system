@@ -4,47 +4,52 @@
             <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
                 <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
                     <span style="float: left">{{ item.courseName }}</span>
-                    <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
-                        item.termEnd }}.{{
-        item.term }}</span>
+                    <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">
+                        {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}
+                    </span>
                 </el-option>
             </el-select>
-            <el-button icon="el-icon-search" style="margin: 10px"
-        @click="getCurrentCourseExam()">确定</el-button>
-        
-        <el-button type="danger" v-if="isadmin == 0" v-show="isReturn" @click="goto('courseBasicInformation')">返回首页</el-button>
-        <el-button type="danger" v-if="isadmin == 1" v-show="isReturn" @click="goto('sudoCourseInformation')">返回首页</el-button>
-        
-                <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
-                
+            <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()">确定</el-button>
+
+            <el-button type="danger" v-if="isadmin == 0" v-show="isReturn"
+                @click="goto('courseBasicInformation')">返回首页</el-button>
+            <el-button type="danger" v-if="isadmin == 1" v-show="isReturn"
+                @click="goto('sudoCourseInformation')">返回首页</el-button>
+
+            <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
+
         </el-header>
-        
+
         <el-main v-show="ischoose">
-            <P style="margin: 10px; text-align: center;color: red; font-size: 1.2em;">如果发现理应有数据的表格没数据 请双击F11或F12试试 如若造成操作不便请见谅！！</P>
+            <P style="margin: 10px; text-align: center;color: red; font-size: 1.2em;">如果发现理应有数据的表格没数据 请双击F11或F12试试
+                如若造成操作不便请见谅！！</P>
             <el-divider content-position="center">考核方式展示</el-divider>
             <el-table :data="examItemArray" :border="true" style="width: 100%" default-expand-all="true">
                 <el-table-column label="考核方式" width="200px">
                     <template slot-scope="scope">
-                        <p>{{ scope.row.examineItem }}</p>
+                        <p class="MyButton">{{ scope.row.examineItem }}</p>
                     </template>
                 </el-table-column>
 
-                <el-table-column label="百分比" width="100px">
+                <el-table-column label="百分比" width="150px">
                     <template slot-scope="scope">
-                        <p>{{ scope.row.percentage }} %</p>
+                        <p class="MyButton">{{ scope.row.percentage }} %</p>
                     </template>
                 </el-table-column>
 
                 <el-table-column label="总分" width="100px">
                     <template slot-scope="scope">
-                        <p>{{ scope.row.itemScore }}</p>
+                        <p class="MyButton">{{ scope.row.itemScore }}</p>
                     </template>
                 </el-table-column>
 
                 <!-- 考核项目 -->
-                <el-table-column label="考核项目" :v-if="reloadPage">
+                <el-table-column label="考核项目">
                     <template slot-scope="scope">
-                        <el-collapse>
+                        <div>
+                            <el-button @click="getChildItem(scope.row)" type="success" plain round>查看详情</el-button>
+                        </div>
+                        <!-- <el-collapse>
                             <el-collapse-item title=" 点击展开">
                                 <div>
                                     <el-table :data="scope.row.examChildItemArray" style="width: 100%">
@@ -73,10 +78,39 @@
                                 </div>
 
                             </el-collapse-item>
-                        </el-collapse>
+                        </el-collapse> -->
                     </template>
                 </el-table-column>
             </el-table>
+
+            <!-- 查看每个考核方式详细信息 -->
+            <el-dialog :title="itemTitle" v-if="itemShow" :visible.sync="itemShow" width="50%" append-to-body>
+                <div>
+                    <el-table :data="itemArrary" style="width: 100%">
+                        <el-table-column label="名称">
+                            <template slot-scope="scope1">
+                                <p>{{ scope1.row.examineChildItem }}</p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="百分比" width="100px">
+                            <template slot-scope="scope2">
+                                <p>{{ scope2.row.childPercentage }} %</p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="总分" width="100px">
+                            <template slot-scope="scope3">
+                                <p>{{ scope3.row.childScore }}</p>
+                            </template>
+                        </el-table-column>
+
+                        <el-table-column label="操作">
+                            <template slot-scope="scope4">
+                                <el-button class="MyButton" @click="openWokeSpace(scope4.row)">详情</el-button>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                </div>
+            </el-dialog>
 
             <!-- 题型与指标点对应关系 -->
             <el-divider content-position="center">全局展示</el-divider>
@@ -112,7 +146,7 @@
                         <div style="margin-bottom: 50px;">
                             <el-result icon="warning" title="当前数据为空" subTitle="请添加数据或返回" v-if="finllPaper.length == 0">
                             </el-result>
-                            <el-collapse v-model="activeName" accordion @change="handleChange">
+                            <el-collapse accordion @change="handleChange">
                                 <div v-for="item, index in finllPaper" :key="index">
                                     <el-row>
                                         <el-col :span="23">
@@ -124,7 +158,7 @@
                                                 </template>
 
                                                 <el-table v-loading="loading" :data="tableData" border stripe
-                                                    style="width: 100%;" height="400">
+                                                    style="width: 100%;" height="500">
                                                     <el-table-column label="题号" width="50">
                                                         <template slot-scope="scope">
                                                             <p>{{ scope.row.titleNumber }}</p>
@@ -301,7 +335,6 @@
                                 </div>
                             </el-dialog>
                         </div>
-
                     </el-col>
                     <el-col :span="4">
                         <div style="height: 500px;"></div>
@@ -345,8 +378,6 @@ export default {
             currentExamineItem: {},
             //试卷详情（有小题）
             finllPaper: [],
-            activeName: '1',
-            reloadPage: true,
 
             tableData: [],
             //表格刷新控件
@@ -380,14 +411,36 @@ export default {
             updateDetailForm: {},
 
             //itemNumber:0,
-
-
             //整体展示表格
             pdfUrl: null,
 
+            //弹出框title
+            itemArrary: [],
+            itemTitle: "",
+            itemShow: false,
+            examItemId: ""
         }
     },
     methods: {
+        getChildItem(data) {
+            this.itemArrary = [];
+            this.itemTitle = data.examineItem + " 设置"
+            this.examItemId = data.id;
+            api.get("/courseExam/courseExamineChildMethods/" + data.id, "", (resp2) => {
+                for (let j = 0; j < resp2.data.data.length; j++) {
+                    resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
+                    resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
+
+                    resp2.data.data[j].isExamineChildItem = true;
+                    resp2.data.data[j].isChildPercentage = true;
+                    resp2.data.data[j].isCourseTarget = true;
+                    resp2.data.data[j].isIndicatorPointsDetail = true;
+                }
+                this.itemArrary = resp2.data.data;
+            })
+            this.itemShow = true;
+        },
+
         //输入框焦点
         focusOnSelect() {
             this.examItemArray = [];
@@ -441,18 +494,9 @@ export default {
             this.initShowTable();
         },
 
-        //relode
-        forcePage() {
-            this.reloadPage = false;
-            // this.$nextTick(this.reloadPage = false)
-            setTimeout(() => {
-                this.reloadPage = true;
-            }, 100);
-        },
-
         //打开工作区
-        openWokeSpace(item, detail) {
-            this.workSpaceTitle = item.courseName + " / " + item.examineItem + " / " + detail.examineChildItem
+        openWokeSpace(detail) {
+            this.workSpaceTitle = this.itemTitle + " / " + detail.examineChildItem
             this.workSpace = true;
 
             //当前选中的考核项目赋值
@@ -472,6 +516,7 @@ export default {
 
         //点击题型
         handleChange(item) {
+            this.loading = true;
             this.currentTypeId = item;
             api.get("/courseExamPaper/detail/" + item, "", (resp) => {
                 if (resp.data.data) {
@@ -483,7 +528,9 @@ export default {
                     }
                 }
             })
-            this.loading = false;
+            setTimeout(() => {
+                this.loading = false;
+            }, 2000);
         },
         addPaperItem1(index) {
             this.itemNumber = index
@@ -790,7 +837,6 @@ export default {
         }
     },
     mounted() {
-        this.$set(this.examItemArray, "examChildItemArray", []);
         this.isadmin = localStorage.getItem('Isadmin');
         this.getMessage();
         if (this.$route.query.id) {
@@ -798,11 +844,10 @@ export default {
             this.getCurrentCourseExam();
             this.isReturn = true
         }
-        this.forcePage();
-
 
     },
 }
 </script>
 
-<style></style>
+<style src="@/style/tableStyle.css"></style>
+
