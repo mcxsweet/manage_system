@@ -22,86 +22,94 @@ import finalStatisticsTable from '@/components/studentScoreManager/finalStatisti
 import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
 import analysisTable from '@/components/analysePage/analysisTable'
 import programTable from '@/components/analysePage/programTable'
+
+import ChoicePage from '@/pages/ChoicePage'
+
 import { Message } from "element-ui";
 import cookie from "vue-cookies"
 import store from "@/store";
 
 const router = new VueRouter({
-    routes: [{
+    routes: [
+        {
             path: "/",
             component: LoginPage
+        },
+        {
+            path: "/ChoicePage",
+            component: ChoicePage
         },
         {
             path: "/MainPage",
             component: MainPage,
             children: [{
-                    path: 'analysisTable',
-                    component: analysisTable
-                },
-                {
-                    path: 'programTable',
-                    component: programTable
-                },
-                {
-                    path: 'finalStatisticsTable',
-                    component: finalStatisticsTable
-                },
+                path: 'analysisTable',
+                component: analysisTable
+            },
+            {
+                path: 'programTable',
+                component: programTable
+            },
+            {
+                path: 'finalStatisticsTable',
+                component: finalStatisticsTable
+            },
 
-                {
-                    path: 'finalComprehensiveTable',
-                    component: finalComprehensiveTable
-                },
-                {
-                    path: 'finalTable',
-                    component: finalTable
-                },
-                {
-                    path: 'usualPreformanceTable',
-                    component: usualPreformanceTable
-                },
-                {
-                    path: 'basicInformationTable',
-                    component: basicInformationTable
-                },
-                {
-                    path: 'welcome', //  课程基本信息
-                    component: welcome
-                },
-                {
-                    path: 'courseBasicInformation', //  课程基本信息
-                    component: courseBasicInformation
-                },
-                {
-                    path: 'sudoCourseInformation', //  管理员课程基本信息
-                    component: sudoCourseInformation
-                },
-                {
-                    path: 'teachingPro', //教学大纲
-                    component: teachingPro
-                },
-                {
-                    path: 'sudoTeachingPro', //系主任教学大纲
-                    component: sudoTeachingPro,
-                    meta: {
-                        isAdmin: 1 //此处仅作演示之用，可自行修改
-                    }
-                },
-                {
-                    path: 'SuperTeachingPro', //院长教学大纲
-                    component: SuperTeachingPro
-                },
-                {
-                    path: 'indexPoint', //毕业要求指标点
-                    component: indexPoint
-                },
-                {
-                    path: 'classInformation', //  课程详细基本信息
-                    component: classInformation,
-                },
-                {
-            path:'programObjective',  //课程目标设置
-            component:programObjective
+            {
+                path: 'finalComprehensiveTable',
+                component: finalComprehensiveTable
+            },
+            {
+                path: 'finalTable',
+                component: finalTable
+            },
+            {
+                path: 'usualPreformanceTable',
+                component: usualPreformanceTable
+            },
+            {
+                path: 'basicInformationTable',
+                component: basicInformationTable
+            },
+            {
+                path: 'welcome', //  课程基本信息
+                component: welcome
+            },
+            {
+                path: 'courseBasicInformation', //  课程基本信息
+                component: courseBasicInformation
+            },
+            {
+                path: 'sudoCourseInformation', //  管理员课程基本信息
+                component: sudoCourseInformation
+            },
+            {
+                path: 'teachingPro', //教学大纲
+                component: teachingPro
+            },
+            {
+                path: 'sudoTeachingPro', //系主任教学大纲
+                component: sudoTeachingPro,
+                meta: {
+                    isAdmin: 1 //此处仅作演示之用，可自行修改
                 }
+            },
+            {
+                path: 'SuperTeachingPro', //院长教学大纲
+                component: SuperTeachingPro
+            },
+            {
+                path: 'indexPoint', //毕业要求指标点
+                component: indexPoint
+            },
+            {
+                path: 'classInformation', //  课程详细基本信息
+                component: classInformation,
+            },
+            {
+                path: 'programObjective',  //课程目标设置
+                component: programObjective
+            }
             ]
         },
     ]

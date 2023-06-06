@@ -52,7 +52,11 @@ export default {
                     localStorage.setItem("Isadmin", resp.data.data.isAdmin);
                     localStorage.setItem("TeacherName", resp.data.data.teacherName);
                     localStorage.setItem("department", resp.data.data.department);
-                    this.$router.push({ path: '/MainPage' });
+                    if (resp.data.data.isAdmin <= 2) {
+                        this.$router.push({ path: '/MainPage' });
+                    } else {
+                        this.$router.push({ path: '/ChoicePage' });
+                    }
 
                 } else {
                     this.$message({

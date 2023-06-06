@@ -117,9 +117,6 @@ export default {
     name: "MainPage",
     data() {
         return {
-            // username: '',
-            // id: 1,
-            // isadmin: "",
         }
     },
     computed: {
