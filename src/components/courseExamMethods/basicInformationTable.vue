@@ -19,8 +19,6 @@
     </el-header>
 
     <el-main v-show="ischoose">
-      <P style="margin: 10px; text-align: center;color: red; font-size: 1.2em;">如果发现理应有数据的表格没数据 请双击F11或F12试试 如若造成操作不便请见谅！！
-      </P>
       <el-table :data="examItemArray" class="table" :border="true" style="width: 100%" default-expand-all="true"
         :header-cell-style="tableHeader">
 
@@ -55,13 +53,13 @@
         <el-table-column label="考核子项目">
           <template slot-scope="scope1">
             <div style="text-align: center;">
-              <el-button @click="test(scope1.row)" type="success" plain round>查看详情</el-button>
+              <el-button @click="getChildItem(scope1.row)" type="success" plain round>查看详情</el-button>
             </div>
             <!-- <el-collapse>
               <el-collapse-item disabled>
                 <template slot="title">
                   <p @click="(scope1.row, scope1.$index)" style="width: 100%;text-align: center;color: green;">点击展开
-                  </p>test
+                  </p>
                 </template>
                 <div>
                   <el-table :data="scope1.row.examChildItemArray" :stripe="true">
@@ -168,9 +166,9 @@
       </div> -->
     </el-main>
 
-    <el-dialog :title="itemTitle" v-if="testShow" :visible.sync="testShow" width="50%" append-to-body>
+    <el-dialog :title="itemTitle" v-if="itemShow" :visible.sync="itemShow" width="50%" append-to-body>
       <div>
-        <el-table :data="testObject" :stripe="true">
+        <el-table :data="itemArrary" :stripe="true">
           <el-table-column label="子项目名称">
             <template slot-scope="scope2">
               <el-input v-model="scope2.row.examineChildItem" v-show="!scope2.row.isExamineChildItem"></el-input>
@@ -314,8 +312,8 @@ export default {
       //子项目弹窗
       itemTitle: "",
       examItemId: "",
-      testShow: false,
-      testObject: [],
+      itemShow: false,
+      itemArrary: [],
     }
   },
   methods: {
@@ -323,8 +321,8 @@ export default {
     tableHeader({ row, column, rowIndex, columnIndex }) {
       return 'text-align:center'
     },
-    test(data) {
-      this.testObject = [];
+    getChildItem(data) {
+      this.itemArrary = [];
       this.itemTitle = data.examineItem + " 设置"
       this.examItemId = data.id;
       api.get("/courseExam/courseExamineChildMethods/" + data.id, "", (resp2) => {
@@ -337,9 +335,9 @@ export default {
           resp2.data.data[j].isCourseTarget = true;
           resp2.data.data[j].isIndicatorPointsDetail = true;
         }
-        this.testObject = resp2.data.data;
+        this.itemArrary = resp2.data.data;
       })
-      this.testShow = true;
+      this.itemShow = true;
     },
 
     focusOnSelect() {
@@ -489,49 +487,50 @@ export default {
 
     //添加考核子项目
     addExamChildItem(obj, index) {
-      this.testObject.push(JSON.parse(JSON.stringify(this.examChildItem)));
+      this.itemArrary.push(JSON.parse(JSON.stringify(this.examChildItem)));
     },
 
     //编辑考核子项目
     editChildItem(index) {
-      this.testObject[index].isExamineChildItem = false;
-      this.testObject[index].isChildPercentage = false;
-      this.testObject[index].isCourseTarget = false;
-      this.testObject[index].isIndicatorPointsDetail = false;
+      this.itemArrary[index].isExamineChildItem = false;
+      this.itemArrary[index].isChildPercentage = false;
+      this.itemArrary[index].isCourseTarget = false;
+      this.itemArrary[index].isIndicatorPointsDetail = false;
     },
 
     //保存考核子项目
     saveChildItem(index) {
-      if (!this.testObject[index].examineChildItem || !this.testObject[index].childPercentage) {
+      if (!this.itemArrary[index].examineChildItem || !this.itemArrary[index].childPercentage) {
         this.$message({
           type: 'error',
           message: '考核项目和百分比为必填项！！！!'
         });
       } else {
-        this.testObject[index].isExamineChildItem = true;
-        this.testObject[index].isChildPercentage = true;
-        this.testObject[index].isCourseTarget = true;
-        this.testObject[index].isIndicatorPointsDetail = true;
+        this.itemArrary[index].isExamineChildItem = true;
+        this.itemArrary[index].isChildPercentage = true;
+        this.itemArrary[index].isCourseTarget = true;
+        this.itemArrary[index].isIndicatorPointsDetail = true;
 
-        this.testObject[index].childScore = 100;
-        this.testObject[index].courseTarget = JSON.stringify(this.testObject[index].courseTarget);
-        this.testObject[index].indicatorPointsDetail = JSON.stringify(this.testObject[index].indicatorPointsDetail);
+        this.itemArrary[index].childScore = 100;
+        this.itemArrary[index].courseTarget = JSON.stringify(this.itemArrary[index].courseTarget);
+        this.itemArrary[index].indicatorPointsDetail = JSON.stringify(this.itemArrary[index].indicatorPointsDetail);
 
         //添加
-        if (!this.testObject[index].id) {
-          this.testObject[index].courseExamineMethodsId = this.examItemId;
-          api.post("/courseExam/courseExamineChildMethods", this.testObject[index], (resp) => {
+        if (!this.itemArrary[index].id) {
+          this.itemArrary[index].courseExamineMethodsId = this.examItemId;
+          api.post("/courseExam/courseExamineChildMethods", this.itemArrary[index], (resp) => {
             if (resp.data.flag) {
               this.$message({
                 type: 'success',
                 message: '添加成功!'
               });
+              this.itemArrary[index].id = resp.data.data;
             }
           })
         }
         //修改
         else {
-          api.put("/courseExam/courseExamineChildMethods", this.testObject[index], (resp) => {
+          api.put("/courseExam/courseExamineChildMethods", this.itemArrary[index], (resp) => {
             if (resp.data.flag) {
               this.$message({
                 type: 'success',
@@ -540,17 +539,17 @@ export default {
             }
           })
         }
-        this.testObject[index].courseTarget = JSON.parse(this.testObject[index].courseTarget);
-        this.testObject[index].indicatorPointsDetail = JSON.parse(this.testObject[index].indicatorPointsDetail);
+        this.itemArrary[index].courseTarget = JSON.parse(this.itemArrary[index].courseTarget);
+        this.itemArrary[index].indicatorPointsDetail = JSON.parse(this.itemArrary[index].indicatorPointsDetail);
       }
     },
 
     //删除考核子项目
     deleteChildItem(index) {
-      var id = this.testObject[index].id;
+      var id = this.itemArrary[index].id;
       if (!id) {
         //删除本地
-        this.testObject.splice(index, 1);
+        this.itemArrary.splice(index, 1);
       }
       else {
         //删除云端
@@ -565,7 +564,7 @@ export default {
                 type: 'success',
                 message: '删除成功!'
               });
-              this.testObject.splice(index, 1);
+              this.itemArrary.splice(index, 1);
             } else if (resp.status != 200) {
               this.$message({
                 type: 'error',

@@ -40,7 +40,7 @@ export default {
             }, 2000);
         },
         submit() {
-            api.post("/user", this.formData, (resp) => {
+            api.post("/user/doLogin", this.formData, (resp) => {
                 if (resp.data.flag == true) {
 
                     localStorage.clear();
@@ -52,7 +52,11 @@ export default {
                     localStorage.setItem("Isadmin", resp.data.data.isAdmin);
                     localStorage.setItem("TeacherName", resp.data.data.teacherName);
                     localStorage.setItem("department", resp.data.data.department);
-                    this.$router.push({ path: '/MainPage' });
+                    if (resp.data.data.isAdmin <= 2) {
+                        this.$router.push({ path: '/MainPage' });
+                    } else {
+                        this.$router.push({ path: '/ChoicePage' });
+                    }
 
                 } else {
                     this.$message({
@@ -140,8 +144,8 @@ export default {
     .box .content {
         width: 85vw;
         height: 90vh;
-        background: url("../assets/login_two.png") no-repeat;
-        background-size: 110% 100%;
+        background: url("../assets/test.jpg") no-repeat;
+        background-size: 76% 100%;
         position: absolute;
         right: 15%;
         top: 50%;

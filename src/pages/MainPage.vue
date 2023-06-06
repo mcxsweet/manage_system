@@ -19,7 +19,7 @@
                                 <el-dropdown-item command="signOut">退出</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                        <span style="color: black;">{{ username }}</span>
+                        <span style="color: black;">{{ teacherName }}</span>
                     </div>
                 </el-col>
             </el-row>
@@ -110,15 +110,22 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import cookie from "vue-cookies"
 
 export default {
     name: "MainPage",
     data() {
         return {
-            username: '',
-            id: 1,
-            isadmin: "",
         }
+    },
+    computed: {
+        /*
+            此处为获取 vuex 数据，可以获取 state数据也可以获取getters数据
+            state：...mapState('user',['user'])
+            也可以使用 this.$store.state.user.user获取
+        */
+        ...mapGetters(['username', 'id', 'isadmin', 'teacherName'])
     },
     methods: {
         goto(url) {
@@ -127,6 +134,7 @@ export default {
         signOut() {
             localStorage.clear();
             sessionStorage.clear();
+            cookie.remove('satoken');
             this.$router.push({ path: '/' });
         },
         handleCommand(command) {
@@ -139,17 +147,16 @@ export default {
         }
     },
     mounted() {
-        this.username = localStorage.getItem("TeacherName");
-        this.id = localStorage.getItem('isadmin')
-        // this.$router.push({ path: '/MainPage/welcome' });
-        this.isadmin = localStorage.getItem('Isadmin');
+        // this.username = localStorage.getItem("TeacherName");
+        // this.id = localStorage.getItem('isadmin')
+        // // this.$router.push({ path: '/MainPage/welcome' });
+        // this.isadmin = localStorage.getItem('Isadmin');
     },
 
 }
 </script>
 
 <style>
-
 .el-header {
     background-color: #B3C0D1;
     color: #333;
