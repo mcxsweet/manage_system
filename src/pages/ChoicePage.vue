@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <div class="main" data-text="普通教师" style="--c:#1e90ff"></div>
+        <div @click="test()" class="main" data-text="普通教师" style="--c:#1e90ff"></div>
         <div class="main" data-text="系主任" style="--c:#ff4757"></div>
         <div class="main" data-text="学院管理员" style="--c:#ffa502"></div>
     </div>
@@ -8,7 +8,12 @@
 
 <script>
 export default {
-    name: "ChoicePage"
+    name: "ChoicePage",
+    methods: {
+        test() {
+            console.log("hello");
+        }
+    },
 }
 </script>
 
@@ -19,7 +24,7 @@ export default {
 }
 
 .body {
-    background: #333;
+    background: rgb(29, 67, 89);
     display: flex;
     width: 100%;
     height: 100vh;

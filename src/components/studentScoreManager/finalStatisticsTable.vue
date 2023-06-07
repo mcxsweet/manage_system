@@ -8,7 +8,8 @@
                         {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}</span>
                 </el-option>
             </el-select>
-            <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()">确定</el-button>
+            <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()"
+                v-loading.fullscreen.lock="fullscreenLoading">确定</el-button>
             <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
 
@@ -42,12 +43,13 @@
                         </el-table-column>
                     </el-table-column>
 
-                    <el-table-column label="总分" width="100px">
+                    <el-table-column fixed="right" label="总分" width="50px">
                         <template slot-scope="scope">
-                            {{ scope.row.score }}
+                            <p v-if="scope.row.score < 60" style="color: red;">{{ scope.row.score }}</p>
+                            <p v-if="scope.row.score >= 60" style="color: green;">{{ scope.row.score }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="210px">
+                    <el-table-column fixed="right" label="操作" width="150px">
                         <template slot-scope="scope">
                             <el-button size="mini" type="primary" @click="settingData(scope.$index)">编辑</el-button>
                             <el-button size="mini" type="danger" @click="deleteData(scope.$index)">删除</el-button>
@@ -59,13 +61,6 @@
                 <el-button style="margin-top: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
                 <el-button style="margin-top: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
 
-                <!--  -->
-                <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
-                    <el-form>
-                        <input type="file" @change="handleFileUpload" />
-                        <el-button type="submit" size="mini" @click.prevent="uploadFile()">上传文件</el-button>
-                    </el-form>
-                </el-dialog>
             </div>
 
             <div v-if="isEmpty">
@@ -75,6 +70,14 @@
                     </template> -->
                 </el-result>
             </div>
+
+            <!--  -->
+            <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
+                <el-form>
+                    <input type="file" @change="handleFileUpload" />
+                    <el-button type="submit" size="mini" @click.prevent="uploadFile()">上传文件</el-button>
+                </el-form>
+            </el-dialog>
 
             <!--  -->
             <el-dialog title="编辑" :visible.sync="showdialog" v-if="showdialog">
@@ -167,6 +170,8 @@ export default {
             //试卷列
             examPper: [],
 
+            //界面加载控件
+            fullscreenLoading: false,
         }
     },
     methods: {
@@ -405,6 +410,11 @@ export default {
 
             this.getStudentScore();
             this.ischoose = true;
+
+            this.fullscreenLoading = true;
+            setTimeout(() => {
+                this.fullscreenLoading = false;
+            }, 1000);
         },
 
     },
