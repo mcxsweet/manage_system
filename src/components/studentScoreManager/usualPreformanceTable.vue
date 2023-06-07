@@ -8,7 +8,8 @@
                         {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}</span>
                 </el-option>
             </el-select>
-            <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()">确定</el-button>
+            <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()"
+                v-loading.fullscreen.lock="fullscreenLoading">确定</el-button>
             <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
 
@@ -38,7 +39,8 @@
                     </el-table-column>
                     <el-table-column label="总分">
                         <template slot-scope="scope">
-                            {{ scope.row.score }}
+                            <p v-if="scope.row.score < 60" style="color: red;">{{ scope.row.score }}</p>
+                            <p v-if="scope.row.score >= 60" style="color: green;">{{ scope.row.score }}</p>
                         </template>
                     </el-table-column>
                     <el-table-column label="操作" width="200px">
@@ -148,6 +150,9 @@ export default {
 
             //文件上传弹窗
             showUpload: false,
+
+            //界面加载控件
+            fullscreenLoading: false,
         }
     },
     methods: {
@@ -194,6 +199,12 @@ export default {
             if (this.tableData) {
                 this.ischoose = true;
             }
+
+
+            this.fullscreenLoading = true;
+            setTimeout(() => {
+                this.fullscreenLoading = false;
+            }, 1000);
 
         },
         //获取课程列表   

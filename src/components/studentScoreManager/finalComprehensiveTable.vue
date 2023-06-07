@@ -8,9 +8,8 @@
             {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" style="margin: 10px"
-        @click="getCurrentCourseItem()">确定</el-button>
-        <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
+      <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()">确定</el-button>
+      <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
     <el-main v-if="ischoose">
@@ -54,6 +53,10 @@
           <el-table-column label="卷面成绩" prop="finalScore" width="100px">
           </el-table-column>
           <el-table-column label="综合成绩" prop="comprehensiveScore" width="100px">
+            <template slot-scope="scope">
+              <p v-if="scope.row.comprehensiveScore < 60" style="color: red;">{{ scope.row.comprehensiveScore }}</p>
+              <p v-if="scope.row.comprehensiveScore >= 60" style="color: green;">{{ scope.row.comprehensiveScore }}</p>
+            </template>
           </el-table-column>
         </el-table>
       </div>
