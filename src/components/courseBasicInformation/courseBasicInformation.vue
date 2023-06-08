@@ -168,42 +168,43 @@
                 </el-table-column>
             </el-table>
         </el-dialog>
+
         <!-- 操作弹出层 -->
-        <!-- <el-dialog title="操作" :visible.sync="isOperation" :show-close="false" width="40%"> -->
         <el-drawer title="我是标题" :visible.sync="isOperation" :with-header="false" direction="ltr">
-            <div style="display: flex;flex-wrap: wrap;">
-                <p class="drawer-p">课程内容设置</p>
-                <el-button style="margin: 3vh; width: 20vh; font-size: 1em; color: black;" type="primary" plain
-                    @click="goto('classInformation', currentObject.id)">详细课程信息设置</el-button>
-                <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;" type="warning" plain
-                    @click="goto1('programObjective', currentObject.id,currentObject.courseName,currentObject.courseTargetNum)">课程目标设置</el-button>
-                    <el-button style="margin: 3vh; width: 20vh; font-size: 1em; color: black;" type="success" plain
+            <div class="boxShadow">
+                <p class="title">课程管理</p>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="primary"
+                    @click="goto('classInformation', currentObject.id)">详细课程信息设置
+                </el-button>
+                <el-button class="BottonStyle" type="warning"
+                    @click="goto1('programObjective', currentObject.id, currentObject.courseName, currentObject.courseTargetNum)">课程目标设置</el-button>
+                <el-button class="BottonStyle" type="success"
                     @click="goto('basicInformationTable', currentObject.id, currentObject.courseName)">课程考核评价方式</el-button>
-                <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;" type="info" plain
+                <el-button class="BottonStyle" type="info"
                     @click="goto('finalTable', currentObject.id, currentObject.courseName)">试卷设置</el-button>
-                <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;" type="danger" plain
-                    @click="handleExport(null, currentObject)">导出文件</el-button>
+                <el-button class="BottonStyle" type="danger" @click="handleExport(null, currentObject)">导出文件</el-button>
+            </div>
 
-                <p class="drawer-p">课程相关文档查看</p>
-                <el-button  style="margin: 3vh; width: 22vh; font-size: 1.2em; color: black;" type="success" plain
-                    @click="goto('teachingPro',currentObject.id,currentObject.courseName)">课程大纲查看</el-button>
-                <el-button  style="margin: 3vh; width: 24vh; font-size: 1em; color: black;" type="primary" plain
-                    @click="goto('indexPoint',currentObject.id,currentObject.major)">专业课程目标总表查看</el-button>
+            <div class="boxShadow">
+                <p class="title">课程相关文档查看</p>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                    @click="goto('teachingPro', currentObject.id, currentObject.courseName)">课程大纲查看</el-button>
+                <el-button class="BottonStyle" type="primary"
+                    @click="goto('indexPoint', currentObject.id, currentObject.major)">专业课程目标总表查看</el-button>
+            </div>
 
-                <p class="drawer-p">课程成绩管理</p>
-                <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;"
-                    @click="goto('usualPreformanceTable', currentObject.id, currentObject.courseName)" type="primary"
-                    plain>平时成绩管理</el-button>
-                <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;"
-                    @click="goto('finalStatisticsTable', currentObject.id, currentObject.courseName)" type="primary"
-                    plain>期末试卷成绩</el-button>
-                <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;" @click="goto('finalComprehensiveTable')" type="primary"
-                    plain>期末综合成绩</el-button>
-                <el-button style="margin: 3vh; width: 20vh; font-size: 1.2em; color: black;" type="danger" plain
-                    @click="handleExportTest()">导出文件</el-button>
+            <div class="boxShadow">
+                <p class="title">课程成绩管理</p>
+                <el-button class="BottonStyle" style="margin-left: 10px;"
+                    @click="goto('usualPreformanceTable', currentObject.id, currentObject.courseName)"
+                    type="primary">平时成绩管理</el-button>
+                <el-button class="BottonStyle"
+                    @click="goto('finalStatisticsTable', currentObject.id, currentObject.courseName)"
+                    type="primary">期末试卷成绩</el-button>
+                <el-button class="BottonStyle" @click="goto('finalComprehensiveTable')" type="primary">期末综合成绩</el-button>
+                <el-button class="BottonStyle" type="danger" @click="handleExportTest()">导出文件</el-button>
             </div>
         </el-drawer>
-        <!-- </el-dialog> -->
 
         <el-footer>
             <span>总共有{{ tableData.length }}条课程</span>
@@ -224,7 +225,6 @@ export default {
             FormData: {},
             isShowSearch: false,
             isShow: false,
-            sousuo: '',
             indicators: [],
             DataOptions: [],
             //筛选条件
@@ -253,13 +253,13 @@ export default {
                 }
             });
         },
-        goto1(url,data,data1,data2){
+        goto1(url, data, data1, data2) {
             this.$router.push({
-                path:'/MainPage/' + url,
-                query:{
-                    id:data,
-                    name:data1,
-                    Num:data2
+                path: '/MainPage/' + url,
+                query: {
+                    id: data,
+                    name: data1,
+                    Num: data2
                 }
             })
         },
@@ -399,14 +399,21 @@ export default {
 }
 </script>
 
-<style>
-.sousuo {
-    padding: 10px;
-    margin: 20px;
-    width: 300px;
+<style src="@/style/tableStyle.css"></style>
+<style scoped>
+* {
+    margin: 0;
+    padding: 0;
 }
-.el-drawer .div .button{
-    font-size: 1em; 
-    color: black;
+
+.title {
+    margin: 10px 20px;
+    font-size: 20px;
+    width: 100%;
+}
+
+.BottonStyle {
+    margin: 10px 10px;
+    width: 200px;
 }
 </style>

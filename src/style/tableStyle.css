@@ -22,3 +22,14 @@
     background: rgba(17, 152, 230);
     color: white;
 }
+
+.boxShadow {
+    transition: 0.5s linear;
+}
+
+.boxShadow:hover {
+    transition: 0.5s linear;
+    background: #e0e0e0;
+    box-shadow: 31px 31px 36px #d7d7d7,
+        -31px -31px 36px #e9e9e9;
+}

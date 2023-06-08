@@ -75,7 +75,7 @@
                         <el-menu-item-group>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
                             <el-menu-item index="1-2" @click="goto('programObjective')">课程目标设置</el-menu-item>
-                            <el-menu-item index="1-3" @click="goto('teachingPro')">教学大纲</el-menu-item>
+                            <!-- <el-menu-item index="1-3" @click="goto('teachingPro')">教学大纲</el-menu-item> -->
                             <el-menu-item index="1-4" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item>
                             <el-menu-item index="1-5" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                         </el-menu-item-group>
