@@ -35,13 +35,12 @@
           </div>
         </el-drawer>
 
-        <el-table border="true" :header-cell-style="tableHeader" :data="tableData">
+        <el-table border="true" :header-cell-style="tableHeader" :data="tableData"  height="600px">
           <el-table-column label="序号" width="50px">
             <template slot-scope="scope">
               <span>{{ scope.$index + 1 }}</span>
             </template>
           </el-table-column>
-
           <el-table-column label="学号" prop="studentNumber" width="200px">
           </el-table-column>
           <el-table-column label="姓名" prop="studentName" width="150px">
@@ -77,6 +76,7 @@ export default {
   data() {
     return {
       reload: false,
+      getId:"",//localstrage中的courseID
       currentCourse: "",
       currentId: "",
       courseList: [],
@@ -110,12 +110,16 @@ export default {
       }
       this.getComprehensiveScore();
       this.ischoose = true;
+      if(this.getId==""){
+        localStorage.setItem('courseId',this.courseList[this.currentCourse].id);
+      }
     },
 
     //点击课程选择框
     focusOnSelect() {
       this.ischoose = false;
       this.currentId = "";
+      this.getId = "";
     },
     //获取课程列表   
     getMessage() {
@@ -136,7 +140,10 @@ export default {
       var url = "";
       if (this.currentId) {
         url = this.currentId;
-      } else {
+      } else if(this.getId !=""){
+        url = this.getId
+      }
+      else if(this.getId =="") {
         url = this.courseList[this.currentCourse].id;
       }
       axios.get("/student/" + url + "/exportComprehensiveScoreAnalyse", { responseType: 'blob' })
@@ -176,7 +183,9 @@ export default {
       var url = "";
       if (this.currentId) {
         url = this.currentId;
-      } else {
+      } else if(this.getId !=""){
+        url = this.getId
+      }else if(this.getId =="") {
         url = this.courseList[this.currentCourse].id;
       }
       axios.get("student/" + url + "/1/exportDegreeOfAchievement", { responseType: 'blob' })
@@ -189,10 +198,25 @@ export default {
           this.loading = false;
         })
     },
+     //获取课程基本信息
+     getCourse(){
+            api.get("/courseInfo/"+this.getId,"",(resp1)=>{
+            this.currentCourse = resp1.data.data.courseName;
+          })
+        }
 
   },
   mounted() {
+    this.getId = localStorage.getItem('courseId');
+    if(this.getId !=""){
+      this.ischoose = true;
+      this.currentId = this.getId
+      this.getCourse();
+      this.getCurrentCourseItem();
+    }
     if (this.$route.query.id) {
+      localStorage.setItem('courseId',this.$route.query.id);
+      this.getId = localStorage.getItem('courseId');
       this.currentId = this.$route.query.id;
       this.currentCourse = this.$route.query.name;
       this.getCurrentCourseItem();

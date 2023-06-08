@@ -16,7 +16,7 @@
         <el-main v-if="ischoose">
 
             <div v-if="!isEmpty">
-                <el-table border="true" :header-cell-style="tableHeader" :data="tableData">
+                <el-table border="true" :header-cell-style="tableHeader" :data="tableData"  height="600px">
                     <el-table-column label="序号" width="50px">
                         <template slot-scope="scope">
                             <span>{{ scope.$index + 1 }}</span>
@@ -43,7 +43,7 @@
                             <p v-if="scope.row.score >= 60" style="color: green;">{{ scope.row.score }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column label="操作" width="200px">
+                    <el-table-column label="操作" width="200px" fixed="right">
                         <template slot-scope="scope">
                             <el-button type="primary" style="margin-left: 1vw ;" size="mini"
                                 @click="setting(scope.$index)">编辑</el-button>
@@ -133,6 +133,7 @@ export default {
             reload: false,
             //当前课程id
             currentId: "",
+            getId:"",//localstrage中的courseID
             //课程名称
             currentCourse: "",
             //教师课程列表
@@ -189,6 +190,13 @@ export default {
         tableHeader({ row, column, rowIndex, columnIndex }) {
             return 'text-align:center'
         },
+            //点击课程选择框
+        focusOnSelect() {
+            this.tableData = [];
+            this.ischoose = false;
+            this.currentId = "";
+            this.getId = "";
+        },
         //初始化表格
         getCurrentCourseItem() {
             if (this.currentId == "") {
@@ -199,7 +207,9 @@ export default {
             if (this.tableData) {
                 this.ischoose = true;
             }
-
+            if(this.getId==""){
+                localStorage.setItem('courseId',this.courseList[this.currentCourse].id);
+            }
 
             this.fullscreenLoading = true;
             setTimeout(() => {
@@ -372,16 +382,25 @@ export default {
                 }
             })
         },
+        //获取课程基本信息
+        getCourse(){
+            api.get("/courseInfo/"+this.getId,"",(resp1)=>{
+            this.currentCourse = resp1.data.data.courseName;
+          })
+        }
 
-        //点击课程选择框
-        focusOnSelect() {
-            this.tableData = [];
-            this.ischoose = false;
-            this.currentId = "";
-        },
     },
     mounted() {
+        this.getId = localStorage.getItem('courseId');
+            if(this.getId !=""){
+            this.ischoose = true;
+            this.currentId = this.getId
+            this.getCourse();
+            this.getCurrentCourseItem();
+            }
         if (this.$route.query.id) {
+            localStorage.setItem('courseId',this.$route.query.id);
+            this.getId = localStorage.getItem('courseId');
             this.currentId = this.$route.query.id;
             this.currentCourse = this.$route.query.name;
             this.getCurrentCourseItem();

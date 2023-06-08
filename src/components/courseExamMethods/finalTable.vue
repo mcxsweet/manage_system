@@ -356,6 +356,7 @@ export default {
     data() {
         return {
             isadmin: 0,
+            getId:"",//localstrage中的courseID
             isReturn: false,
             //选择课程后再显示界面
             ischoose: false,
@@ -416,7 +417,10 @@ export default {
             itemArrary: [],
             itemTitle: "",
             itemShow: false,
-            examItemId: ""
+            examItemId: "",
+            itemindex:0 ,//用于自动保存小题
+            itemindex1:0,
+            itemindex2:0,
         }
     },
     methods: {
@@ -444,6 +448,7 @@ export default {
             this.examItemArray = [];
             this.ischoose = false;
             this.currentId = "";
+            this.getId = "";
         },
         //初始化表格数据
         init() {
@@ -462,8 +467,25 @@ export default {
                     this.currentCourse = this.$route.query.name;
                     this.examItemArray = resp.data.data;
                 })
-            } else {
+            } else if(this.getId==""){
                 api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
+                    for (let index = 0; index < resp.data.data.length; index++) {
+                        api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
+                            for (let j = 0; j < resp2.data.data.length; j++) {
+                                resp2.data.data[j].courseTarget = JSON.parse(resp2.data.data[j].courseTarget);
+                                resp2.data.data[j].indicatorPointsDetail = JSON.parse(resp2.data.data[j].indicatorPointsDetail);
+                            }
+                            resp.data.data[index].examChildItemArray = resp2.data.data;
+                        })
+                    }
+                    this.examItemArray = resp.data.data;
+                })
+            }
+            else if(this.getId!=""){
+                api.get("/courseInfo/"+this.getId,"",(resp1)=>{
+                    this.currentCourse = resp1.data.data.courseName;
+                })
+                api.get("/courseExam/courseExamineMethods/" + this.getId, "", (resp) => {
                     for (let index = 0; index < resp.data.data.length; index++) {
                         api.get("/courseExam/courseExamineChildMethods/" + resp.data.data[index].id, "", (resp2) => {
                             for (let j = 0; j < resp2.data.data.length; j++) {
@@ -490,6 +512,9 @@ export default {
             this.ischoose = true;
             this.init();
             this.initShowTable();
+            if(this.getId==""){
+                localStorage.setItem('courseId',this.courseList[this.currentCourse].id);
+             }
         },
 
         //打开工作区
@@ -560,18 +585,78 @@ export default {
         },
         //全部小题保存
         svaeAll() {
+            this.itemindex = this.tableData.length
             for (let i = 0; i < this.tableData.length; i++) {
                 this.tableData[i].isshow = false;
-                this.saveItem(this.tableData[i], i)
+                this.saveAllItem(this.tableData[i], i)
             }
             this.handleChange(this.currentTypeId);
         },
         //自动添加的小题保存
+        saveAllItem(obj, index) {
+            obj.primaryId = this.currentTypeId
+            if(!this.tableData[index].id){
+                obj.indicatorPoints = JSON.stringify(obj.indicatorPoints);
+                obj.courseTarget = JSON.stringify(obj.courseTarget);
+                api.post("/courseExamPaper/detail", obj, (resp) => {
+                this.tableData[index].indicatorPoints = JSON.parse(obj.indicatorPoints)
+                this.tableData[index].courseTarget = JSON.parse(obj.courseTarget)
+                if (resp.data.flag) {
+                    this.itemindex1++
+                    if(this.itemindex1==this.itemindex){
+                        this.$message({
+                            type: 'success',
+                            message: '所有小题添加成功!'
+                        });
+                    }
+                } else {
+                    this.itemindex2++
+                    if(this.itemindex2==this.itemindex){
+                        this.$message({
+                            type:'error',
+                            message:'保存失败'
+                        })
+                    }
+                   
+                }
+            })
+            }else{
+                this.itemindex1 = 0;
+                this.itemindex2 = 0;
+                obj.indicatorPoints = JSON.stringify(obj.indicatorPoints);
+                obj.courseTarget = JSON.stringify(obj.courseTarget);
+                api.put("/courseExamPaper/detail", obj, (resp) => {
+                this.tableData[index].indicatorPoints = JSON.parse(obj.indicatorPoints)
+                this.tableData[index].courseTarget = JSON.parse(obj.courseTarget)
+                if (resp.data.flag) {
+                    this.itemindex1++
+                    if(this.itemindex1==this.itemindex){
+                        this.$message({
+                            type: 'success',
+                            message: '所有小题修改成功!'
+                        });
+                    }
+                } else {
+                    this.itemindex2++
+                    if(this.itemindex2==this.itemindex){
+                        this.$message({
+                            type:'error',
+                            message:'修改失败'
+                        })
+                    }
+                   
+                 }
+                })
+            }  
+        },
+        //自动添加的小题保存
         saveItem(obj, index) {
             obj.primaryId = this.currentTypeId
-            obj.indicatorPoints = JSON.stringify(obj.indicatorPoints);
-            obj.courseTarget = JSON.stringify(obj.courseTarget);
-            api.post("/courseExamPaper/detail", obj, (resp) => {
+            if(!this.tableData[index].id){ 
+                obj.indicatorPoints = JSON.stringify(obj.indicatorPoints);
+                obj.courseTarget = JSON.stringify(obj.courseTarget);
+                console.log("1"+this.tableData[index])
+                api.post("/courseExamPaper/detail", obj, (resp) => {
                 this.tableData[index].indicatorPoints = JSON.parse(obj.indicatorPoints)
                 this.tableData[index].courseTarget = JSON.parse(obj.courseTarget)
                 if (resp.data.flag) {
@@ -585,7 +670,27 @@ export default {
                         message: resp.data.message
                     });
                 }
+            })}else{
+                console.log(obj)
+                obj.indicatorPoints = JSON.stringify(obj.indicatorPoints);
+                obj.courseTarget = JSON.stringify(obj.courseTarget);
+                api.put("/courseExamPaper/detail", obj, (resp) => {
+                    this.tableData[index].indicatorPoints = JSON.parse(obj.indicatorPoints)
+                this.tableData[index].courseTarget = JSON.parse(obj.courseTarget)
+                if (resp.data.flag) {
+                    this.$message({
+                        type: 'success',
+                        message: '修改成功!'
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: resp.data.message
+                    });
+                }
             })
+            }
+           
         },
         //自动添加小题函数
         add1(obj, len) {
@@ -605,7 +710,6 @@ export default {
         },
         //添加题型
         addPaperItem(index) {
-
             this.addForm.examChildMethodId = this.currentExamineItem.id;
             api.post("/courseExamPaper", this.addForm, (resp) => {
                 if (resp.data.flag) {
@@ -630,7 +734,6 @@ export default {
             })
 
         },
-
         //删除题型
         deletePaperItem(id) {
             this.$confirm('是否删除 ?', '提示', {
@@ -794,7 +897,10 @@ export default {
             var url = "";
             if (this.currentId) {
                 url = this.currentId;
-            } else {
+            }else if(this.getId !=""){
+                url = this.getId
+            }
+             else if(this.getId ==""){
                 url = this.courseList[this.currentCourse].id;
             }
             // axios.get("http://43.140.201.70:8080/courseExamPaper/Table/" + url, { responseType: 'blob' })
@@ -814,7 +920,10 @@ export default {
             var url = "";
             if (this.currentId) {
                 url = this.currentId;
-            } else {
+            }else if(this.getId !=""){
+                url = this.getId
+            }
+             else if(this.getId ==""){
                 url = this.courseList[this.currentCourse].id;
             }
             window.location.href = global.BaseUrl + "/courseExamPaper/" + url + "/2/Table";
@@ -828,7 +937,10 @@ export default {
             var url = "";
             if (this.currentId) {
                 url = this.currentId;
-            } else {
+            }else if(this.getId !=""){
+                url = this.getId
+            }
+             else if(this.getId ==""){
                 url = this.courseList[this.currentCourse].id;
             }
             window.location.href = global.BaseUrl + "/courseExamPaper/" + url + "/1/Table";
@@ -836,8 +948,16 @@ export default {
     },
     mounted() {
         this.isadmin = localStorage.getItem('Isadmin');
+        this.getId = localStorage.getItem('courseId');
+        if(this.getId !=""){
+            this.ischoose = true;
+            this.init();
+            this.initShowTable();
+        }
         this.getMessage();
         if (this.$route.query.id) {
+            localStorage.setItem('courseId',this.$route.query.id);
+            this.getId = localStorage.getItem('courseId');
             this.currentId = this.$route.query.id;
             this.getCurrentCourseExam();
             this.isReturn = true

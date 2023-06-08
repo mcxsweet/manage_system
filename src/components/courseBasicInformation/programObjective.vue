@@ -111,6 +111,7 @@ export default {
   data() {
     return {
       newObj: [],
+      getId:"",//localstrage中的courseID
       kecheng: '课程目标',
       indicatorPointsNum: 0,
       newcourseTargetNum: 0,
@@ -160,9 +161,9 @@ export default {
       this.ischoose = false;
       this.id = "";
       this.$route.query.id = ""
-      //this.tableLength = 0
       this.currentCourse = ""
       this.indicators = []
+      this.getId = "";
     },
     //点击按钮
     getCurrentCourseExam() {
@@ -172,6 +173,9 @@ export default {
       this.courseName = this.courseList[this.currentCourse].courseName
       this.obj.courseId = this.courseList[this.currentCourse].id
       this.newcourseTargetNum = this.tableLength
+      if(this.getId==""){
+        localStorage.setItem('courseId',this.obj.courseId);
+      }
     },
     goto(url) {
       this.$router.push({ path: '/MainPage/' + url, });
@@ -202,7 +206,7 @@ export default {
         })
         this.currentCourse = this.$route.query.name;
         this.getIndicators(this.$route.query.id);
-      } else {
+      } else if(this.getId =="") {
         this.tableLength = this.courseList[this.currentCourse].courseTargetNum
         this.id = this.courseList[this.currentCourse].id
         api.get("/courseInfo/courseTarget/" + this.id, "", (resp) => {
@@ -222,6 +226,28 @@ export default {
           }
         })
         this.getIndicators(this.id);
+      }else if(this.getId !=""){
+          api.get("/courseInfo/"+this.getId,"",(resp1)=>{
+            this.tableLength = resp1.data.data.courseTargetNum
+            this.newcourseTargetNum = this.tableLength
+            this.currentCourse = resp1.data.data.courseName;
+          })
+        api.get("/courseInfo/courseTarget/" + this.getId, "", (resp) => {
+          for (let index = 0; index < resp.data.data.length; index++) {
+            resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
+            resp.data.data[index].evaluationMethod = JSON.parse(resp.data.data[index].evaluationMethod);
+            resp.data.data[index].index = index;
+            resp.data.data[index].ised = false;
+          }
+          this.tableData1 = resp.data.data;
+          this.newObj = resp.data.data
+          if (this.tableLength > this.tableData1.length) {
+            let i = 0
+            i = (this.tableLength - this.tableData1.length) * 1
+            this.add1(i);
+          }
+        })
+        this.getIndicators(this.getId);
       }
 
     },
@@ -366,9 +392,17 @@ export default {
   },
   mounted() {
     this.isadmin = localStorage.getItem('Isadmin');
+    this.getId = localStorage.getItem('courseId');
+    if(this.getId !=""){
+      this.isNumber = true
+      this.ischoose = true;
+      this.init();
+    }
     this.getMessage();
     this.getIndicators1();
     if (this.$route.query.id) {
+      localStorage.setItem('courseId',this.$route.query.id);
+      this.getId = localStorage.getItem('courseId');
       this.isReturn = true
       this.id = this.$route.query.id;
       this.obj.courseId = this.$route.query.id;
