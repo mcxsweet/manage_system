@@ -362,7 +362,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.del("/student/deleteStudentFinalScore", this.tableData[index], (resp) => {
+                api.del("/student/deleteStudent", this.tableData[index], (resp) => {
+                    // api.del("/student/deleteStudentFinalScore", this.tableData[index], (resp) => {
                     if (resp.data.flag) {
                         this.$message({
                             type: 'success',
