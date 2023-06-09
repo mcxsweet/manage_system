@@ -123,6 +123,7 @@
 import api from '@/api/api'
 import axios from 'axios'
 import global from '@/script/global'
+import { Loading } from 'element-ui';
 
 export default {
     name: "usualPerformanceTable",
@@ -153,6 +154,8 @@ export default {
 
             //界面加载控件
             fullscreenLoading: false,
+            //导入弹窗加载控件
+            exportLoading: false,
         }
     },
     methods: {
@@ -166,6 +169,7 @@ export default {
             this.selectedFile = event.target.files[0]
         },
         uploadFile() {
+            let loadingInstance = Loading.service({ fullscreen: true });
             const formData = new FormData()
             formData.append('file', this.selectedFile)
             axios.post("/student/" + this.currentId + "/studentUsualScoreExcl", formData, {
@@ -176,13 +180,27 @@ export default {
                 if (response.data.flag) {
                     this.getStudentScore();
                     this.showUpload = !this.showUpload;
+                    this.$message({
+                        type: 'success',
+                        message: response.data.message
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: response.data.message
+                    });
                 }
             }).catch(error => {
                 this.$message({
                     type: 'error',
                     message: error.data.message
                 });
-            })
+            });
+            
+            setTimeout(() => {
+                loadingInstance.close();
+            }, 1000);
+
         },
 
         //表格标题字体居中

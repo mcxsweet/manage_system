@@ -6,7 +6,7 @@
                 <el-col :span="12">
                     <div style="display: flex;align-items: center;height: 60px;">
                         <!-- <el-button icon=" el-icon-back" :circle="true" @click="goBack()"></el-button> -->
-                        <el-page-header @back="goBack()" content="详情页面">
+                        <el-page-header @back="goBack()" content="">
                         </el-page-header>
                     </div>
                 </el-col>
