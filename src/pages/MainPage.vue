@@ -10,6 +10,11 @@
                         </el-page-header>
                     </div>
                 </el-col>
+                <!-- <el-col :span="6">
+                    <div style="display: flex;align-items: center;justify-content: center; ">
+                       <p>您现在正在操作的课程为：</p><span>{{ currentCourse}}</span>
+                    </div>
+                </el-col> -->
                 <el-col :span="12">
                     <div style="font-size: 20px;text-align: right;">
                         <el-dropdown @command="handleCommand" trigger="click">
@@ -112,11 +117,13 @@
 <script>
 import { mapGetters } from 'vuex'
 import cookie from "vue-cookies"
-
+import api from '@/api/api';
 export default {
     name: "MainPage",
     data() {
         return {
+           currentCourse:"", 
+           getId:"",
         }
     },
     computed: {
@@ -128,6 +135,11 @@ export default {
         ...mapGetters(['username', 'id', 'isadmin', 'teacherName'])
     },
     methods: {
+        getCourse(){
+            api.get("/courseInfo/"+this.getId,"",(resp1)=>{
+            this.currentCourse = resp1.data.data.courseName;
+          })
+        },
         goto(url) {
             this.$router.push({ path: '/MainPage/' + url });
         },
@@ -147,6 +159,8 @@ export default {
         }
     },
     mounted() {
+        this.getId = localStorage.getItem('courseId')
+        this.getCourse();
         // this.username = localStorage.getItem("TeacherName");
         // this.id = localStorage.getItem('isadmin')
         // // this.$router.push({ path: '/MainPage/welcome' });

@@ -255,6 +255,7 @@ export default {
   data() {
     return {
       addid: 0,
+      getId:"",//localstrage中的courseID
       index2: 0,
       isadmin: 0,
       //选择课程后再显示界面
@@ -344,6 +345,7 @@ export default {
       this.examItemArray = [];
       this.ischoose = false;
       this.currentId = "";
+      this.getId = "";
     },
     //初始化表格数据
     init() {
@@ -363,12 +365,27 @@ export default {
           this.currentCourse = this.$route.query.name;
           this.examItemArray = resp.data.data;
         })
-      } else {
+      } else if(this.getId == "") {
         this.addid = this.courseList[this.currentCourse].id * 1
         this.getCurrentCourseTarget(this.courseList[this.currentCourse].id);
         this.getIndicators(this.courseList[this.currentCourse].id);
 
         api.get("/courseExam/courseExamineMethods/" + this.courseList[this.currentCourse].id, "", (resp) => {
+          for (let index = 0; index < resp.data.data.length; index++) {
+            resp.data.data[index].isExamineItem = true;
+            resp.data.data[index].isPercentage = true;
+          }
+          this.examItemArray = resp.data.data;
+        })
+      }
+      else if(this.getId != "") {
+        this.addid = this.getId * 1
+        this.getCurrentCourseTarget(this.getId);
+        this.getIndicators(this.getId);
+        api.get("/courseInfo/"+this.getId,"",(resp1)=>{
+            this.currentCourse = resp1.data.data.courseName;
+          })
+        api.get("/courseExam/courseExamineMethods/" + this.getId, "", (resp) => {
           for (let index = 0; index < resp.data.data.length; index++) {
             resp.data.data[index].isExamineItem = true;
             resp.data.data[index].isPercentage = true;
@@ -591,7 +608,10 @@ export default {
     //选择框值选择后
     getCurrentCourseExam() {
       this.ischoose = true;
-      this.init()
+      this.init();
+      if(this.getId==""){
+        localStorage.setItem('courseId',this.courseList[this.currentCourse].id);
+      }
     },
 
     goto(url, data) {
@@ -618,8 +638,15 @@ export default {
   },
   mounted() {
     this.isadmin = localStorage.getItem('Isadmin');
+    this.getId = localStorage.getItem('courseId');
+    if(this.getId !=""){
+      this.ischoose = true;
+      this.init();
+    }
     this.getMessage();
     if (this.$route.query.id) {
+      localStorage.setItem('courseId',this.$route.query.id);
+      this.getId = localStorage.getItem('courseId');
       this.isReturn = true
       this.currentId = this.$route.query.id;
       this.getCurrentCourseExam();
