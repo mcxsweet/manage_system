@@ -15,8 +15,12 @@
 
         <el-main v-if="ischoose">
 
+            <el-button style="margin-bottom: 1vw;" type="primary" @click="addData">添加</el-button>
+            <el-button style="margin-bottom: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
+            <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
+
             <div v-if="!isEmpty">
-                <el-table border="true" :header-cell-style="tableHeader" :data="tableData"  height="600px">
+                <el-table border="true" :header-cell-style="tableHeader" :data="tableData">
                     <el-table-column label="序号" width="50px">
                         <template slot-scope="scope">
                             <span>{{ scope.$index + 1 }}</span>
@@ -53,10 +57,6 @@
                         </template>
                     </el-table-column>
                 </el-table>
-
-                <el-button style="margin-top: 1vw;" type="primary" @click="addData">添加</el-button>
-                <el-button style="margin-top: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
-                <el-button style="margin-top: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
             </div>
             <div v-if="isEmpty">
                 <el-result icon="warning" title="当前课程平时考核方式未设置！" subTitle="请先对考核方式进行设置">
@@ -134,7 +134,7 @@ export default {
             reload: false,
             //当前课程id
             currentId: "",
-            getId:"",//localstrage中的courseID
+            getId: "",//localstrage中的courseID
             //课程名称
             currentCourse: "",
             //教师课程列表
@@ -197,7 +197,7 @@ export default {
                     message: error.data.message
                 });
             });
-            
+
             setTimeout(() => {
                 loadingInstance.close();
             }, 1000);
@@ -208,7 +208,7 @@ export default {
         tableHeader({ row, column, rowIndex, columnIndex }) {
             return 'text-align:center'
         },
-            //点击课程选择框
+        //点击课程选择框
         focusOnSelect() {
             this.tableData = [];
             this.ischoose = false;
@@ -225,8 +225,8 @@ export default {
             if (this.tableData) {
                 this.ischoose = true;
             }
-            if(this.getId==""){
-                localStorage.setItem('courseId',this.courseList[this.currentCourse].id);
+            if (this.getId == "") {
+                localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
             }
 
             this.fullscreenLoading = true;
@@ -401,23 +401,23 @@ export default {
             })
         },
         //获取课程基本信息
-        getCourse(){
-            api.get("/courseInfo/"+this.getId,"",(resp1)=>{
-            this.currentCourse = resp1.data.data.courseName;
-          })
+        getCourse() {
+            api.get("/courseInfo/" + this.getId, "", (resp1) => {
+                this.currentCourse = resp1.data.data.courseName;
+            })
         }
 
     },
     mounted() {
         this.getId = localStorage.getItem('courseId');
-            if(this.getId !=""){
+        if (this.getId != "") {
             this.ischoose = true;
             this.currentId = this.getId
             this.getCourse();
             this.getCurrentCourseItem();
-            }
+        }
         if (this.$route.query.id) {
-            localStorage.setItem('courseId',this.$route.query.id);
+            localStorage.setItem('courseId', this.$route.query.id);
             this.getId = localStorage.getItem('courseId');
             this.currentId = this.$route.query.id;
             this.currentCourse = this.$route.query.name;

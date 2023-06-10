@@ -17,7 +17,12 @@
 
             <!-- 学生期末成绩信息表格 -->
             <div v-if="!isEmpty">
-                <el-table boder="true" :header-cell-style="tableHeader" :data="tableData" height="600px">
+
+                <el-button type="primary" @click="addData">添加学生信息</el-button>
+                <el-button style="margin-bottom: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
+                <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
+
+                <el-table boder="true" :header-cell-style="tableHeader" :data="tableData">
                     <el-table-column label="序号" width="50px">
                         <template slot-scope="scope">
                             <span>{{ scope.$index + 1 }}</span>
@@ -57,9 +62,6 @@
                     </el-table-column>
                 </el-table>
 
-                <el-button type="primary" @click="addData">添加学生信息</el-button>
-                <el-button style="margin-top: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
-                <el-button style="margin-top: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
 
             </div>
 
@@ -143,7 +145,7 @@ export default {
     name: "finalStatisticsTable",
     data() {
         return {
-            getId:"",//localstrage中的courseID
+            getId: "",//localstrage中的courseID
             currentId: "",
             currentCourse: "",
             courseList: [],
@@ -422,8 +424,8 @@ export default {
             if (this.currentId == "") {
                 this.currentId = this.courseList[this.currentCourse].id;
             }
-            if(this.getId==""){
-                localStorage.setItem('courseId',this.courseList[this.currentCourse].id);
+            if (this.getId == "") {
+                localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
             }
             this.examPper = [];
             this.getExamPaper();
@@ -437,22 +439,22 @@ export default {
             }, 1000);
         },
         //获取课程基本信息
-        getCourse(){
-            api.get("/courseInfo/"+this.getId,"",(resp1)=>{
-            this.currentCourse = resp1.data.data.courseName;
-          })
+        getCourse() {
+            api.get("/courseInfo/" + this.getId, "", (resp1) => {
+                this.currentCourse = resp1.data.data.courseName;
+            })
         }
     },
     mounted() {
         this.getId = localStorage.getItem('courseId');
-            if(this.getId !=""){
+        if (this.getId != "") {
             this.ischoose = true;
             this.currentId = this.getId
             this.getCourse();
             this.getCurrentCourseItem();
-            }
+        }
         if (this.$route.query.id) {
-            localStorage.setItem('courseId',this.$route.query.id);
+            localStorage.setItem('courseId', this.$route.query.id);
             this.getId = localStorage.getItem('courseId');
             this.currentId = this.$route.query.id;
             this.currentCourse = this.$route.query.name;
