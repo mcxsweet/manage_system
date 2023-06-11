@@ -55,98 +55,8 @@
             <div style="text-align: center;">
               <el-button @click="getChildItem(scope1.row)" type="success" plain round>查看详情</el-button>
             </div>
-            <!-- <el-collapse>
-              <el-collapse-item disabled>
-                <template slot="title">
-                  <p @click="(scope1.row, scope1.$index)" style="width: 100%;text-align: center;color: green;">点击展开
-                  </p>
-                </template>
-                <div>
-                  <el-table :data="scope1.row.examChildItemArray" :stripe="true">
-                    <el-table-column label="子项目名称" width="170">
-
-                      <template slot-scope="scope2">
-                        <el-input v-model="scope2.row.examineChildItem"
-                          v-show="!scope2.row.isExamineChildItem"></el-input>
-                        <p v-show="scope2.row.isExamineChildItem">{{ scope2.row.examineChildItem }}</p>
-                      </template>
-                    </el-table-column>
-
-                    <el-table-column label="子项目百分比" width="150">
-                      <template slot-scope="scope2">
-                        <el-input type="number" v-model="scope2.row.childPercentage"
-                          v-show="!scope2.row.isChildPercentage" :min="0" :max="100">
-                          <template slot="append">%</template>
-                        </el-input>
-                        <p v-show="scope2.row.isChildPercentage">{{ scope2.row.childPercentage }} %</p>
-                      </template>
-                    </el-table-column>
-
-                    <el-table-column label="对应课程目标" width="170">
-                      <template slot-scope="scope2">
-                        <el-select v-model="scope2.row.courseTarget" :multiple="true" v-show="!scope2.row.isCourseTarget">
-                          <el-option v-for="item in courseTargetList" :key="item.id" :value="item.targetName">
-                            <span style="float: left">{{ item.targetName }}</span>
-                            <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                              {{ item.courseTarget }}
-                            </span>
-                          </el-option>
-                        </el-select>
-                        <div v-for="(item, index) in scope2.row.courseTarget" :key="index"
-                          v-show="scope2.row.isCourseTarget">
-                          <span>{{ item }}</span>
-                        </div>
-                      </template>
-                    </el-table-column>
-
-                    <el-table-column label="对应指标点" width="170">
-                      <template slot-scope="scope2">
-                        <el-select v-model="scope2.row.indicatorPointsDetail" :multiple="true"
-                          v-show="!scope2.row.isIndicatorPointsDetail">
-                          <el-option v-for="item in indicators" :key="item" :value="item">
-                          </el-option>
-                        </el-select>
-                        <div v-for="(item, index) in scope2.row.indicatorPointsDetail" :key="index"
-                          v-show="scope2.row.isIndicatorPointsDetail">
-                          <span>{{ item }}</span>
-                        </div>
-                      </template>
-                    </el-table-column>
-
-                    <el-table-column label="子项目操作" width="220">
-                      <template slot-scope="scope2">
-                        <el-tooltip content="编辑" placement="bottom" effect="light">
-                          <el-button type="primary" icon="el-icon-edit" :circle="true"
-                            @click="editChildItem(scope1.$index, scope2.$index)"></el-button>
-                        </el-tooltip>
-
-                        <el-tooltip content="保存" placement="bottom" effect="light">
-                          <el-button type="success" icon="el-icon-check" :circle="true"
-                            @click="saveChildItem(scope1.$index, scope2.$index)"></el-button>
-                        </el-tooltip>
-
-                        <el-tooltip content="删除" placement="bottom" effect="light">
-                          <el-button type="danger" icon="el-icon-delete" :circle="true"
-                            @click="deleteChildItem(scope1.$index, scope2.$index)"></el-button>
-                        </el-tooltip>
-
-                      </template>
-                    </el-table-column>
-                  </el-table>
-
-                  <el-tooltip content="添加子项目" placement="bottom" effect="light">
-                    <el-button type="primary" icon="el-icon-plus" :circle="true" v-show="scope1.row.isbuttonshow"
-                      @click="addExamChildItem(scope1.row, scope1.$index)"></el-button>
-
-                  </el-tooltip>
-
-                </div>
-              </el-collapse-item>
-            </el-collapse> -->
           </template>
         </el-table-column>
-
-
         <el-table-column label="操作" width="300">
           <template slot-scope="scope">
             <el-button type="primary" @click="editExamItem(scope.$index)">编辑</el-button>
@@ -157,15 +67,7 @@
       </el-table>
       <el-button icon="el-icon-plus" type="primary" @click="addExamItem()">添加考核方式</el-button>
       <el-divider></el-divider>
-      <!-- <div style="margin-top: 5%;">
-        <h1>考核评定法: 期末总成绩=<span v-for="(a, index) in examItemArray" :key="index"><span v-if="index != 0">+</span>{{
-          a.examineItem + '(' + a.percentage + '%)' }} </span> </h1>
-        <h1 v-for="(b, index) in examItemArray" :key="index">{{ b.examineItem + '=' }}<span
-            v-for="(ch, index1) in b.examChildItemArray" :key="index1"><span v-if="index1 != 0">+</span>{{
-              ch.examineChildItem + '(' + ch.childPercentage + '%)' }}</span></h1>
-      </div> -->
     </el-main>
-
     <el-dialog :title="itemTitle" v-if="itemShow" :visible.sync="itemShow" width="50%" append-to-body>
       <div>
         <el-table :data="itemArrary" :stripe="true">
@@ -417,14 +319,16 @@ export default {
         if (this.currentId) {
           this.examItemArray[index].courseId = this.currentId;
           this.examItemArray[index].courseName = this.currentCourse;
-        } else {
+        } else if(this.getId!=""){
+          this.examItemArray[index].courseId = this.getId;
+          this.examItemArray[index].courseName = this.currentCourse;
+        }else{
           this.examItemArray[index].courseId = this.courseList[this.currentCourse].id;
           this.examItemArray[index].courseName = this.courseList[this.currentCourse].courseName;
         }
         //添加
         if (!this.examItemArray[index].id) {
           api.post("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => {
-            console.log(resp.data.data)
             if (resp.data.flag) {
               api.get("/courseExam/courseExamineMethods/" + this.addid, "", (resp2) => {
                 this.examItemArray[index].id = resp2.data.data[index].id
@@ -641,6 +545,7 @@ export default {
     this.getId = localStorage.getItem('courseId');
     if(this.getId !=""){
       this.ischoose = true;
+      this.courseId = this.getId
       this.init();
     }
     this.getMessage();
