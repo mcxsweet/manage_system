@@ -110,7 +110,7 @@ export default {
   name: 'programObjective',
   data() {
     return {
-      newObj: [],
+      newObj: [], //用于设置新课程目标数量
       getId:"",//localstrage中的courseID
       kecheng: '课程目标',
       indicatorPointsNum: 0,
@@ -231,6 +231,7 @@ export default {
             this.tableLength = resp1.data.data.courseTargetNum
             this.newcourseTargetNum = this.tableLength
             this.currentCourse = resp1.data.data.courseName;
+            this.courseName = resp1.data.data.courseName;
           })
         api.get("/courseInfo/courseTarget/" + this.getId, "", (resp) => {
           for (let index = 0; index < resp.data.data.length; index++) {
@@ -266,7 +267,17 @@ export default {
     },
     //修改新课程目标数
     savaNum(index) {
-      this.newObj = this.courseList[this.currentCourse]
+      let newid=0
+      if(this.$route.query.id){
+        newid = this.$route.query.id
+      }else if(this.getId!=""){
+        newid = this.getId
+      }else{
+        newid = this.courseList[this.currentCourse].id
+      }
+      api.get("/courseInfo/"+newid,"",(resp1)=>{
+          this.newObj = resp1.data.data
+          })
       this.newObj.courseTargetNum = this.newcourseTargetNum
       api.put("/courseInfo", this.newObj, (resp) => {
         if (resp.data.flag) {
@@ -283,12 +294,18 @@ export default {
     },
     saveta(row, index) {
       row.ised = false
+      if(this.getid!=""){
+        this.tableData1[row.index].courseId = this.getId
+      }
       this.tableData1[row.index].indicatorPoints = JSON.stringify(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.stringify(this.tableData1[row.index].evaluationMethod);
       this.tableData1[row.index].courseName = this.courseName;
       if (row.id == null) {
         api.post("/courseInfo/courseTarget", this.tableData1[row.index], (resp) => {
           if (resp.data.flag) {
+              api.get("/courseInfo/courseTarget/" + this.getId, "", (resp2) => {
+                this.tableData1[row.index].id = resp2.data.data[row.index].id
+              })
             this.$message({
               type: 'success',
               message: '保存成功!'
@@ -365,8 +382,20 @@ export default {
             message: '不可再添加空白项！'
           })
         }
-      } else {
+      } else if(this.getId =="") {
         this.tableLength = this.courseList[this.currentCourse].courseTargetNum
+        if (this.tableLength > this.tableData1.length) {
+          this.obj.index = this.tableData1.length
+          j = this.obj.index + 1
+          this.obj.targetName = "课程目标" + j
+          this.tableData1.push(JSON.parse(JSON.stringify(this.obj)))
+        } else {
+          this.$message({
+            type: 'error',
+            message: '不可再添加空白项！'
+          })
+        }
+      }else if(this.getId!=""){
         if (this.tableLength > this.tableData1.length) {
           this.obj.index = this.tableData1.length
           j = this.obj.index + 1
