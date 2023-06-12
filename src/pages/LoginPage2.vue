@@ -6,11 +6,11 @@
                 <div class="login-form">
                     <div class="username form-item">
                         <span>用户名</span>
-                        <input type="text" class="input-item" v-model="formData.name">
+                        <input placeholder="用户名为命名首字母小写加电话号码" type="text" class="input-item" v-model="formData.name">
                     </div>
                     <div class="password form-item">
                         <span>密码</span>
-                        <input type="password" class="input-item" v-model="formData.password">
+                        <input placeholder="默认密码为六个零" type="password" class="input-item" v-model="formData.password">
                     </div>
                     <button class="login-btn" @click="submit()">登 录</button>
                 </div>
@@ -52,7 +52,7 @@ export default {
                     localStorage.setItem("Isadmin", resp.data.data.isAdmin);
                     localStorage.setItem("TeacherName", resp.data.data.teacherName);
                     localStorage.setItem("department", resp.data.data.department);
-                    localStorage.setItem('courseId',"");
+                    localStorage.setItem('courseId', "");
                     if (resp.data.data.isAdmin <= 2) {
                         this.$router.push({ path: '/MainPage' });
                     } else {
