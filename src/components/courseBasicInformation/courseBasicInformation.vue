@@ -215,7 +215,7 @@
 <script>
 import api from '@/api/api'
 import global from '@/script/global';
-import '@/style/tableStyle.css';
+
 export default {
     name: "courseBasicInformation",
     data() {
@@ -400,7 +400,7 @@ export default {
 </script>
 
 <style src="@/style/tableStyle.css"></style>
-<style scoped>
+<style>
 * {
     margin: 0;
     padding: 0;
