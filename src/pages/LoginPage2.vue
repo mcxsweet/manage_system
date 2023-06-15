@@ -6,7 +6,7 @@
                 <div class="login-form">
                     <div class="username form-item">
                         <span>用户名</span>
-                        <input placeholder="用户名为命名首字母小写加电话号码" type="text" class="input-item" v-model="formData.name">
+                        <input placeholder="用户名为姓名首字母小写加电话号码" type="text" class="input-item" v-model="formData.name">
                     </div>
                     <div class="password form-item">
                         <span>密码</span>
