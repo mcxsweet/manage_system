@@ -194,6 +194,12 @@
             </div>
 
             <div class="boxShadow">
+                <p class="title">学生信息管理</p>
+                <el-button class="BottonStyle" @click="showUpload = true" type="primary">导入学生名单</el-button>
+                <el-button class="BottonStyle" type="danger" @click="handleExportTest()">导出学生名单</el-button>
+            </div>
+
+            <div class="boxShadow">
                 <p class="title">课程成绩管理</p>
                 <el-button class="BottonStyle" style="margin-left: 10px;"
                     @click="goto('usualPreformanceTable', currentObject.id, currentObject.courseName)"
@@ -206,6 +212,14 @@
             </div>
         </el-drawer>
 
+        <!-- 上传学生名单 -->
+        <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
+            <el-form>
+                <input type="file" @change="handleFileUpload" />
+                <el-button type="submit" size="mini" @click.prevent="uploadFile()">上传文件</el-button>
+            </el-form>
+        </el-dialog>
+
         <el-footer>
             <span>总共有{{ tableData.length }}条课程</span>
         </el-footer>
@@ -214,7 +228,9 @@
 
 <script>
 import api from '@/api/api'
-import global from '@/script/global';
+import axios from 'axios'
+import global from '@/script/global'
+import { Loading } from 'element-ui';
 
 export default {
     name: "courseBasicInformation",
@@ -233,7 +249,10 @@ export default {
             isOperation: false,
             //当前选中的对象
             currentObject: {},
-            isadmin: 0 //权限等级
+            isadmin: 0, //权限等级
+
+            //学生名单上传弹窗控件
+            showUpload: false,
         }
     },
     methods: {
@@ -378,7 +397,45 @@ export default {
             this.isOperation = !this.isOperation;
             this.currentObject = object;
 
-        }
+        },
+
+        //选择上传文件
+        handleFileUpload(event) {
+            this.selectedFile = event.target.files[0]
+        },
+        //上传文件
+        uploadFile() {
+            let loadingInstance = Loading.service({ fullscreen: true });
+            const formData = new FormData()
+            formData.append('file', this.selectedFile)
+            axios.post("/student/" + this.currentObject.id + "/studentInfo", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            }).then(response => {
+                if (response.data.flag) {
+                    this.showUpload = !this.showUpload;
+                    this.$message({
+                        type: 'success',
+                        message: response.data.message
+                    });
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: response.data.message
+                    });
+                }
+            }).catch(error => {
+                this.$message({
+                    type: 'error',
+                    message: error.data.message
+                });
+            })
+
+            setTimeout(() => {
+                loadingInstance.close();
+            }, 1000);
+        },
 
     },
     // 监听数据
@@ -411,7 +468,8 @@ export default {
     font-size: 20px;
     width: 100%;
 }
-
+</style>
+<style scoped>
 .BottonStyle {
     margin: 10px 10px;
     width: 200px;
