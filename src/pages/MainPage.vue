@@ -116,7 +116,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import cookie from "vue-cookies"
 import api from '@/api/api';
 export default {
     name: "MainPage",
@@ -129,7 +128,7 @@ export default {
     computed: {
         /*
             此处为获取 vuex 数据，可以获取 state数据也可以获取getters数据
-            state：...mapState('user',['user'])
+            state：...mapState('user',['name'])
             也可以使用 this.$store.state.user.user获取
         */
         ...mapGetters(['username', 'id', 'isadmin', 'teacherName'])
@@ -144,10 +143,7 @@ export default {
             this.$router.push({ path: '/MainPage/' + url });
         },
         signOut() {
-            localStorage.clear();
-            sessionStorage.clear();
-            cookie.remove('satoken');
-            this.$router.push({ path: '/' });
+            this.$store.dispatch('user/logout')
         },
         handleCommand(command) {
             if (command == "signOut") {

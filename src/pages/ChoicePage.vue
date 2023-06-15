@@ -1,17 +1,28 @@
 <template>
     <div class="body">
-        <div @click="test()" class="main" data-text="普通教师" style="--c:#1e90ff"></div>
-        <div class="main" data-text="系主任" style="--c:#ff4757"></div>
-        <div class="main" data-text="学院管理员" style="--c:#ffa502"></div>
+        <div @click="choice(0)" class="main" data-text="普通教师" style="--c:#1e90ff"></div>
+        <div @click="choice(1)" class="main" data-text="系主任" style="--c:#ff4757"></div>
+        <div @click="choice(2)" class="main" data-text="学院管理员" style="--c:#ffa502"></div>
     </div>
 </template>
 
 <script>
+import api from '@/api/api';
 export default {
     name: "ChoicePage",
     methods: {
-        test() {
-            console.log("hello");
+        choice(role) {
+            api.post('/user/choiceRole', { role }, res=>{
+                let { flag, data} = res.data
+                if (flag) {
+                    this.$store.dispatch('user/setIsAdmin', data.isAdmin)
+                    this.$router.push('/MainPage')
+                   
+                    // localStorage.setItem('isAdmin', data.isAdmin)
+                }else{
+                    this.$store.dispatch('user/logout')
+                }
+            })
         }
     },
 }

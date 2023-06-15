@@ -6,11 +6,15 @@
                 <div class="login-form">
                     <div class="username form-item">
                         <span>用户名</span>
-                        <input placeholder="用户名为姓名首字母小写加电话号码" type="text" class="input-item" v-model="formData.name">
+                        <input :placeholder="nameTip" type="text" class="input-item" v-model="formData.name">
                     </div>
                     <div class="password form-item">
                         <span>密码</span>
-                        <input placeholder="默认密码为六个零" type="password" class="input-item" v-model="formData.password">
+                        <input :placeholder="passwordTip" type="password" class="input-item" v-model="formData.password">
+                    </div>
+                    <div class="password form-item" style="padding:0 20px">
+                        <el-radio v-model="formData.identity" label="0">老师</el-radio>   
+                        <el-radio v-model="formData.identity" label="1">学生</el-radio>
                     </div>
                     <button class="login-btn" @click="submit()">登 录</button>
                 </div>
@@ -27,8 +31,25 @@ export default {
         return {
             formData: {
                 name: '',
-                password: ''
+                password: '',
+                identity:'0'
             },
+        }
+    },
+    computed: {
+        nameTip() {
+            if(this.formData.identity==='0'){
+                return '用户名为命名首字母小写加电话号码'
+            }else{
+                return '用户名为学生学号'
+            } 
+        },
+        passwordTip() {
+            if(this.formData.identity==='0'){
+                return '默认密码为六个零'
+            }else{
+                return '默认密码为六个零'
+            }
         }
     },
     methods: {
@@ -41,24 +62,29 @@ export default {
         },
         submit() {
             api.post("/user/doLogin", this.formData, (resp) => {
-                if (resp.data.flag == true) {
+                let { flag , data} = resp.data
+                if (flag == true) {
+                    let { identity , info } = data              
+                    if(identity==="0"){
+                        localStorage.clear();
+                        sessionStorage.setItem("token", this.$cookies.get("token"));
 
-                    localStorage.clear();
-                    sessionStorage.setItem("token", this.$cookies.get("token"));
-
-                    localStorage.setItem("name", this.formData.name);
-                    // localStorage.setItem("password", this.formData.password);
-                    localStorage.setItem("UserId", resp.data.data.id);
-                    localStorage.setItem("Isadmin", resp.data.data.isAdmin);
-                    localStorage.setItem("TeacherName", resp.data.data.teacherName);
-                    localStorage.setItem("department", resp.data.data.department);
-                    localStorage.setItem('courseId', "");
-                    if (resp.data.data.isAdmin <= 2) {
-                        this.$router.push({ path: '/MainPage' });
-                    } else {
-                        this.$router.push({ path: '/ChoicePage' });
+                        localStorage.setItem("name", info.name);
+                        // localStorage.setItem("password", this.formData.password);
+                        localStorage.setItem("UserId", info.id);
+                        localStorage.setItem("Isadmin", info.isAdmin);
+                        localStorage.setItem("TeacherName", info.teacherName);
+                        localStorage.setItem("department", info.department);
+                        localStorage.setItem('courseId', "");
+                        if (info.isAdmin <= 2) {
+                            this.$router.push({ path: '/MainPage' });
+                        } else {
+                            this.$router.push({ path: '/ChoicePage' });
+                        }
+                    }else{
+                        console.log('学生登录')
+                        this.$router.push({ path: '/questionnaires' });
                     }
-
                 } else {
                     this.$message({
                         type: 'error',
@@ -145,8 +171,8 @@ export default {
     .box .content {
         width: 85vw;
         height: 90vh;
-        background: url("../assets/test.png") no-repeat;
-        background-size: 100% 100%;
+        background: url("../assets/test.jpg") no-repeat;
+        background-size: 76% 100%;
         position: absolute;
         right: 15%;
         top: 50%;
