@@ -24,6 +24,7 @@ import analysisTable from '@/components/analysePage/analysisTable'
 import programTable from '@/components/analysePage/programTable'
 
 import ChoicePage from '@/pages/ChoicePage'
+import Questionnaires   from '@/pages/Questionnaires'
 
 import { Message } from "element-ui";
 import cookie from "vue-cookies"
@@ -38,6 +39,10 @@ const router = new VueRouter({
         {
             path: "/ChoicePage",
             component: ChoicePage
+        },
+        {
+            path: "/questionnaires",
+            component: Questionnaires
         },
         {
             path: "/MainPage",
@@ -121,7 +126,7 @@ router.beforeEach(async (to, from, next) => {
     if (token) {
         if (to.path === '/') {
             // 登录，跳转首页
-            next({ path: '/MainPage/courseBasicInformation' })
+            next({ path: '/MainPage' })
         } else {
             try {
                 /*
@@ -130,17 +135,37 @@ router.beforeEach(async (to, from, next) => {
                     使用方法请见 /pages/MainPage.vue
                 */
                 let user = await store.dispatch('user/getInfo')
-                //此处可做权限验证           
-                if (!to.meta.isAdmin) {
-                    next()
-                } else {
-                    if (user.isAdmin === to.meta.isAdmin) {
+                console.log(user);
+                if (user.isAdmin) {
+                    if (to.path==='/ChoicePage') {
+                        if(user.isAdmin <= 2) {
+                            store.dispatch('user/logout')
+                            return
+                        }else{
+                            next()
+                        }                   
+                    }else{
+                        //此处可做权限验证           
+                        if (!to.meta.isAdmin) {
+                            next()
+                        } else {
+                            if (user.isAdmin === to.meta.isAdmin) {
+                                next()
+                            } else {
+                                Message.warning('对不起您没有权限访问此页面')
+                                next('/MainPage/courseBasicInformation')
+                            }
+                        }
+                    }
+                }else{
+                    if(to.path==='/questionnaires'){
                         next()
-                    } else {
+                    }else{
                         Message.warning('对不起您没有权限访问此页面')
-                        next('/MainPage/courseBasicInformation')
+                        next('/questionnaires')
                     }
                 }
+                
             } catch (e) {
                 Message.error(e)
                 cookie.remove('satoken')
