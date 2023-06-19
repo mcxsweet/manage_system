@@ -24,7 +24,7 @@ import analysisTable from '@/components/analysePage/analysisTable'
 import programTable from '@/components/analysePage/programTable'
 
 import ChoicePage from '@/pages/ChoicePage'
-import Questionnaires   from '@/pages/Questionnaires'
+import Questionnaires from '@/pages/Questionnaires'
 
 import { Message } from "element-ui";
 import cookie from "vue-cookies"
@@ -136,15 +136,15 @@ router.beforeEach(async (to, from, next) => {
                 */
                 let user = await store.dispatch('user/getInfo')
                 console.log(user);
-                if (user.isAdmin) {
-                    if (to.path==='/ChoicePage') {
-                        if(user.isAdmin <= 2) {
+                if (user.isAdmin != null) {
+                    if (to.path === '/ChoicePage') {
+                        if (user.isAdmin <= 2) {
                             store.dispatch('user/logout')
                             return
-                        }else{
+                        } else {
                             next()
-                        }                   
-                    }else{
+                        }
+                    } else {
                         //此处可做权限验证           
                         if (!to.meta.isAdmin) {
                             next()
@@ -157,15 +157,15 @@ router.beforeEach(async (to, from, next) => {
                             }
                         }
                     }
-                }else{
-                    if(to.path==='/questionnaires'){
+                } else {
+                    if (to.path === '/questionnaires') {
                         next()
-                    }else{
+                    } else {
                         Message.warning('对不起您没有权限访问此页面')
                         next('/questionnaires')
                     }
                 }
-                
+
             } catch (e) {
                 Message.error(e)
                 cookie.remove('satoken')
