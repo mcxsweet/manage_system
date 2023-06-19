@@ -24,7 +24,7 @@ import analysisTable from '@/components/analysePage/analysisTable'
 import programTable from '@/components/analysePage/programTable'
 
 import ChoicePage from '@/pages/ChoicePage'
-import Questionnaires from '@/pages/Questionnaires'
+import Questionnaires from '@/components/attainmentSurvey/Questionnaires'
 
 import { Message } from "element-ui";
 import cookie from "vue-cookies"
