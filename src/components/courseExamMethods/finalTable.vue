@@ -112,14 +112,20 @@
 
             <!-- 题型与指标点对应关系 -->
             <el-divider content-position="center">全局展示</el-divider>
-            <el-button type="primary" @click="exportPDF()" style="margin: 1vh;">导出PDF</el-button>
-            <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
-            <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
+
+            <el-button type="primary" @click="openDoc()" style="margin: 1vh;">展示小题和指标点关系文档</el-button>
 
             <!-- <div v-loading="loading2">
                 <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
             </div> -->
-
+            <!-- 展示小题和指标点关系文档 -->
+            <el-dialog v-if="isShowDoc" title="展示小题和指标点关系文档" :visible.sync="isShowDoc" width="100%" append-to-body>
+                <el-button type="primary" @click="exportPDF()" style="margin: 1vh;">导出PDF</el-button>
+                <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
+                <div v-loading="loading2">
+                    <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
+                </div>
+            </el-dialog>
 
             <!-- 试卷 -->
             <el-drawer :title="workSpaceTitle" :visible.sync="workSpace" direction="btt" :before-close="handleClose"
@@ -334,12 +340,6 @@
                                 </div>
                             </el-dialog>
 
-                            <!-- 展示小题和指标点关系文档 -->
-                            <el-dialog title="展示小题和指标点关系文档" :visible.sync="isShowDoc" width="100%" append-to-body>
-                                <div v-loading="loading2">
-                                    <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
-                                </div>
-                            </el-dialog>
                         </div>
                     </el-col>
                     <el-col :span="4">
@@ -566,6 +566,7 @@ export default {
                 this.loading = false;
             }, 1000);
         },
+
         addPaperItem1(index) {
             this.itemNumber = index
             this.$confirm('是否添加 ?', '提示', {
@@ -902,6 +903,12 @@ export default {
                     message: '已取消'
                 });
             });
+        },
+
+        //打开展示表格
+        openDoc() {
+            this.isShowDoc = !this.isShowDoc;
+            this.initShowTable();
         },
 
         //给展示表格赋值
