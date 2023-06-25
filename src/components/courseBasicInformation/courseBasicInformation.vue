@@ -315,9 +315,9 @@ export default {
         handleExport(index, object) {
             window.location.href = global.BaseUrl + "/courseInfo/export/" + object.id;
         },
-        //导出
+        //导出测试
         handleExportTest() {
-            window.location.href = "http://localhost:8080/report";
+            window.location.href = "http://localhost:8080/report/" + this.currentObject.id + "/analyse";
         },
         //跳转到设置界面
         handleSetting(index, object) {
