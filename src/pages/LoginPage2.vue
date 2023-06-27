@@ -39,7 +39,7 @@ export default {
     computed: {
         nameTip() {
             if (this.formData.identity === '0') {
-                return '用户名为命名首字母小写加电话号码'
+                return '用户名为姓名首字母小写加电话号码'
             } else {
                 return '用户名为学生学号'
             }

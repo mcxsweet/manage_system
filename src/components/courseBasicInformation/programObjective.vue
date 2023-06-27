@@ -4,8 +4,9 @@
       <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
         <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
           <span style="float: left">{{ item.courseName }}</span>
-          <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">{{ item.termStart }}-{{
-            item.termEnd }}.{{ item.term }}</span>
+          <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">
+            {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}
+          </span>
         </el-option>
       </el-select>
 
@@ -33,7 +34,14 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="毕业要求指标点" width="220">
+        <el-table-column prop="weight" label="支撑权重" width="100">
+          <template slot-scope="scope">
+            <el-input v-model="scope.row.weight" v-show="scope.row.ised"></el-input>
+            <span v-show="!scope.row.ised">{{ scope.row.weight }}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="毕业要求指标点" width="200">
           <template slot-scope="scope">
             <el-select v-model="scope.row.indicatorPoints" :filterable="true" :multiple="true" placeholder="请选择"
               v-show="scope.row.ised">
@@ -79,25 +87,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-button icon="el-icon-plus" type="primary" @click="add" v-show="ischoose">添加课程目标</el-button>
-      <el-divider v-show="isNumber"></el-divider>
-      <el-form inline v-show="isNumber" style="margin-top: 50px;">
-        <el-form-item label="指标点" width="200px">
-          <el-select v-model="indicators" filterable multiple style="width:100% ;" :multiple-limit="indicatorPointsNum">
-            <el-option v-for="item in indicatorPoints1" :key="item.indicatorName" :value="item.indicatorName">
-              <span style="float: left">{{ item.indicatorName }}</span>
-              <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                {{ item.indicatorContent }}
-              </span>
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="课程目标数">
-          <el-input-number v-show="isNumber" :min="0" v-model="newcourseTargetNum"
-            controls-position="right"></el-input-number>
-          <el-button icon="el-icon-search" style="margin-right;: 10px" @click="savaNum(newcourseTargetNum)">确定</el-button>
-        </el-form-item>
-      </el-form>
+      <el-button icon="el-icon-plus" type="primary" @click="add" style="margin: 10px;">添加课程目标</el-button>
 
     </el-main>
   </el-container>
@@ -111,7 +101,7 @@ export default {
   data() {
     return {
       newObj: [], //用于设置新课程目标数量
-      getId:"",//localstrage中的courseID
+      getId: "",//localstrage中的courseID
       kecheng: '课程目标',
       indicatorPointsNum: 0,
       newcourseTargetNum: 0,
@@ -173,8 +163,8 @@ export default {
       this.courseName = this.courseList[this.currentCourse].courseName
       this.obj.courseId = this.courseList[this.currentCourse].id
       this.newcourseTargetNum = this.tableLength
-      if(this.getId==""){
-        localStorage.setItem('courseId',this.obj.courseId);
+      if (this.getId == "") {
+        localStorage.setItem('courseId', this.obj.courseId);
       }
     },
     goto(url) {
@@ -206,7 +196,7 @@ export default {
         })
         this.currentCourse = this.$route.query.name;
         this.getIndicators(this.$route.query.id);
-      } else if(this.getId =="") {
+      } else if (this.getId == "") {
         this.tableLength = this.courseList[this.currentCourse].courseTargetNum
         this.id = this.courseList[this.currentCourse].id
         api.get("/courseInfo/courseTarget/" + this.id, "", (resp) => {
@@ -226,13 +216,13 @@ export default {
           }
         })
         this.getIndicators(this.id);
-      }else if(this.getId !=""){
-          api.get("/courseInfo/"+this.getId,"",(resp1)=>{
-            this.tableLength = resp1.data.data.courseTargetNum
-            this.newcourseTargetNum = this.tableLength
-            this.currentCourse = resp1.data.data.courseName;
-            this.courseName = resp1.data.data.courseName;
-          })
+      } else if (this.getId != "") {
+        api.get("/courseInfo/" + this.getId, "", (resp1) => {
+          this.tableLength = resp1.data.data.courseTargetNum
+          this.newcourseTargetNum = this.tableLength
+          this.currentCourse = resp1.data.data.courseName;
+          this.courseName = resp1.data.data.courseName;
+        })
         api.get("/courseInfo/courseTarget/" + this.getId, "", (resp) => {
           for (let index = 0; index < resp.data.data.length; index++) {
             resp.data.data[index].indicatorPoints = JSON.parse(resp.data.data[index].indicatorPoints);
@@ -267,17 +257,17 @@ export default {
     },
     //修改新课程目标数
     savaNum(index) {
-      let newid=0
-      if(this.$route.query.id){
+      let newid = 0
+      if (this.$route.query.id) {
         newid = this.$route.query.id
-      }else if(this.getId!=""){
+      } else if (this.getId != "") {
         newid = this.getId
-      }else{
+      } else {
         newid = this.courseList[this.currentCourse].id
       }
-      api.get("/courseInfo/"+newid,"",(resp1)=>{
-          this.newObj = resp1.data.data
-          })
+      api.get("/courseInfo/" + newid, "", (resp1) => {
+        this.newObj = resp1.data.data
+      })
       this.newObj.courseTargetNum = this.newcourseTargetNum
       api.put("/courseInfo", this.newObj, (resp) => {
         if (resp.data.flag) {
@@ -294,7 +284,7 @@ export default {
     },
     saveta(row, index) {
       row.ised = false
-      if(this.getid!=""){
+      if (this.getid != "") {
         this.tableData1[row.index].courseId = this.getId
       }
       this.tableData1[row.index].indicatorPoints = JSON.stringify(this.tableData1[row.index].indicatorPoints);
@@ -303,9 +293,9 @@ export default {
       if (row.id == null) {
         api.post("/courseInfo/courseTarget", this.tableData1[row.index], (resp) => {
           if (resp.data.flag) {
-              api.get("/courseInfo/courseTarget/" + this.getId, "", (resp2) => {
-                this.tableData1[row.index].id = resp2.data.data[row.index].id
-              })
+            api.get("/courseInfo/courseTarget/" + this.getId, "", (resp2) => {
+              this.tableData1[row.index].id = resp2.data.data[row.index].id
+            })
             this.$message({
               type: 'success',
               message: '保存成功!'
@@ -382,7 +372,7 @@ export default {
             message: '不可再添加空白项！'
           })
         }
-      } else if(this.getId =="") {
+      } else if (this.getId == "") {
         this.tableLength = this.courseList[this.currentCourse].courseTargetNum
         if (this.tableLength > this.tableData1.length) {
           this.obj.index = this.tableData1.length
@@ -395,7 +385,7 @@ export default {
             message: '不可再添加空白项！'
           })
         }
-      }else if(this.getId!=""){
+      } else if (this.getId != "") {
         if (this.tableLength > this.tableData1.length) {
           this.obj.index = this.tableData1.length
           j = this.obj.index + 1
@@ -422,7 +412,7 @@ export default {
   mounted() {
     this.isadmin = localStorage.getItem('Isadmin');
     this.getId = localStorage.getItem('courseId');
-    if(this.getId !=""){
+    if (this.getId != "") {
       this.isNumber = true
       this.ischoose = true;
       this.init();
@@ -430,7 +420,7 @@ export default {
     this.getMessage();
     this.getIndicators1();
     if (this.$route.query.id) {
-      localStorage.setItem('courseId',this.$route.query.id);
+      localStorage.setItem('courseId', this.$route.query.id);
       this.getId = localStorage.getItem('courseId');
       this.isReturn = true
       this.id = this.$route.query.id;

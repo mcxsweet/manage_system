@@ -317,7 +317,7 @@ export default {
         },
         //导出测试
         handleExportTest() {
-            window.location.href = "http://localhost:8080/report/" + this.currentObject.id + "/analyse";
+            window.location.href = global.BaseUrl + "/report/" + this.currentObject.id + "/analyse";
         },
         //跳转到设置界面
         handleSetting(index, object) {
