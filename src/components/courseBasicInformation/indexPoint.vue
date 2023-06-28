@@ -8,6 +8,8 @@
 <script>
 import pdfUpload from './pdfUpload.vue'
 import axios from 'axios';
+import global from '@/script/global'
+
 export default {
   name: 'indexPoint',
   components: { pdfUpload },
@@ -20,7 +22,7 @@ export default {
   },
   methods: {
     getIndicatorsPDF() {
-      let url = "/courseInfo/" + localStorage.getItem("department") + "/indicatorsPDF";
+      let url = global.runTiemPath + "/courseInfo/" + localStorage.getItem("department") + "/indicatorsPDF";
       axios.get(url, { responseType: "blob" }).then((response) => {
         if (!response.headers['content-type'].includes("application/pdf")) {
           return;

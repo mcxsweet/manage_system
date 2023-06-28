@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Message } from 'element-ui';
 import router from '../router/index'
+import global from '@/script/global'
 
 
 //请求拦截器
@@ -28,11 +29,12 @@ axios.interceptors.response.use((success) => {
  * @param {*} paramsData 
  * @returns 
  */
+const runTime = global.runTiemPath;
 
 const api = {
     async get(url, data, callback) {
         let res = await axios({
-            url: url,
+            url: runTime + url,
             method: "GET",
             params: data || "",
             // ContentType: "application/x-www-form-urlencoded"
@@ -42,7 +44,7 @@ const api = {
 
     async post(url, data, callback) {
         let res = await axios({
-            url: url,
+            url: runTime + url,
             method: "POST",
             data: data || "",
             // ContentType: "application/x-www-form-urlencoded"
@@ -52,7 +54,7 @@ const api = {
 
     async put(url, data, callback) {
         let res = await axios({
-            url: url,
+            url: runTime + url,
             method: "PUT",
             data: data || "",
             // ContentType: "application/x-www-form-urlencoded"
@@ -62,7 +64,7 @@ const api = {
 
     async del(url, data, callback) {
         let res = await axios({
-            url: url,
+            url: runTime + url,
             method: "DELETE",
             data: data || "",
             // ContentType: "application/x-www-form-urlencoded"

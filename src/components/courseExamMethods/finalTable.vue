@@ -923,7 +923,7 @@ export default {
                 url = this.courseList[this.currentCourse].id;
             }
             // axios.get("http://43.140.201.70:8080/courseExamPaper/Table/" + url, { responseType: 'blob' })
-            axios.get("/courseExamPaper/" + url + "/1/Table", { responseType: 'blob' })
+            axios.get(global.runTiemPath + "/courseExamPaper/" + url + "/1/Table", { responseType: 'blob' })
                 .then((response) => {
                     // 将响应数据转换为Blob对象
                     const blob = new Blob([response.data], { type: 'application/pdf' });

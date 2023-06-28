@@ -146,7 +146,7 @@ export default {
       else if (this.getId == "") {
         url = this.courseList[this.currentCourse].id;
       }
-      axios.get("/student/" + url + "/exportComprehensiveScoreAnalyse", { responseType: 'blob' })
+      axios.get(global.runTiemPath + "/student/" + url + "/exportComprehensiveScoreAnalyse", { responseType: 'blob' })
         .then((response) => {
           // 将响应数据转换为Blob对象
           const blob = new Blob([response.data], { type: 'application/pdf' });
@@ -188,7 +188,7 @@ export default {
       } else if (this.getId == "") {
         url = this.courseList[this.currentCourse].id;
       }
-      axios.get("student/" + url + "/1/exportDegreeOfAchievement", { responseType: 'blob' })
+      axios.get(global.runTiemPath + "/student/" + url + "/1/exportDegreeOfAchievement", { responseType: 'blob' })
         .then((response) => {
           // 将响应数据转换为Blob对象
           const text = new Blob([response.data], { type: 'application/pdf' });

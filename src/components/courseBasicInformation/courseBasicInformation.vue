@@ -52,7 +52,7 @@
                     <el-input v-model="FormData.courseName"></el-input>
                 </el-form-item>
                 <el-form-item label="开设专业">
-                    <el-select v-model="FormData.major">
+                    <el-select v-model="FormData.major" @change="getIndicators()">
                         <el-option value="计算机科学与技术"></el-option>
                         <el-option value="电子信息工程"></el-option>
                         <el-option value="数据科学与大数据技术"></el-option>
@@ -388,7 +388,7 @@ export default {
         },
         //获取指标点列表
         getIndicators() {
-            api.get("/courseInfo/indicators", "", (resp) => {
+            api.post("/courseInfo/indicators", this.FormData, (resp) => {
                 this.indicators = resp.data.data;
             })
         },

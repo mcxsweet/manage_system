@@ -27,9 +27,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="courseTarget" label="课程目标">
+        <el-table-column prop="courseTarget" label="课程目标" width="300">
           <template slot-scope="scope">
-            <el-input v-model="scope.row.courseTarget" v-show="scope.row.ised"></el-input>
+            <el-input v-model="scope.row.courseTarget" v-show="scope.row.ised" placeholder="教学大纲中的课程目标文字描述"></el-input>
             <span v-show="!scope.row.ised">{{ scope.row.courseTarget }}</span>
           </template>
         </el-table-column>
@@ -41,7 +41,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="毕业要求指标点" width="200">
+        <el-table-column label="毕业要求指标点" width="150">
           <template slot-scope="scope">
             <el-select v-model="scope.row.indicatorPoints" :filterable="true" :multiple="true" placeholder="请选择"
               v-show="scope.row.ised">
@@ -55,14 +55,14 @@
           </template>
         </el-table-column>
 
-        <el-table-column prop="pathWays" label="达成途径">
+        <el-table-column prop="pathWays" label="达成途径" width="300">
           <template slot-scope="scope">
             <el-input v-model="scope.row.pathWays" v-show="scope.row.ised"></el-input>
             <span v-show="!scope.row.ised">{{ scope.row.pathWays }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="请选择评价依据" width="180">
+        <el-table-column label="请选择评价依据" width="150">
           <template slot-scope="scope">
             <el-select v-model="scope.row.evaluationMethod" multiple placeholder="评价依据" v-show="scope.row.ised"
               allow-create="true" filterable="true">
