@@ -81,8 +81,8 @@
 
         <el-table-column label="操作" width="220">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="editta(scope.row, scope)">编辑</el-button>
-            <el-button type="success" size="mini" @click="saveta(scope.row)">保存</el-button>
+            <el-button type="primary" size="mini" @click="editta(scope.row)">编辑</el-button>
+            <el-button type="success" size="mini" @click="saveta(scope.row, scope.$index)">保存</el-button>
             <el-button type="danger" size="mini" @click="delect(scope.row, scope.$index)">删除</el-button>
           </template>
         </el-table-column>
@@ -157,15 +157,16 @@ export default {
     },
     //点击按钮
     getCurrentCourseExam() {
+      this.currentId = this.courseList[this.currentCourse].id;
       this.isNumber = true
       this.ischoose = true;
       this.init();
       this.courseName = this.courseList[this.currentCourse].courseName
       this.obj.courseId = this.courseList[this.currentCourse].id
       this.newcourseTargetNum = this.tableLength
-      if (this.getId == "") {
-        localStorage.setItem('courseId', this.obj.courseId);
-      }
+
+      localStorage.setItem('courseId', this.obj.courseId);
+
     },
     goto(url) {
       this.$router.push({ path: '/MainPage/' + url, });
@@ -279,14 +280,12 @@ export default {
         }
       })
     },
-    editta(row, index) {
+    editta(row) {
       row.ised = true;
     },
     saveta(row, index) {
       row.ised = false
-      if (this.getid != "") {
-        this.tableData1[row.index].courseId = this.getId
-      }
+      this.tableData1[row.index].courseId = this.getId
       this.tableData1[row.index].indicatorPoints = JSON.stringify(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.stringify(this.tableData1[row.index].evaluationMethod);
       this.tableData1[row.index].courseName = this.courseName;
@@ -326,6 +325,7 @@ export default {
       this.tableData1[row.index].indicatorPoints = JSON.parse(this.tableData1[row.index].indicatorPoints);
       this.tableData1[row.index].evaluationMethod = JSON.parse(this.tableData1[row.index].evaluationMethod);
     },
+
     delect(obj, index) {
       this.$confirm('是否删除 ?', '提示', {
         confirmButtonText: '确定',
