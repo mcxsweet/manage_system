@@ -16,7 +16,7 @@ import indexPoint from '@/components/courseBasicInformation/indexPoint'
 import basicInformationTable from '@/components/courseExamMethods/basicInformationTable'
 
 import welcome from '@/components/welcome'
-import finalTable from '@/components/courseExamMethods/finalTable'
+import finalTable from '@/components/courseExamMethods/finalPaperSetting'
 import usualPreformanceTable from '@/components/studentScoreManager/usualPreformanceTable'
 import finalStatisticsTable from '@/components/studentScoreManager/finalStatisticsTable'
 import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
