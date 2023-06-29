@@ -421,6 +421,7 @@ export default {
         },
         //初始化表格
         getCurrentCourseItem() {
+            this.fullscreenLoading = true;
             if (this.currentId == "") {
                 this.currentId = this.courseList[this.currentCourse].id;
             }
@@ -433,7 +434,6 @@ export default {
             this.getStudentScore();
             this.ischoose = true;
 
-            this.fullscreenLoading = true;
             setTimeout(() => {
                 this.fullscreenLoading = false;
             }, 1000);

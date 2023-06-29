@@ -8,7 +8,8 @@
             {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}</span>
         </el-option>
       </el-select>
-      <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()">确定</el-button>
+      <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()"
+        v-loading.fullscreen.lock="fullscreenLoading">确定</el-button>
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
@@ -94,7 +95,7 @@ export default {
       isShow2: false,
 
       data: [],
-
+      fullscreenLoading: false
     }
   },
   components: { myChart },
@@ -105,6 +106,7 @@ export default {
 
     //初始化表格
     getCurrentCourseItem() {
+      this.fullscreenLoading = true;
       if (this.currentId == "") {
         this.currentId = this.courseList[this.currentCourse].id;
       }
@@ -113,6 +115,9 @@ export default {
       if (this.getId == "") {
         localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
       }
+      setTimeout(() => {
+        this.fullscreenLoading = false;
+      }, 1000);
     },
 
     //点击课程选择框
