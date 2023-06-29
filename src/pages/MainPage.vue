@@ -3,14 +3,13 @@
 
         <el-header>
             <el-row>
-                <el-col :span="4">
+                <el-col :span="5">
                     <div style="display: flex;align-items: center;height: 60px;">
-                        <!-- <el-button icon=" el-icon-back" :circle="true" @click="goBack()"></el-button> -->
-                        <el-page-header @back="goBack()" content="">
-                        </el-page-header>
+                        
+                        <p style="font-family: STXingkai;font-size: 30px;">专业工程认证系统</p>
                     </div>
                 </el-col>
-                <el-col :span="16">
+                <el-col :span="15">
                     <el-menu :default-active="activeIndex" mode="horizontal" background-color="#B3C0D1" text-color="black"
                         @select="handleSelect">
                         <el-menu-item index="1">教学大纲设置</el-menu-item>
