@@ -388,7 +388,7 @@ export default {
         },
         //获取指标点列表
         getIndicators() {
-            api.post("/courseInfo/indicators", this.FormData, (resp) => {
+            api.post("/courseInfo/indicators", { "major": this.FormData.major }, (resp) => {
                 this.indicators = resp.data.data;
             })
         },
