@@ -100,7 +100,7 @@
                     <el-select v-model="FormData.courseType" placeholder="请选择课程类别">
                         <el-option value="专业基础课"></el-option>
                         <el-option value="专业特色课"></el-option>
-                        <el-option value="专业必修课课"></el-option>
+                        <el-option value="专业必修课"></el-option>
                     </el-select>
 
                 </el-form-item>

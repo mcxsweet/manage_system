@@ -5,7 +5,7 @@
             <el-row>
                 <el-col :span="5">
                     <div style="display: flex;align-items: center;height: 60px;">
-                        
+
                         <p style="font-family: STXingkai;font-size: 30px;">专业工程认证系统</p>
                     </div>
                 </el-col>
@@ -78,17 +78,29 @@
                 </el-menu>
                 <!-- 教师 -->
                 <el-menu v-if="isadmin == 0" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+                    <div v-show="activeIndex == 1">
+                        <el-submenu index="1">
+                            <template slot="title"><i class="el-icon-message"></i>专业材料查询</template>
+                            <el-menu-item-group>
+                                <el-menu-item index="1-1" @click="goto('educationProgram')">培养方案</el-menu-item>
+                                <el-menu-item index="1-2" @click="goto('indicators')">毕业要求指标点</el-menu-item>
+                                <el-menu-item index="1-3" @click="goto('syllabus')">教学大纲</el-menu-item>
+
+                            </el-menu-item-group>
+                        </el-submenu>
+                    </div>
+
                     <div v-show="activeIndex == 2">
                         <el-submenu index="1">
                             <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                             <el-menu-item-group>
                                 <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
                                 <el-menu-item index="1-2" @click="goto('programObjective')">课程目标设置</el-menu-item>
-                                <!-- <el-menu-item index="1-3" @click="goto('teachingPro')">教学大纲</el-menu-item> -->
                                 <el-menu-item index="1-4" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item>
                                 <el-menu-item index="1-5" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
+
                         <el-submenu index="2">
                             <template slot="title"><i class="el-icon-menu"></i>试卷管理</template>
                             <el-menu-item-group>
@@ -96,22 +108,23 @@
                             </el-menu-item-group>
                         </el-submenu>
                     </div>
+
                     <div v-show="activeIndex == 3">
                         <el-submenu index="3">
                             <template slot="title"><i class="el-icon-setting"></i>成绩管理</template>
                             <el-menu-item-group>
-                                <el-menu-item index="3-1" @click="goto('usualPreformanceTable')">平时考核成绩统计表</el-menu-item>
-                                <el-menu-item index="3-2" @click="goto('finalStatisticsTable')">课程期末试卷成绩</el-menu-item>
-                                <el-menu-item index="3-3" @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
+                                <el-menu-item index="3-1" @click="goto('usualPreformanceTable')">平时考核成绩统计</el-menu-item>
+                                <el-menu-item index="3-2" @click="goto('finalStatisticsTable')">期末试卷成绩统计</el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
                     </div>
                     <div v-show="activeIndex == 4">
-                        <el-submenu index="3">
+                        <el-submenu index="4">
                             <template slot="title"><i class="el-icon-setting"></i>成绩分析报告</template>
                             <el-menu-item-group>
-                                <el-menu-item index="3-4-1" @click="goto('analysisTable')">期末综合成绩分析表</el-menu-item>
-                                <el-menu-item index="3-4-2" @click="goto('programTable')">课程达成度成绩计算表</el-menu-item>
+                                <el-menu-item index="4-1" @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
+                                <el-menu-item index="4-2" @click="goto('analysisTable')">期末综合成绩分析表</el-menu-item>
+                                <el-menu-item index="4-3" @click="goto('programTable')">课程达成度成绩计算表</el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
                     </div>
