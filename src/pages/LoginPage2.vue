@@ -2,7 +2,7 @@
     <div class="box">
         <div class="content">
             <div class="login-wrapper">
-                <h1>专业工程认证系统</h1>
+                <h1>工程教育专业认证系统</h1>
                 <div class="login-form">
                     <div class="username form-item">
                         <span>用户名</span>
