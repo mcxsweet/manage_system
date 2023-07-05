@@ -31,6 +31,10 @@ import educationProgram from '@/components/courseSyllabus/educationProgram'
 import indicators from '@/components/courseSyllabus/indicators'
 import syllabus from '@/components/courseSyllabus/syllabus'
 
+//教学大纲设置
+import unUse from '@/components/courseSyllabus/courseSyllabusSetting/unUse'
+
+
 import { Message } from "element-ui";
 import cookie from "vue-cookies"
 import store from "@/store";
@@ -133,6 +137,11 @@ const router = new VueRouter({
                 {
                     path: 'syllabus',  //教学大纲
                     component: syllabus
+                },
+                //教学大纲设置
+                {
+                    path: 'unUse',  //教学大纲
+                    component: unUse
                 },
             ]
         },
