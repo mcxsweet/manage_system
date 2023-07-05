@@ -1,41 +1,29 @@
 <template>
-   <el-container>
-    <el-main>
-      <el-table boder="true" :header-cell-style="tableHeader" :data="tableData" >
-    <el-table-column label="学号"></el-table-column>
-    <el-table-column label="姓名"></el-table-column>
-    <el-table-column label="班级"></el-table-column>
-    <el-table-column label="平时成绩()"></el-table-column>
-    <el-table-column label="期末成绩()"></el-table-column>
-    <el-table-column label="总评成绩()"></el-table-column>
-    <el-table-column label="课程目标">
-        <el-table-column label="平时观测点达成度"></el-table-column>
-        <el-table-column label="试卷"></el-table-column>
-        <el-table-column label="试卷观测点达成度"></el-table-column>
-        <el-table-column label="课程目标达成度"></el-table-column>
-    </el-table-column>
-  </el-table>
-    </el-main>
-  </el-container>
+  <div>
+    <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+      @click="handleExportReport('analyse')">课程目标达成评价分析报告</el-button>
+    <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+      @click="handleExportReport('analyse3')">课程试卷分析报告</el-button>
+    <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+      @click="handleExportReport('analyse4')">课程教学小结表</el-button>
+  </div>
 </template>
 
 <script>
 export default {
-    name:'programTable',
-    data(){
-        return {
-            tableData:[]
-        }
-    },
-    methods:{
-      tableHeader({row,column,rowIndex,columnIndex}){
-            //console.log(row,column,rowIndex,columnIndex);
-           return 'text-align:center'
-        },
+  name: 'programTable',
+  data() {
+    return {
     }
+  },
+  methods: {
+  }
 }
 </script>
 
-<style>
-
+<style scoped>
+.BottonStyle {
+  margin: 10px 10px;
+  width: 200px;
+}
 </style>
