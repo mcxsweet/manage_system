@@ -40,8 +40,8 @@ export default {
                 value: '电子信息工程',
                 label: '电子信息工程'
             }, {
-                value: '数据科学与数据技术',
-                label: '数据科学与数据技术'
+                value: '数据科学与大数据技术',
+                label: '数据科学与大数据技术'
             }],
             major: "",
         }

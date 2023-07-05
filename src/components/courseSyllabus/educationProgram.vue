@@ -10,10 +10,7 @@
             <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()"
                 v-loading.fullscreen.lock="fullscreenLoading">确定</el-button>
 
-            <el-button icon="el-icon-upload" style="margin: 10px" @click="showUpload = !showUpload">上传教学大纲</el-button>
-
-
-
+            <el-button icon="el-icon-upload" style="margin: 10px" @click="showUpload = !showUpload">上传培养方案</el-button>
 
 
             <el-empty v-if="!ischoose" description="请先选择专业"></el-empty>
@@ -26,9 +23,9 @@
                     </el-option>
                 </el-select>
 
-                <el-upload style="margin-top: 20px;" v-show="showUpload" action="/courseInfo/educationProgramPDF"
-                    :show-file-list="false" :file-list="fileList" :data="uploadData" :on-success="handleSuccess"
-                    :before-upload="beforeUpload" :on-error="handleError" :limit="1" :accept="'application/pdf'">
+                <el-upload style="margin-top: 20px;" v-show="showUpload" :action="uploadPath" :show-file-list="false"
+                    :file-list="fileList" :data="uploadData" :on-success="handleSuccess" :before-upload="beforeUpload"
+                    :on-error="handleError" :limit="1" :accept="'application/pdf'">
                     <el-button slot="trigger" size="small" type="primary">选择文件上传</el-button>
                 </el-upload>
             </div>
@@ -36,7 +33,12 @@
 
 
         <div v-show="ischoose" style="height: 100vh;">
-            <embed :src="pdfUrl" type="application/pdf" width="100%" height="100%" />
+            <embed v-if="pdfUrl" :src="pdfUrl" type="application/pdf" width="100%" height="100%" />
+            <el-result v-if="!pdfUrl" icon="error" title="暂无数据" subTitle="请先上传">
+                <template slot="extra">
+                    <el-button type="primary" size="medium" @click="isShowPDF = !isShowPDF">返回</el-button>
+                </template>
+            </el-result>
         </div>
 
 
@@ -54,6 +56,7 @@ export default {
             fileSize: 10,
             department: "",
             ischoose: false,
+            uploadPath: global.runTiemPath + "/courseInfo/educationProgramPDF",
             showUpload: false,
             options: [{
                 value: 'ComputerScienceAndTechnology',
@@ -63,7 +66,7 @@ export default {
                 label: '电子信息工程'
             }, {
                 value: 'DataScienceAndDataTechnology',
-                label: '数据科学与数据技术'
+                label: '数据科学与大数据技术'
             }],
 
             major: "",
@@ -73,11 +76,15 @@ export default {
             },
             fileList: [],
             fullscreenLoading: false,
+
+            //权限控制
+            isAdmin: "",
         }
 
     },
     methods: {
         getEducationProgramPDF() {
+            this.pdfUrl = null;
             let url = global.runTiemPath + "/courseInfo/file/educationProgram/" + this.major + ".pdf";
             axios.get(url, { responseType: "blob" }).then((response) => {
                 if (!response.headers['content-type'].includes("application/pdf")) {
@@ -91,9 +98,9 @@ export default {
                 this.pdfUrl = URL.createObjectURL(blob);
                 this.loading = false;
                 this.ischoose = true;
-                this.fullscreenLoading = false;
-
             });
+            this.fullscreenLoading = false;
+
         },
         focusOnSelect() {
             this.major = "";
@@ -143,7 +150,7 @@ export default {
         },
     },
     mounted() {
-        // this.getIndicatorsPDF();
+        this.isAdmin = localStorage.getItem("Isadmin");
     },
 }
 </script>

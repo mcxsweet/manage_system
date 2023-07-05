@@ -28,7 +28,7 @@
             <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%" allow-create="true"
               filterable="true" v-show="!scope.row.isExamineItem">
               <el-option value="平时考核成绩"></el-option>
-              <el-option value="实验考核成绩"></el-option>
+              <!-- <el-option value="实验考核成绩"></el-option> -->
               <el-option value="期末考核成绩"></el-option>
             </el-select>
             <p class="MyButton" v-show="scope.row.isExamineItem">{{ scope.row.examineItem }}</p>
@@ -53,7 +53,7 @@
         <el-table-column label="考核子项目">
           <template slot-scope="scope1">
             <div style="text-align: center;">
-              <el-button @click="getChildItem(scope1.row)" type="success" plain round>查看详情</el-button>
+              <el-button @click="getChildItem(scope1.row)" type="success" plain round>子项目设置</el-button>
             </div>
           </template>
         </el-table-column>
@@ -68,7 +68,7 @@
       <el-button icon="el-icon-plus" type="primary" @click="addExamItem()">添加考核方式</el-button>
       <el-divider></el-divider>
     </el-main>
-    <el-dialog :title="itemTitle" v-if="itemShow" :visible.sync="itemShow" width="50%" append-to-body>
+    <el-dialog :title="itemTitle" v-if="itemShow" :visible.sync="itemShow" width="90%" append-to-body>
       <div>
         <el-table :data="itemArrary" :stripe="true">
           <el-table-column label="子项目名称">
@@ -157,7 +157,7 @@ export default {
   data() {
     return {
       addid: 0,
-      getId:"",//localstrage中的courseID
+      getId: "",//localstrage中的courseID
       index2: 0,
       isadmin: 0,
       //选择课程后再显示界面
@@ -267,7 +267,7 @@ export default {
           this.currentCourse = this.$route.query.name;
           this.examItemArray = resp.data.data;
         })
-      } else if(this.getId == "") {
+      } else if (this.getId == "") {
         this.addid = this.courseList[this.currentCourse].id * 1
         this.getCurrentCourseTarget(this.courseList[this.currentCourse].id);
         this.getIndicators(this.courseList[this.currentCourse].id);
@@ -280,13 +280,13 @@ export default {
           this.examItemArray = resp.data.data;
         })
       }
-      else if(this.getId != "") {
+      else if (this.getId != "") {
         this.addid = this.getId * 1
         this.getCurrentCourseTarget(this.getId);
         this.getIndicators(this.getId);
-        api.get("/courseInfo/"+this.getId,"",(resp1)=>{
-            this.currentCourse = resp1.data.data.courseName;
-          })
+        api.get("/courseInfo/" + this.getId, "", (resp1) => {
+          this.currentCourse = resp1.data.data.courseName;
+        })
         api.get("/courseExam/courseExamineMethods/" + this.getId, "", (resp) => {
           for (let index = 0; index < resp.data.data.length; index++) {
             resp.data.data[index].isExamineItem = true;
@@ -319,10 +319,10 @@ export default {
         if (this.currentId) {
           this.examItemArray[index].courseId = this.currentId;
           this.examItemArray[index].courseName = this.currentCourse;
-        } else if(this.getId!=""){
+        } else if (this.getId != "") {
           this.examItemArray[index].courseId = this.getId;
           this.examItemArray[index].courseName = this.currentCourse;
-        }else{
+        } else {
           this.examItemArray[index].courseId = this.courseList[this.currentCourse].id;
           this.examItemArray[index].courseName = this.courseList[this.currentCourse].courseName;
         }
@@ -513,8 +513,8 @@ export default {
     getCurrentCourseExam() {
       this.ischoose = true;
       this.init();
-      if(this.getId==""){
-        localStorage.setItem('courseId',this.courseList[this.currentCourse].id);
+      if (this.getId == "") {
+        localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
       }
     },
 
@@ -543,14 +543,14 @@ export default {
   mounted() {
     this.isadmin = localStorage.getItem('Isadmin');
     this.getId = localStorage.getItem('courseId');
-    if(this.getId !=""){
+    if (this.getId != "") {
       this.ischoose = true;
       this.courseId = this.getId
       this.init();
     }
     this.getMessage();
     if (this.$route.query.id) {
-      localStorage.setItem('courseId',this.$route.query.id);
+      localStorage.setItem('courseId', this.$route.query.id);
       this.getId = localStorage.getItem('courseId');
       this.isReturn = true
       this.currentId = this.$route.query.id;
@@ -560,5 +560,13 @@ export default {
 }
 </script>
 
-<style src="@/style/tableStyle.css"></style>
+<style scoped>
+.MyButton {
+  text-align: center;
+  padding: 10px 20px;
+  font-size: 18px;
+  border-radius: 20px;
+  background: rgba(17, 152, 230, 0.3);
+}
+</style>
 
