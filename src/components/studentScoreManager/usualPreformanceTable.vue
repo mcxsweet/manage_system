@@ -15,7 +15,7 @@
 
         <el-main v-if="ischoose">
 
-            <el-button style="margin-bottom: 1vw;" type="primary" @click="addData">添加</el-button>
+            <el-button style="margin-bottom: 1vw;" type="primary" @click="addData">添加学生成绩</el-button>
             <el-button style="margin-bottom: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
             <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
 
@@ -63,12 +63,10 @@
                 </el-result>
             </div>
 
-
-
             <el-dialog v-if="showUpload" title="上传文件" :visible.sync="showUpload" style="text-align: center;">
                 <form>
                     <input type="file" @change="handleFileUpload" />
-                    <button type="submit" @click.prevent="uploadFile">上传文件</button>
+                    <button type="submit" @click.prevent="uploadFile">点击上传</button>
                 </form>
             </el-dialog>
 
@@ -173,7 +171,7 @@ export default {
             let loadingInstance = Loading.service({ fullscreen: true });
             const formData = new FormData()
             formData.append('file', this.selectedFile)
-            axios.post("/student/" + this.currentId + "/studentUsualScoreExcl", formData, {
+            axios.post(global.runTiemPath + "/student/" + this.currentId + "/studentUsualScoreExcl", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
