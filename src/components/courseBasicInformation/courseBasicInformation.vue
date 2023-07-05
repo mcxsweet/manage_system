@@ -48,48 +48,31 @@
         <!-- 添加弹出框 -->
         <el-dialog title="添加" :visible.sync="isShow">
             <el-form :model="FormData" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="课程名称" prop="courseName">
-                    <el-input v-model="FormData.courseName"></el-input>
+
+                <el-form-item label="任课教师" prop="classroomTeacher">
+                    <el-input v-model="FormData.classroomTeacher"></el-input>
                 </el-form-item>
+
                 <el-form-item label="开设专业">
-                    <el-select v-model="FormData.major" @change="getIndicators()">
+                    <el-select v-model="FormData.major" @change="getIndicators()" style="width:100%;">
                         <el-option value="计算机科学与技术"></el-option>
                         <el-option value="电子信息工程"></el-option>
                         <el-option value="数据科学与大数据技术"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="任课教师" prop="classroomTeacher">
-                    <el-input v-model="FormData.classroomTeacher"></el-input>
-                </el-form-item>
-                <el-form-item label="理论学时" prop="theoreticalHours">
-                    <el-input v-model="FormData.theoreticalHours"></el-input>
-                </el-form-item>
-                <el-form-item label="实验学时" prop="labHours">
-                    <el-input v-model="FormData.labHours"></el-input>
-                </el-form-item>
-                <el-form-item label="班级名称" prop="className">
-                    <el-input v-model="FormData.className"></el-input>
-                </el-form-item>
-                <el-form-item label="学期" prop="term">
-                    <!-- <el-input v-model="FormData.term"></el-input> -->
-                    <el-select v-model="FormData.termStart" placeholder="请选择" style="width: 12vh;">
-                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+
+                <el-form-item label="课程名称" prop="courseName">
+                    <el-select v-model="FormData.courseName" @change="autoGenerate()" placeholder="请选择课程名称"
+                        style="width: 100%;" filterable>
+                        <el-option v-for="item in courseList" :key="item.id" :label="item.courseName" :value="item.id">
                         </el-option>
                     </el-select>
-                    <span style="margin-left: 1vh;margin-right: 1vh;">至</span>
-                    <el-select v-model="FormData.termEnd" placeholder="请选择" style="width: 12vh;">
-                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
-                        </el-option>
-                    </el-select>
-                    <span style="margin-left: 1vh;margin-right: 1vh;"></span>
-                    <el-select v-model="FormData.term" placeholder="请选择学期">
-                        <el-option label="第一学期" value="1"></el-option>
-                        <el-option label="第二学期" value="2"></el-option>
-                    </el-select>
                 </el-form-item>
-                <el-form-item label="学生人数" prop="studentsNum">
-                    <el-input v-model="FormData.studentsNum"></el-input>
+
+                <el-form-item label="课程代码" prop="courseCode">
+                    <el-input v-model="FormData.courseCode" disabled></el-input>
                 </el-form-item>
+
                 <el-form-item label="课程性质" prop="courseNature">
                     <el-select v-model="FormData.courseNature" placeholder="请选择课程性质">
                         <el-option label="必修" value="必修"></el-option>
@@ -102,21 +85,59 @@
                         <el-option value="专业特色课"></el-option>
                         <el-option value="专业必修课"></el-option>
                     </el-select>
-
                 </el-form-item>
+
+
+                <el-form-item label="理论学时" prop="theoreticalHours">
+                    <el-input v-model="FormData.theoreticalHours"></el-input>
+                </el-form-item>
+                <el-form-item label="实验学时" prop="labHours">
+                    <el-input v-model="FormData.labHours"></el-input>
+                </el-form-item>
+                <el-form-item label="班级名称" prop="className">
+                    <!-- <el-input v-model="FormData.className"></el-input> -->
+                    <el-select v-model="FormData.major" placeholder="请选择专业名称" style="width: 200px" disabled>
+                    </el-select>
+                    <span style="margin-left: 1vh;margin-right: 2vh;"></span>
+                    <el-select v-model="FormData.classNameClass" placeholder="请选择入学年级" style="width: 200px;" filterable>
+                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="学期" prop="term">
+                    <!-- <el-input v-model="FormData.term"></el-input> -->
+                    <el-select v-model="FormData.termStart" placeholder="请选择" style="width: 100px;">
+                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 1vh;margin-right: 1vh;">至</span>
+                    <el-select v-model="FormData.termEnd" placeholder="请选择" style="width: 100px;">
+                        <el-option v-for="item in DataOptions" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
+                    <span style="margin-left: 1vh;margin-right: 1vh;"></span>
+                    <el-select v-model="FormData.term" placeholder="请选择学期">
+                        <el-option label="第一学期" value="1"></el-option>
+                        <el-option label="第二学期" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="学生人数" prop="studentsNum">
+                    <el-input v-model="FormData.studentsNum"></el-input>
+                </el-form-item>
+
                 <el-form-item label="所选教材" prop="textBook">
                     <el-input v-model="FormData.textBook"></el-input>
                 </el-form-item>
                 <el-form-item label="课程目标数量" prop="courseTargetNum">
-                    <el-input v-model="FormData.courseTargetNum"></el-input>
+                    <el-input v-model="FormData.courseTargetNum" placeholder="数量与内容请与教学大纲一致！" ></el-input>
                 </el-form-item>
                 <el-form-item label="指标点数量" prop="indicatorPointsNum">
-                    <el-input v-model="FormData.indicatorPointsNum"></el-input>
+                    <el-input v-model="FormData.indicatorPointsNum" placeholder="数量与内容请与教学大纲一致！"></el-input>
                 </el-form-item>
                 <el-form-item label="指标点编号" prop="indicatorPoints">
                     <!-- <el-input v-model="FormData.indicatorPoints"></el-input> -->
                     <el-select v-model="FormData.indicatorPoints" filterable="true" :multiple="true"
-                        placeholder="数量与内容请与教学大纲一致！" style="width:100% ;" :multiple-limit="FormData.indicatorPointsNum"
+                        placeholder="数量与内容请与教学大纲一致！" style="width:100%;" :multiple-limit="FormData.indicatorPointsNum"
                         allow-create="true">
                         <el-option v-for="item in indicators" :key="item.indicatorName" :label="item.indicatorName"
                             :value="item.indicatorName">
@@ -185,13 +206,13 @@
                 <el-button class="BottonStyle" type="danger" @click="handleExport(null, currentObject)">导出文件</el-button>
             </div>
 
-            <div class="boxShadow">
+            <!-- <div class="boxShadow">
                 <p class="title">课程相关文档查看</p>
                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
                     @click="goto('teachingPro', currentObject.id, currentObject.courseName)">课程大纲查看</el-button>
                 <el-button class="BottonStyle" type="primary"
                     @click="goto('indexPoint', currentObject.id, currentObject.major)">专业课程目标总表查看</el-button>
-            </div>
+            </div> -->
 
             <div class="boxShadow">
                 <p class="title">学生信息管理</p>
@@ -208,8 +229,19 @@
                     @click="goto('finalStatisticsTable', currentObject.id, currentObject.courseName)"
                     type="primary">期末试卷成绩</el-button>
                 <el-button class="BottonStyle" @click="goto('finalComprehensiveTable')" type="primary">期末综合成绩</el-button>
-                <el-button class="BottonStyle" type="danger" @click="handleExportTest()">导出文件</el-button>
             </div>
+
+            <div class="boxShadow">
+                <p class="title">分析报告导出</p>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                    @click="handleExportReport('analyse')">课程目标达成评价分析报告</el-button>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                    @click="handleExportReport('analyse3')">课程试卷分析报告</el-button>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                    @click="handleExportReport('analyse4')">课程教学小结表</el-button>
+            </div>
+
+
         </el-drawer>
 
         <!-- 上传学生名单 -->
@@ -238,7 +270,10 @@ export default {
         return {
             isover: false,
             tableData: [],
+            //用于添加课程信息
             FormData: {},
+            //存储当前选择专业的课程列表
+            courseList: [],
             isShowSearch: false,
             isShow: false,
             indicators: [],
@@ -315,6 +350,12 @@ export default {
         handleExport(index, object) {
             window.location.href = global.BaseUrl + "/courseInfo/export/" + object.id;
         },
+
+        //导出分析报告
+        handleExportReport(type) {
+            window.location.href = global.BaseUrl + "/report/" + this.currentObject.id + "/1/" + type;
+        },
+
         //导出测试
         handleExportTest() {
             window.location.href = global.BaseUrl + "/report/" + this.currentObject.id + "/analyse";
@@ -364,7 +405,8 @@ export default {
                 this.FormData.teacherId = localStorage.getItem("UserId");
 
                 this.FormData.indicatorPoints = JSON.stringify(this.FormData.indicatorPoints);
-
+                this.FormData.className = this.FormData.major + this.FormData.classNameClass
+                // console.log(this.FormData);
                 api.post("/courseInfo", this.FormData, (resp) => {
                     if (resp.data.flag) {
                         this.$message({
@@ -372,7 +414,7 @@ export default {
                             message: '添加成功!'
                         });
                         this.getMessage();
-                    } else if (resp.status != 200) {
+                    } else {
                         this.$message({
                             type: 'error',
                             message: '添加失败!'
@@ -388,10 +430,30 @@ export default {
         },
         //获取指标点列表
         getIndicators() {
+            const major = this.FormData.major;
+            const classroomTeacher = this.FormData.classroomTeacher;
+            this.FormData = {};
+            this.FormData.major = major;
+            this.FormData.classroomTeacher = classroomTeacher;
             api.post("/courseInfo/indicators", { "major": this.FormData.major }, (resp) => {
                 this.indicators = resp.data.data;
             })
+            this.getCourseList();
         },
+        //获取当前选择的专业的课程信息列表
+        getCourseList() {
+            api.get("/courseInfo/" + this.FormData.major + "/getAllCourseByMajor", "", (resp) => {
+                this.courseList = resp.data.data;
+            })
+        },
+        //自动填充选择的课程的基本信息
+        autoGenerate() {
+            api.get("/courseInfo/" + this.FormData.courseName + "/autoGenerate", "", (resp) => {
+                this.FormData = resp.data.data;
+                this.FormData.classroomTeacher = localStorage.getItem("TeacherName");
+            })
+        },
+
         //弹出操作界面
         handleOperation(index, object) {
             this.isOperation = !this.isOperation;
