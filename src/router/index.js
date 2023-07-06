@@ -17,14 +17,18 @@ import basicInformationTable from '@/components/courseExamMethods/basicInformati
 
 import welcome from '@/components/welcome'
 import finalTable from '@/components/courseExamMethods/finalPaperSetting'
-import usualPreformanceTable from '@/components/studentScoreManager/usualPreformanceTable'
-import finalStatisticsTable from '@/components/studentScoreManager/finalStatisticsTable'
+
 import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
 import analysisTable from '@/components/analysePage/analysisTable'
 import programTable from '@/components/analysePage/programTable'
 
 import ChoicePage from '@/pages/ChoicePage'
 import Questionnaires from '@/components/attainmentSurvey/Questionnaires'
+
+//学生成绩管理
+import studentInfo from '@/components/studentScoreManager/studentInfo'
+import usualPreformanceTable from '@/components/studentScoreManager/usualPreformanceTable'
+import finalStatisticsTable from '@/components/studentScoreManager/finalStatisticsTable'
 
 //专业材料查看
 import educationProgram from '@/components/courseSyllabus/educationProgram'
@@ -69,7 +73,10 @@ const router = new VueRouter({
                     path: 'finalStatisticsTable',
                     component: finalStatisticsTable
                 },
-
+                {
+                    path: 'studentInfo',
+                    component: studentInfo
+                },
                 {
                     path: 'finalComprehensiveTable',
                     component: finalComprehensiveTable

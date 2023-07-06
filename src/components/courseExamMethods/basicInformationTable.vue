@@ -515,6 +515,7 @@ export default {
       this.init();
       if (this.getId == "") {
         localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
+        localStorage.setItem('courseName', this.courseList[this.currentCourse].courseName);
       }
     },
 
@@ -552,7 +553,7 @@ export default {
     if (this.$route.query.id) {
       localStorage.setItem('courseId', this.$route.query.id);
       this.getId = localStorage.getItem('courseId');
-      this.isReturn = true
+      this.isReturn = true;
       this.currentId = this.$route.query.id;
       this.getCurrentCourseExam();
     }

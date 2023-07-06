@@ -2,7 +2,7 @@
     <el-container>
         <el-header style="background-color: #fff;height: 50px;">
             <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
-                <el-option v-for="(item, index) in courseList" :key="index" :label="item.courseName" :value="item.id">
+                <el-option v-for="(item, index) in courseList" :key="index" :label="item.courseName" :value="index">
                     <span style="float: left">{{ item.courseName }}</span>
                     <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">
                         {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}</span>
@@ -14,12 +14,21 @@
 
         <el-main v-if="ischoose">
             <div style="width: 100%;">
+                <p class="title">分析报告 pdf 展示</p>
                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                    @click="test('analyse')">课程目标达成评价分析报告</el-button>
+                    @click="handleShowPDF('analyse')">课程目标达成评价分析报告</el-button>
                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                    @click="test('analyse3')">课程试卷分析报告</el-button>
+                    @click="handleShowPDF('analyse3')">课程试卷分析报告</el-button>
                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                    @click="test('analyse4')">课程教学小结表</el-button>
+                    @click="handleShowPDF('analyse4')">课程教学小结表</el-button>
+
+                <p class="title">分析报告导出 word 文档</p>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                    @click="handleExportReport('analyse')">课程目标达成评价分析报告</el-button>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                    @click="handleExportReport('analyse3')">课程试卷分析报告</el-button>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                    @click="handleExportReport('analyse4')">课程教学小结表</el-button>
             </div>
 
             <el-drawer :visible.sync="showPDF" direction="btt" size="90%">
@@ -66,10 +75,11 @@ export default {
         },
         getCurrentCourseItem() {
             this.ischoose = true;
-            this.currentId = this.currentCourse;
-            if (this.currentCourse) {
-                localStorage.setItem("courseId", this.currentCourse);
-            }
+            this.currentId = this.courseList[this.currentCourse].id;
+
+            localStorage.setItem("courseId", this.currentId);
+            localStorage.setItem("courseName", this.courseList[this.currentCourse].courseName);
+
         },
         focusOnSelect() {
             this.ischoose = false;
@@ -99,7 +109,11 @@ export default {
                     this.loading = false;
                 });
         },
-        test(type) {
+        //导出分析报告
+        handleExportReport(type) {
+            window.location.href = global.BaseUrl + "/report/" + this.currentId + "/1/" + type;
+        },
+        handleShowPDF(type) {
             this.showPDF = true;
             this.getPDF(type);
         }

@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header style="background-color: #fff;height: 50px;">
-            <el-select v-if="reload" v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
+            <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
                 <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
                     <span style="float: left">{{ item.courseName }}</span>
                     <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">
@@ -21,6 +21,7 @@
 
             <div v-if="!isEmpty">
                 <el-table border="true" :header-cell-style="tableHeader" :data="tableData">
+
                     <el-table-column label="序号" width="50px">
                         <template slot-scope="scope">
                             <span>{{ scope.$index + 1 }}</span>
@@ -33,6 +34,7 @@
                     </el-table-column>
                     <el-table-column label="班级" prop="className">
                     </el-table-column>
+
                     <!-- 遍历表格列 -->
                     <el-table-column v-for="item, index in examMethods" :label="item" :key="index">
                         <template slot-scope="scope">
@@ -41,12 +43,14 @@
                             </span>
                         </template>
                     </el-table-column>
+
                     <el-table-column label="总分">
                         <template slot-scope="scope">
                             <p v-if="scope.row.score < 60" style="color: red;">{{ scope.row.score }}</p>
                             <p v-if="scope.row.score >= 60" style="color: green;">{{ scope.row.score }}</p>
                         </template>
                     </el-table-column>
+
                     <el-table-column label="操作" width="200px" fixed="right">
                         <template slot-scope="scope">
                             <el-button type="primary" style="margin-left: 1vw ;" size="mini"
@@ -129,7 +133,6 @@ export default {
         return {
             //表格显示
             ischoose: false,
-            reload: false,
             //当前课程id
             currentId: "",
             getId: "",//localstrage中的courseID
@@ -141,6 +144,7 @@ export default {
             tableData: [],
             dataObj: { studentNumber: "", studentName: "", className: "", scoreDetails: [], courseId: "" },
             setDataObj: { studentNumber: "", studentName: "", className: "", scoreResponse: [], courseId: "" },
+
             isShow: false,
             isShow1: false,
             index: 0,
@@ -206,50 +210,58 @@ export default {
         tableHeader({ row, column, rowIndex, columnIndex }) {
             return 'text-align:center'
         },
+
         //点击课程选择框
         focusOnSelect() {
             this.tableData = [];
             this.ischoose = false;
             this.currentId = "";
+            this.isEmpty = false;
             this.getId = "";
         },
+
         //初始化表格
         getCurrentCourseItem() {
             this.fullscreenLoading = true;
 
-            if (this.currentId == "") {
-                this.currentId = this.courseList[this.currentCourse].id;
-            }
+            this.currentId = this.courseList[this.currentCourse].id;
+
             this.getExamMethods();
             this.getStudentScore();
+
             if (this.tableData) {
                 this.ischoose = true;
             }
-            if (this.getId == "") {
-                localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
-            }
+
+            localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
+            localStorage.setItem('courseName', this.courseList[this.currentCourse].courseName);
 
             setTimeout(() => {
                 this.fullscreenLoading = false;
-            }, 1000);
+            }, 2000);
 
         },
+
         //获取课程列表   
         getMessage() {
             api.get("/courseInfo/currentUser/" + localStorage.getItem("UserId"), "", (resp) => {
                 this.courseList = resp.data.data;
             })
         },
+
         //获取学生平时成绩信息
         getStudentScore() {
             api.get("/student/" + this.currentId + "/getUsualStudent", "", (resp) => {
                 this.tableData = resp.data.data;
+                this.fullscreenLoading = false;
             })
         },
+
         //打开添加弹窗
         addData() {
             this.isShow1 = !this.isShow1
         },
+
         setting(index1) {
             this.isShow = !this.isShow;
             this.index = index1;
@@ -271,6 +283,7 @@ export default {
                 }
             }
         },
+
         //修改数据
         saveData() {
             this.$confirm('是否提交 ?', '提示', {
@@ -328,6 +341,7 @@ export default {
                 });
             });
         },
+
         //添加数据
         insertData() {
             this.dataObj.courseId = this.currentId;
@@ -362,6 +376,7 @@ export default {
                 }
             })
         },
+
         //删除数据
         delectData(index) {
             this.$confirm('是否提交 ?', '提示', {
@@ -386,6 +401,7 @@ export default {
                 });
             });
         },
+
         //获取考核方式
         getExamMethods() {
             api.get("/student/" + this.currentId + "/getMethods", "", (resp) => {
@@ -399,34 +415,19 @@ export default {
                 }
             })
         },
-        //获取课程基本信息
-        getCourse() {
-            api.get("/courseInfo/" + this.getId, "", (resp1) => {
-                this.currentCourse = resp1.data.data.courseName;
-            })
-        }
 
     },
     mounted() {
-        this.getId = localStorage.getItem('courseId');
-        if (this.getId != "") {
-            this.ischoose = true;
-            this.currentId = this.getId
-            this.getCourse();
-            this.getCurrentCourseItem();
-        }
-        if (this.$route.query.id) {
-            localStorage.setItem('courseId', this.$route.query.id);
-            this.getId = localStorage.getItem('courseId');
-            this.currentId = this.$route.query.id;
-            this.currentCourse = this.$route.query.name;
-            this.getCurrentCourseItem();
-            // this.getStudentScore();
-        }
         this.getMessage();
-        this.reload = true;
-
-
+        this.getId = localStorage.getItem('courseId');
+        this.currentId = this.getId;
+        this.currentCourse = localStorage.getItem("courseName");
+        if (this.getId != "") {
+            this.fullscreenLoading = true;
+            this.ischoose = true;
+            this.getExamMethods();
+            this.getStudentScore();
+        }
     }
 }
 </script>

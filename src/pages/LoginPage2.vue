@@ -192,7 +192,7 @@ export default {
 
     .box .content .login-wrapper h1 {
         text-align: center;
-        font-size: 45px;
+        font-size: 30px;
         color: rgb(81, 100, 115);
         margin-bottom: 40px;
     }
@@ -245,7 +245,7 @@ export default {
     }
 
     .box .content .login-wrapper h1 {
-        font-size: 30px;
+        font-size: 20px;
         color: #fff;
     }
 

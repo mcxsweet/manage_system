@@ -67,9 +67,6 @@
 
             <div v-if="isEmpty">
                 <el-result icon="warning" title="当前课程期末考核方式未设置！" subTitle="请先对试卷进行设置">
-                    <!-- <template slot="extra">
-                        <el-button type="primary" size="medium">返回</el-button>
-                    </template> -->
                 </el-result>
             </div>
 
@@ -198,7 +195,11 @@ export default {
         //获取学生信息
         getStudentScore() {
             api.get("/student/" + this.currentId + "/getFinalScoreStudent", "", (resp) => {
-                this.tableData = resp.data.data;
+                if (resp.data.flag) {
+                    this.tableData = resp.data.data;
+                    this.ischoose = true;
+                    this.fullscreenLoading = false;
+                }
             })
         },
         tableHeader({ row, column, rowIndex, columnIndex }) {
@@ -423,15 +424,15 @@ export default {
         //初始化表格
         getCurrentCourseItem() {
             this.fullscreenLoading = true;
-            if (this.currentId == "") {
-                this.currentId = this.courseList[this.currentCourse].id;
-            }
-            if (this.getId == "") {
-                localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
-            }
+
+            this.currentId = this.courseList[this.currentCourse].id;
+
+
+            localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
+            localStorage.setItem('courseName', this.courseList[this.currentCourse].courseName);
+
             this.examPper = [];
             this.getExamPaper();
-
             this.getStudentScore();
             this.ischoose = true;
 
@@ -439,33 +440,21 @@ export default {
                 this.fullscreenLoading = false;
             }, 1000);
         },
-        //获取课程基本信息
-        getCourse() {
-            api.get("/courseInfo/" + this.getId, "", (resp1) => {
-                this.currentCourse = resp1.data.data.courseName;
-            })
-        }
     },
     mounted() {
-        this.getId = localStorage.getItem('courseId');
-        if (this.getId != "") {
-            this.ischoose = true;
-            this.currentId = this.getId
-            this.getCourse();
-            this.getCurrentCourseItem();
-        }
-        if (this.$route.query.id) {
-            localStorage.setItem('courseId', this.$route.query.id);
-            this.getId = localStorage.getItem('courseId');
-            this.currentId = this.$route.query.id;
-            this.currentCourse = this.$route.query.name;
-            this.getCurrentCourseItem();
-            // this.getStudentScore();
-        }
         this.getMessage();
+        this.getId = localStorage.getItem('courseId');
+        this.currentId = this.getId
+        this.currentCourse = localStorage.getItem("courseName");
+
+        if (this.getId != "") {
+            this.fullscreenLoading = true;
+
+            this.examPper = [];
+            this.getExamPaper();
+            this.getStudentScore();
+        }
         this.reload = true;
-        // this.getExamPaper();
-        // this.getStudentScore();
     }
 }
 </script>

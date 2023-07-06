@@ -22,6 +22,7 @@
             <el-button type="success" size="mini" @click="saveta(scope.row, scope.$index)">保存</el-button>
             <el-button type="danger" size="mini" @click="delect(scope.row, scope.$index)">删除</el-button>
           </template>
+
         </el-table-column>
         <el-table-column prop="index" label="序号" width="118">
           <template slot-scope="scope">
@@ -166,7 +167,7 @@ export default {
           resp.data.data[index].ised = false;
         }
         this.tableData1 = resp.data.data;
-        this.autoAdd(this.targetNum);
+        this.$nextTick(this.autoAdd(this.targetNum));
       })
     },
     //获取指标点列表和课程目标数量

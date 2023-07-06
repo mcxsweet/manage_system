@@ -47,36 +47,6 @@
                         <div>
                             <el-button @click="getChildItem(scope.row)" type="success" plain round>查看详情</el-button>
                         </div>
-                        <!-- <el-collapse>
-                            <el-collapse-item title=" 点击展开">
-                                <div>
-                                    <el-table :data="scope.row.examChildItemArray" style="width: 100%">
-                                        <el-table-column label="名称">
-                                            <template slot-scope="scope1">
-                                                <p>{{ scope1.row.examineChildItem }}</p>
-                                            </template>
-                                        </el-table-column>
-                                        <el-table-column label="百分比" width="100px">
-                                            <template slot-scope="scope2">
-                                                <p>{{ scope2.row.childPercentage }} %</p>
-                                            </template>
-                                        </el-table-column>
-                                        <el-table-column label="总分" width="100px">
-                                            <template slot-scope="scope3">
-                                                <p>{{ scope3.row.childScore }}</p>
-                                            </template>
-                                        </el-table-column>
-
-                                        <el-table-column label="操作">
-                                            <template slot-scope="scope4">
-                                                <el-button @click="openWokeSpace(scope.row, scope4.row)">详情</el-button>
-                                            </template>
-                                        </el-table-column>
-                                    </el-table>
-                                </div>
-
-                            </el-collapse-item>
-                        </el-collapse> -->
                     </template>
                 </el-table-column>
             </el-table>
@@ -522,9 +492,9 @@ export default {
         getCurrentCourseExam() {
             this.ischoose = true;
             this.init();
-            // this.initShowTable();
             if (this.getId == "") {
                 localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
+                localStorage.setItem('courseName', this.courseList[this.currentCourse].courseName);
             }
         },
 

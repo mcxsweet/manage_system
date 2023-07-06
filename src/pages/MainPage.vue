@@ -123,11 +123,17 @@
                     </div>
 
                     <div v-show="activeIndex == 3">
-                        <el-submenu index="3">
+                        <el-submenu index="1">
+                            <template slot="title"><i class="el-icon-menu"></i>学生管理</template>
+                            <el-menu-item-group>
+                                <el-menu-item index="1-1" @click="goto('studentInfo')">学生信息管理</el-menu-item>
+                            </el-menu-item-group>
+                        </el-submenu>
+                        <el-submenu index="2">
                             <template slot="title"><i class="el-icon-menu"></i>成绩管理</template>
                             <el-menu-item-group>
-                                <el-menu-item index="3-1" @click="goto('usualPreformanceTable')">平时考核成绩统计</el-menu-item>
-                                <el-menu-item index="3-2" @click="goto('finalStatisticsTable')">期末试卷成绩统计</el-menu-item>
+                                <el-menu-item index="2-1" @click="goto('usualPreformanceTable')">平时考核成绩统计</el-menu-item>
+                                <el-menu-item index="2-2" @click="goto('finalStatisticsTable')">期末试卷成绩统计</el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
                     </div>
