@@ -11,6 +11,8 @@
       </el-select>
 
       <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()">确定</el-button>
+      <span style="color:red">* 说明: 1.课程目标,毕业要求指标点,达成途径,评价依据必须和教学大纲保持一致 2.支撑权重总和必须为1</span>
+
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
@@ -167,7 +169,9 @@ export default {
           resp.data.data[index].ised = false;
         }
         this.tableData1 = resp.data.data;
-        this.$nextTick(this.autoAdd(this.targetNum));
+        setTimeout(() => {
+          this.autoAdd();
+        }, 100);
       })
     },
     //获取指标点列表和课程目标数量
@@ -264,9 +268,9 @@ export default {
         })
       }
     },
-    autoAdd(targetNum) {
+    autoAdd() {
       let j = 0;
-      let index = targetNum - this.tableData1.length;
+      let index = this.targetNum - this.tableData1.length;
       for (let i = 0; i < index; i++) {
         this.obj.index = this.tableData1.length;
         j = this.obj.index + 1;

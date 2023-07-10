@@ -2,7 +2,7 @@
     <el-container>
         <el-header style="background-color: #fff;height: 50px;">
             <el-row>
-                <el-button plain @click="isShow = !isShow" v-if="isadmin == 0">添加课程</el-button>
+                <el-button type="primary" @click="isShow = !isShow" v-if="isadmin == 0">添加课程</el-button>
                 <el-button type="success" plain @click="isShowSearch = !isShowSearch">筛选</el-button>
                 <el-button type="primary" @click="over()" v-show="isover">筛选完毕</el-button>
             </el-row>
@@ -15,8 +15,9 @@
                         <!-- <el-button size="mini" type="primary" round
                             @click="goto('classInformation', scope.row.id)">设置</el-button>
                         <el-button size="mini" type="info" @click="handleExport(scope.$index, scope.row)">导出</el-button> -->
-                        <el-button size="mini" type="warning"
-                            @click="handleOperation(scope.$index, scope.row)">操作</el-button>
+                        <!-- <el-button size="mini" type="warning"
+                            @click="handleOperation(scope.$index, scope.row)">操作</el-button> -->
+                        <el-button size="mini" type="warning" @click="goto('classInformation', scope.row.id)">编辑</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
@@ -129,7 +130,7 @@
                     <el-input v-model="FormData.textBook"></el-input>
                 </el-form-item>
                 <el-form-item label="课程目标数量" prop="courseTargetNum">
-                    <el-input v-model="FormData.courseTargetNum" placeholder="数量与内容请与教学大纲一致！" ></el-input>
+                    <el-input v-model="FormData.courseTargetNum" placeholder="数量与内容请与教学大纲一致！"></el-input>
                 </el-form-item>
                 <el-form-item label="指标点数量" prop="indicatorPointsNum">
                     <el-input v-model="FormData.indicatorPointsNum" placeholder="数量与内容请与教学大纲一致！"></el-input>
@@ -156,7 +157,7 @@
         </el-dialog>
 
         <!-- 筛选弹出层 -->
-        <el-dialog title="筛选 (支持单条件和多条件筛选)" :visible.sync="isShowSearch">
+        <el-dialog title="筛选 (支持单条件和多条件筛选)" :visible.sync="isShowSearch" width="80%">
             <el-table :data="searchTable" border="true">
                 <el-table-column label="课程名称" width="200">
                     <template slot-scope="scope">

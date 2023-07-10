@@ -19,7 +19,7 @@
             <el-divider content-position="center">试卷设置</el-divider>
 
             <!-- 展示小题和指标点关系文档 -->
-            <el-dialog v-if="isShowDoc" title="展示小题和指标点关系文档" :visible.sync="isShowDoc" width="100%" append-to-body>
+            <el-dialog v-if="isShowDoc" title="展示试卷和指标点关系矩阵" :visible.sync="isShowDoc" width="100%" append-to-body>
                 <el-button type="primary" @click="exportPDF()" style="margin: 1vh;">导出PDF</el-button>
                 <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
                 <div v-loading="loading2">
@@ -221,7 +221,7 @@
                     </el-dialog>
 
                 </div>
-                <el-button type="primary" @click="openDoc()" style="margin: 1vh;">展示小题和指标点关系文档</el-button>
+                <el-button type="primary" @click="openDoc()" style="margin: 1vh;">展示试卷和指标点关系矩阵</el-button>
             </div>
             <el-result icon="warning" title="当前数据为空" subTitle="请添加期末考核方式为试卷" v-if="!workSpace">
             </el-result>

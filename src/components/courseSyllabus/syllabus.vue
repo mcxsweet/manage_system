@@ -8,7 +8,7 @@
             </el-select>
 
             <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()">确定</el-button>
-
+            <span style="color:red">* 说明: 1.教师查看教学大纲,教学大纲负责人有上传大纲权限 2.按照培养方案课程类别分类展示</span>
         </el-header>
 
         <div v-show="ischoose">
@@ -26,9 +26,17 @@
                         <el-table
                             :data="tableData.filter(data => !search || data.courseName.toLowerCase().includes(search.toLowerCase()))"
                             style="width: 100%">
-                            <el-table-column label="课程名称" prop="courseName">
+                            <el-table-column label="课程名称" width="400" prop="courseName">
                             </el-table-column>
-                            <el-table-column align="right">
+                            <el-table-column label="负责人" prop="uploadUser">
+                            </el-table-column>
+                            <el-table-column label="有无上传" prop="fileAddress">
+                                <template slot-scope="scope">
+                                    <P style="color: red;" v-if="!scope.row.fileAddress">无</P>
+                                    <p><a style="color: green;" v-if="scope.row.fileAddress">有</a></p>
+                                </template>
+                            </el-table-column>
+                            <el-table-column align="right" width="400">
                                 <template slot="header" slot-scope="scope">
                                     <el-input v-model="search" placeholder="输入关键字搜索" />
                                 </template>
@@ -36,15 +44,15 @@
                                     <el-upload :action="uploadPath" :show-file-list="false" :file-list="fileList"
                                         :data="uploadData" :on-success="handleSuccess" :before-upload="beforeUpload"
                                         :on-error="handleError" :accept="'application/pdf'">
-                                        <el-button icon="el-icon-upload" slot="trigger" type="primary"
-                                            @click="upload(scope.row)">教学大纲更新</el-button>
-                                        <el-button style="margin-left: 20px;" type="primary"
-                                            @click="getSyllabusPDF(scope.row)">教学大纲展示</el-button>
+                                        <el-button style="width: 150px;"
+                                            v-if="user == scope.row.uploadUser || user == '阳光伟'" icon="el-icon-upload"
+                                            slot="trigger" type="primary" @click="upload(scope.row)">教学大纲更新</el-button>
                                     </el-upload>
+                                    <el-button style="margin-top: 10px;width: 150px;" type="primary"
+                                        @click="getSyllabusPDF(scope.row)">教学大纲展示</el-button>
                                 </template>
                             </el-table-column>
                         </el-table>
-
                     </el-collapse-item>
                 </div>
             </el-collapse>
@@ -71,6 +79,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            user: "",
             tableData: [],
             search: '',
             major: "",
@@ -100,7 +109,8 @@ export default {
                 { name: "专业基础课", value: "专业基础课" },
                 { name: "专业核心课", value: "专业核心课" },
                 { name: "专业特色课", value: "专业特色课" },
-                { name: "实践教学课", value: "实践教学课" },
+                { name: "专业集中性实践教学", value: "集中性实践教学" },
+                { name: "专业素质教育", value: "专业素质教育" },
             ],
             currentType: "",
             currentItem: "",
@@ -111,9 +121,10 @@ export default {
     methods: {
         getCurrentCourseExam() {
             this.ischoose = true;
+            this.handleChange(this.currentType);
         },
         focusOnSelect() {
-            this.major = "";
+            // this.major = "";
             this.ischoose = false;
             this.loading = true;
         },
@@ -206,6 +217,9 @@ export default {
         upload(item) {
             this.uploadData.id = item.id;
         },
+    },
+    mounted() {
+        this.user = localStorage.getItem("TeacherName");
     },
 }
 </script>

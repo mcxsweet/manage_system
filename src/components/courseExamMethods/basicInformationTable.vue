@@ -11,10 +11,9 @@
         </el-option>
       </el-select>
       <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()">确定</el-button>
-      <el-button type="danger" v-if="isadmin == 0" v-show="isReturn"
-        @click="goto('courseBasicInformation')">返回首页</el-button>
-      <el-button type="danger" v-if="isadmin == 1" v-show="isReturn"
-        @click="goto('sudoCourseInformation')">返回首页</el-button>
+
+      <span style="color:red">* 说明: 1.考核项目及百分比必须和教学大纲保持一致 2.考核子项目设置是对考核项目的细分,要进行课程目标和对应指标点的选择</span>
+
       <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
     </el-header>
 
@@ -31,7 +30,8 @@
               <!-- <el-option value="实验考核成绩"></el-option> -->
               <el-option value="期末考核成绩"></el-option>
             </el-select>
-            <p class="MyButton" v-show="scope.row.isExamineItem">{{ scope.row.examineItem }}</p>
+            <p style="text-align: center;padding: 10px 20px;font-size: 18px;" v-show="scope.row.isExamineItem">{{
+              scope.row.examineItem }}</p>
           </template>
         </el-table-column>
 
@@ -44,13 +44,14 @@
               <!-- <el-tag type="danger" style="font-weight: 200px" v-show="scope.row.isPercentage">
                 {{ scope.row.percentage }} %
               </el-tag> -->
-              <p class="MyButton" v-show="scope.row.isPercentage">{{ scope.row.percentage }} %</p>
+              <p style="text-align: center;padding: 10px 20px;font-size: 18px;" v-show="scope.row.isPercentage">{{
+                scope.row.percentage }} %</p>
             </div>
           </template>
         </el-table-column>
 
         <!-- 考核子项目 -->
-        <el-table-column label="考核子项目">
+        <el-table-column label="考核子项目 (必填)">
           <template slot-scope="scope1">
             <div style="text-align: center;">
               <el-button @click="getChildItem(scope1.row)" type="success" plain round>子项目设置</el-button>
@@ -68,7 +69,9 @@
       <el-button icon="el-icon-plus" type="primary" @click="addExamItem()">添加考核方式</el-button>
       <el-divider></el-divider>
     </el-main>
+
     <el-dialog :title="itemTitle" v-if="itemShow" :visible.sync="itemShow" width="90%" append-to-body>
+      <P style="color:red">说明: 1.每个子项目对应的课程目标和指标点,建议请选择全部</P>
       <div>
         <el-table :data="itemArrary" :stripe="true">
           <el-table-column label="子项目名称">
@@ -561,13 +564,5 @@ export default {
 }
 </script>
 
-<style scoped>
-.MyButton {
-  text-align: center;
-  padding: 10px 20px;
-  font-size: 18px;
-  border-radius: 20px;
-  background: rgba(17, 152, 230, 0.3);
-}
-</style>
+<style scoped></style>
 

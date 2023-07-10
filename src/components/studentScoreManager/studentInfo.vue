@@ -9,7 +9,7 @@
                 </el-option>
             </el-select>
             <el-button icon="el-icon-search" style="margin: 10px" @click="showCurrentCourse()">确定</el-button>
-
+            <span style="color:red">* 说明: 导入的学生名单建议采用教务系统名单</span>
 
             <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
@@ -17,17 +17,36 @@
 
         <el-main v-show="ischoose">
 
-            <el-button class="ButtonStyle" type="primary" @click="isShow = !isShow">添加学生</el-button>
+            <el-button class="ButtonStyle" type="primary" @click="isShowAdd = !isShowAdd">添加学生</el-button>
             <el-button class="ButtonStyle" @click="showUpload = true" type="primary">导入学生名单</el-button>
             <!-- 上传学生名单 -->
-            <el-dialog title="上传文件" :visible.sync="showUpload" style="text-align: center;">
+            <el-dialog title="上传xls文件" :visible.sync="showUpload" style="text-align: center;">
                 <el-form>
                     <input type="file" @change="handleFileUpload" />
                     <el-button type="submit" size="mini" @click.prevent="uploadFile()">上传文件</el-button>
                 </el-form>
             </el-dialog>
 
-            <el-table :data="tableData" border style="width: 100%">
+            <!-- 添加学生信息 -->
+            <el-dialog title="添加学生信息" :visible.sync="isShowAdd" style="text-align: center;">
+                <el-form label-width="50px" class="demo-ruleForm">
+                    <el-form-item label="学号">
+                        <el-input v-model="addFormData.classroomTeacher"></el-input>
+                    </el-form-item>
+                    <el-form-item label="姓名">
+                        <el-input v-model="addFormData.classroomTeacher"></el-input>
+                    </el-form-item>
+                    <el-form-item label="班级">
+                        <el-input v-model="addFormData.classroomTeacher"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="isShowAdd = false">取 消</el-button>
+                    <el-button type="primary" @click="addStudent()">确 定</el-button>
+                </div>
+            </el-dialog>
+
+            <el-table v-loading="loading" :data="tableData" border style="width: 100%">
                 <el-table-column label="序号" width="50px">
                     <template slot-scope="scope">
                         <span>{{ scope.$index + 1 }}</span>
@@ -53,7 +72,7 @@
                 </el-table-column>
                 <el-table-column label="操作" width="220">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="editta(scope.row)">编辑</el-button>
+                        <el-button type="primary" size="mini" @click="editta(scope.row, scope.$index)">编辑</el-button>
                         <el-button type="success" size="mini" @click="saveta(scope.row, scope.$index)">保存</el-button>
                         <el-button type="danger" size="mini" @click="delect(scope.row, scope.$index)">删除</el-button>
                     </template>
@@ -65,6 +84,7 @@
 
 <script>
 import api from '@/api/api';
+import axios from 'axios';
 import { Loading } from 'element-ui';
 
 export default {
@@ -78,9 +98,12 @@ export default {
 
             //上传学生名单
             showUpload: false,
+            isShowAdd: false,
+            addFormData: [],
 
             //表格数据
             tableData: [],
+            loading: false,
         }
     },
     methods: {
@@ -97,8 +120,12 @@ export default {
         },
         //获取学生信息
         getStudentInfo() {
+            this.loading = true;
             api.get("/student/" + this.currentId + "/getStudent", "", (resp) => {
-                this.tableData = resp.data.data;
+                if (resp.data.flag) {
+                    this.tableData = resp.data.data;
+                    this.loading = false;
+                }
             })
         },
         //点击按钮
@@ -142,19 +169,28 @@ export default {
                     message: error.data.message
                 });
             })
+            this.getStudentInfo();
             loadingInstance.close();
+        },
+        //添加学生信息
+        addStudent() {
+
         },
     },
     mounted() {
         this.getMessage();
-        this.currentId = localStorage.getItem("");
-        this.currentId = localStorage.getItem("");
+        this.currentId = localStorage.getItem("courseId");
+        this.currentCourse = localStorage.getItem("courseName");
+        if (this.currentId) {
+            this.ischoose = true;
+            this.getStudentInfo();
+        }
     },
 }
 </script>
 
 <style scoped>
-.ButtonStyle {  
+.ButtonStyle {
     margin-bottom: 10px;
 }
 </style>

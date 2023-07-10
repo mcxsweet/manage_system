@@ -10,6 +10,8 @@
             </el-select>
             <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseItem()"
                 v-loading.fullscreen.lock="fullscreenLoading">确定</el-button>
+            <span style="color:red">* 说明: 上传文件时可以先下载文件模板,在自己电脑填写后在上传</span>
+
             <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
 
@@ -19,8 +21,8 @@
             <div v-if="!isEmpty">
 
                 <el-button type="primary" @click="addData">添加学生成绩</el-button>
-                <el-button style="margin-bottom: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件</el-button>
-                <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件</el-button>
+                <el-button style="margin-bottom: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件导入成绩</el-button>
+                <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件导出成绩</el-button>
 
                 <el-table boder="true" :header-cell-style="tableHeader" :data="tableData">
                     <el-table-column label="序号" width="50px">

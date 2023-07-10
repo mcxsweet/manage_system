@@ -16,7 +16,7 @@ import indexPoint from '@/components/courseBasicInformation/indexPoint'
 import basicInformationTable from '@/components/courseExamMethods/basicInformationTable'
 
 import welcome from '@/components/welcome'
-import finalTable from '@/components/courseExamMethods/finalPaperSetting'
+import finalPaperSetting from '@/components/courseExamMethods/finalPaperSetting'
 
 import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
 import analysisTable from '@/components/analysePage/analysisTable'
@@ -82,8 +82,8 @@ const router = new VueRouter({
                     component: finalComprehensiveTable
                 },
                 {
-                    path: 'finalTable',
-                    component: finalTable
+                    path: 'finalPaperSetting',
+                    component: finalPaperSetting
                 },
                 {
                     path: 'usualPreformanceTable',

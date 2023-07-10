@@ -42,16 +42,16 @@
 
         <el-container>
             <el-aside width="200px">
-                <el-menu v-if="isadmin == 2">
+                <!-- <el-menu v-if="isadmin == 2">
                     <el-submenu index="1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
                             <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
                         </el-menu-item-group>
                     </el-submenu>
-                </el-menu>
+                </el-menu> -->
                 <!-- 管理员 -->
-                <el-menu v-if="isadmin == 1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+                <!-- <el-menu v-if="isadmin == 1" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                     <el-submenu index="1">
                         <template slot="title"><i class="el-icon-message"></i>课程管理</template>
                         <el-menu-item-group>
@@ -81,10 +81,9 @@
                         </el-submenu>
 
                     </el-submenu>
-                </el-menu>
+                </el-menu> -->
                 <!-- 教师 -->
-                <el-menu v-if="isadmin == 0" background-color="white" text-color="black"
-                    active-text-color="rgb(86, 86, 255)">
+                <el-menu background-color="white" text-color="black" active-text-color="rgb(86, 86, 255)">
                     <div v-show="activeIndex == 1">
                         <el-submenu index="1">
                             <template slot="title"><i class="el-icon-menu"></i>专业材料</template>
@@ -117,7 +116,7 @@
                         <el-submenu index="2">
                             <template slot="title"><i class="el-icon-menu"></i>试卷设置</template>
                             <el-menu-item-group>
-                                <el-menu-item index="2-1" @click="goto('finalTable')">考试命题与指标点关系</el-menu-item>
+                                <el-menu-item index="2-1" @click="goto('finalPaperSetting')">考试命题与指标点关系</el-menu-item>
                             </el-menu-item-group>
                         </el-submenu>
                     </div>
