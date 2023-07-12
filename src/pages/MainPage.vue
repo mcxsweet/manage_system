@@ -10,18 +10,12 @@
                     </div>
                 </el-col>
                 <el-col :span="13">
-                    <!-- <el-menu :default-active="activeIndex" mode="horizontal" background-color="rgb(86, 86, 255)"
-                        text-color="white" @select="handleSelect">
-                        <el-menu-item index="1" class="tableBarButton">专业材料</el-menu-item>
-                        <el-menu-item index="2" class="tableBarButton">课程管理</el-menu-item>
-                        <el-menu-item index="3" class="tableBarButton">学生成绩管理</el-menu-item>
-                        <el-menu-item index="4" class="tableBarButton">课程分析报告</el-menu-item>
-                    </el-menu> -->
                     <div>
-                        <button @click="handleSelect(1)" class="tableBarButton">专业材料</button>
-                        <button @click="handleSelect(2)" class="tableBarButton">课程管理</button>
-                        <button @click="handleSelect(3)" class="tableBarButton">学生成绩管理</button>
-                        <button @click="handleSelect(4)" class="tableBarButton">课程分析报告</button>
+                        <button @click="handleSelect(1, 'homePage')" class="tableBarButton">首页</button>
+                        <button @click="handleSelect(1, 'educationProgram')" class="tableBarButton">专业材料</button>
+                        <button @click="handleSelect(2, 'courseBasicInformation')" class="tableBarButton">课程管理</button>
+                        <button @click="handleSelect(3, 'studentInfo')" class="tableBarButton">学生成绩管理</button>
+                        <button @click="handleSelect(4, 'finalComprehensiveTable')" class="tableBarButton">课程分析报告</button>
                     </div>
                 </el-col>
                 <el-col :span="4">
@@ -83,20 +77,23 @@
                     </el-submenu>
                 </el-menu> -->
                 <!-- 教师 -->
-                <el-menu background-color="white" text-color="black" active-text-color="rgb(86, 86, 255)">
+                <el-menu default-active="1-1" background-color="white" text-color="black"
+                    active-text-color="rgb(86, 86, 255)">
                     <div v-show="activeIndex == 1">
                         <el-submenu index="1">
                             <template slot="title"><i class="el-icon-menu"></i>专业材料</template>
                             <el-menu-item-group>
-                                <el-submenu>
-                                    <span slot="title">专业材料查询</span>
+                                <el-submenu index="1-1">
+                                    <span slot="title"><i class="el-icon-caret-right"></i>专业材料查询</span>
                                     <el-menu-item index="1-1" @click="goto('educationProgram')">培养方案</el-menu-item>
                                     <el-menu-item index="1-2" @click="goto('indicators')">毕业要求指标点</el-menu-item>
                                     <el-menu-item index="1-3" @click="goto('syllabus')">教学大纲查看</el-menu-item>
                                 </el-submenu>
-                                <el-submenu>
-                                    <span slot="title">教学大纲设置</span>
-                                    <el-menu-item index="2-1" @click="goto('unUse')">教学大纲设置</el-menu-item>
+                            </el-menu-item-group>
+                            <el-menu-item-group>
+                                <el-submenu index="1-2">
+                                    <span slot="title"><i class="el-icon-caret-right"></i>教学大纲设置</span>
+                                    <el-menu-item index="1-2-1" @click="goto('unUse')">教学大纲设置</el-menu-item>
                                 </el-submenu>
                             </el-menu-item-group>
                         </el-submenu>
@@ -104,47 +101,71 @@
 
                     <div v-show="activeIndex == 2">
                         <el-submenu index="1">
-                            <template slot="title"><i class="el-icon-menu"></i>课程设置</template>
+                            <template slot="title"><i class="el-icon-menu"></i>课程管理</template>
                             <el-menu-item-group>
-                                <el-menu-item index="1-1" @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
-                                <el-menu-item index="1-2" @click="goto('programObjective')">课程目标设置</el-menu-item>
-                                <!-- <el-menu-item index="1-4" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item> -->
-                                <el-menu-item index="1-5" @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
-                            </el-menu-item-group>
-                        </el-submenu>
+                                <el-submenu index="1-1">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>课程设置</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="1-1"
+                                            @click="goto('courseBasicInformation')">课程基本信息</el-menu-item>
+                                        <el-menu-item index="1-2" @click="goto('programObjective')">课程目标设置</el-menu-item>
+                                        <!-- <el-menu-item index="1-3" @click="goto('indexPoint')">课程毕业要求指标点</el-menu-item> -->
+                                        <el-menu-item index="1-4"
+                                            @click="goto('basicInformationTable')">课程考核评价方式</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
 
-                        <el-submenu index="2">
-                            <template slot="title"><i class="el-icon-menu"></i>试卷设置</template>
-                            <el-menu-item-group>
-                                <el-menu-item index="2-1" @click="goto('finalPaperSetting')">考试命题与指标点关系</el-menu-item>
+                                <el-submenu index="2">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>试卷设置</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="2-1"
+                                            @click="goto('finalPaperSetting')">考试命题与指标点关系</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
                             </el-menu-item-group>
                         </el-submenu>
                     </div>
 
                     <div v-show="activeIndex == 3">
                         <el-submenu index="1">
-                            <template slot="title"><i class="el-icon-menu"></i>学生管理</template>
+                            <template slot="title"><i class="el-icon-menu"></i>学生成绩管理</template>
                             <el-menu-item-group>
-                                <el-menu-item index="1-1" @click="goto('studentInfo')">学生信息管理</el-menu-item>
+                                <el-submenu index="1-1">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>学生管理</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="1-1" @click="goto('studentInfo')">学生信息管理</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
+                                <el-submenu index="2">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>成绩管理</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="2-1"
+                                            @click="goto('usualPreformanceTable')">平时考核成绩统计</el-menu-item>
+                                        <el-menu-item index="2-2"
+                                            @click="goto('finalStatisticsTable')">期末试卷成绩统计</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
                             </el-menu-item-group>
                         </el-submenu>
-                        <el-submenu index="2">
-                            <template slot="title"><i class="el-icon-menu"></i>成绩管理</template>
-                            <el-menu-item-group>
-                                <el-menu-item index="2-1" @click="goto('usualPreformanceTable')">平时考核成绩统计</el-menu-item>
-                                <el-menu-item index="2-2" @click="goto('finalStatisticsTable')">期末试卷成绩统计</el-menu-item>
-                            </el-menu-item-group>
-                        </el-submenu>
+
                     </div>
+
                     <div v-show="activeIndex == 4">
-                        <el-submenu index="4">
-                            <template slot="title"><i class="el-icon-menu"></i>成绩分析报告</template>
+                        <el-submenu index="1">
+                            <template slot="title"><i class="el-icon-menu"></i>课程分析报告</template>
                             <el-menu-item-group>
-                                <el-menu-item index="4-1" @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
-                                <el-menu-item index="4-2" @click="goto('analysisTable')">课程分析报告</el-menu-item>
-                                <!-- <el-menu-item index="4-3" @click="goto('programTable')">课程分析报告导出</el-menu-item> -->
+                                <el-submenu index="1-1">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>成绩分析报告</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="1-1"
+                                            @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
+                                        <el-menu-item index="1-2" @click="goto('analysisTable')">课程分析报告</el-menu-item>
+                                        <!-- <el-menu-item index="4-3" @click="goto('programTable')">课程分析报告导出</el-menu-item> -->
+                                    </el-menu-item-group>
+                                </el-submenu>
                             </el-menu-item-group>
                         </el-submenu>
+
                     </div>
                 </el-menu>
 
@@ -176,8 +197,11 @@ export default {
         ...mapGetters(['username', 'id', 'isadmin', 'teacherName'])
     },
     methods: {
-        handleSelect(index) {
+        handleSelect(index, goto) {
             this.activeIndex = index;
+            if (goto) {
+                this.goto(goto);
+            }
         },
         getCourse() {
             api.get("/courseInfo/" + this.getId, "", (resp1) => {
@@ -234,7 +258,7 @@ export default {
     border-radius: 20px;
     border: 0;
     color: white;
-    width: 150px;
+    width: 120px;
     text-align: center;
     padding: 10px 20px;
     margin-right: 10px;

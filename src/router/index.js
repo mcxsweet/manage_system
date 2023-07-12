@@ -25,6 +25,9 @@ import programTable from '@/components/analysePage/programTable'
 import ChoicePage from '@/pages/ChoicePage'
 import Questionnaires from '@/components/attainmentSurvey/Questionnaires'
 
+//首页
+import homePage from '@/pages/homePage'
+
 //学生成绩管理
 import studentInfo from '@/components/studentScoreManager/studentInfo'
 import usualPreformanceTable from '@/components/studentScoreManager/usualPreformanceTable'
@@ -61,6 +64,10 @@ const router = new VueRouter({
             path: "/MainPage",
             component: MainPage,
             children: [
+                {
+                    path: 'homePage',
+                    component: homePage
+                },
                 {
                     path: 'analysisTable',
                     component: analysisTable
