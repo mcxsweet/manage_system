@@ -31,13 +31,13 @@
             <el-dialog title="添加学生信息" :visible.sync="isShowAdd" style="text-align: center;">
                 <el-form label-width="50px" class="demo-ruleForm">
                     <el-form-item label="学号">
-                        <el-input v-model="addFormData.classroomTeacher"></el-input>
+                        <el-input v-model="addFormData.studentNumber"></el-input>
                     </el-form-item>
                     <el-form-item label="姓名">
-                        <el-input v-model="addFormData.classroomTeacher"></el-input>
+                        <el-input v-model="addFormData.studentName"></el-input>
                     </el-form-item>
                     <el-form-item label="班级">
-                        <el-input v-model="addFormData.classroomTeacher"></el-input>
+                        <el-input v-model="addFormData.className"></el-input>
                     </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
@@ -72,9 +72,9 @@
                 </el-table-column>
                 <el-table-column label="操作" width="220">
                     <template slot-scope="scope">
-                        <el-button type="primary" size="mini" @click="editta(scope.row, scope.$index)">编辑</el-button>
-                        <el-button type="success" size="mini" @click="saveta(scope.row, scope.$index)">保存</el-button>
-                        <el-button type="danger" size="mini" @click="delect(scope.row, scope.$index)">删除</el-button>
+                        <el-button type="primary" size="mini" @click="editStudent(scope.$index)">编辑</el-button>
+                        <el-button type="success" size="mini" @click="saveStudent(scope.$index)">保存</el-button>
+                        <el-button type="danger" size="mini" @click="deleteStudent(scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -99,7 +99,7 @@ export default {
             //上传学生名单
             showUpload: false,
             isShowAdd: false,
-            addFormData: [],
+            addFormData: {},
 
             //表格数据
             tableData: [],
@@ -123,6 +123,9 @@ export default {
             this.loading = true;
             api.get("/student/" + this.currentId + "/getStudent", "", (resp) => {
                 if (resp.data.flag) {
+                    for (let index = 0; index < resp.data.data.length; index++) {
+                        resp.data.data[index].ised = false;
+                    }
                     this.tableData = resp.data.data;
                     this.loading = false;
                 }
@@ -157,6 +160,7 @@ export default {
                         type: 'success',
                         message: response.data.message
                     });
+                    this.getStudentInfo();
                 } else {
                     this.$message({
                         type: 'error',
@@ -169,13 +173,67 @@ export default {
                     message: error.data.message
                 });
             })
-            this.getStudentInfo();
             loadingInstance.close();
         },
         //添加学生信息
         addStudent() {
-
+            this.addFormData.courseId = this.currentId;
+            api.post("/student/addStudent", this.addFormData, (resp) => {
+                if (resp.data.flag) {
+                    this.isShowAdd = false;
+                    this.getStudentInfo();
+                }
+            })
         },
+        //删除学生信息
+        deleteStudent(item) {
+            this.$confirm('是否删除 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                console.log(item);
+                api.del("/student/deleteStudent", item, (resp) => {
+                    if (resp.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '删除失败!'
+                        });
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
+        },
+        //编辑学生信息
+        editStudent(index) {
+            this.tableData[index].ised = true;
+        },
+        //保存学生信息
+        saveStudent(index) {
+            api.put("/student/updateStudent", this.tableData[index], (resp) => {
+                if (resp.data.flag) {
+                    this.$message({
+                        type: 'success',
+                        message: '保存成功!'
+                    });
+                    this.tableData[index].ised = false;
+                } else {
+                    this.$message({
+                        type: 'error',
+                        message: resp.data.message
+                    });
+                }
+            })
+        }
     },
     mounted() {
         this.getMessage();

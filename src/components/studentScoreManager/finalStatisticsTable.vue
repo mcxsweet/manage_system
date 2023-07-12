@@ -20,8 +20,10 @@
             <!-- 学生期末成绩信息表格 -->
             <div v-if="!isEmpty">
 
-                <el-button type="primary" @click="addData">添加学生成绩</el-button>
-                <el-button style="margin-bottom: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件导入成绩</el-button>
+                <!-- <el-button type="primary" @click="addData">添加学生成绩</el-button> -->
+                <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载模板</el-button>
+                <el-button style="margin-bottom: 1vw;" type="primary"
+                    @click="showUpload = !showUpload">上传xls文件导入成绩</el-button>
                 <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件导出成绩</el-button>
 
                 <el-table boder="true" :header-cell-style="tableHeader" :data="tableData">
@@ -40,11 +42,14 @@
 
                     <el-table-column label="试卷">
                         <el-table-column v-for="item, index in examPper" :key="index" :label="item.message">
-                            <el-table-column v-for="item2, index2 in item.data" :key="index2" :label="item2" width="50px">
+                            <el-table-column align="center" v-for="item2, index2 in item.data" :key="index2" :label="item2"
+                                width="50px">
                                 <template slot-scope="scope">
-                                    <span v-if="scope.row.scoreDetails != null">
-                                        {{ scope.row.scoreResponse[index][index2] }}
-                                    </span>
+                                    <span v-show="!scope.row.ised" v-if="scope.row.scoreDetails != null">
+                                        {{ scope.row.scoreResponse[index][index2] }}</span>
+
+                                    <input class="input" v-if="scope.row.ised"
+                                        v-model="scope.row.scoreResponse[index][index2]">
                                 </template>
                             </el-table-column>
                         </el-table-column>
@@ -56,9 +61,14 @@
                             <p v-if="scope.row.score >= 60" style="color: green;">{{ scope.row.score }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column fixed="right" label="操作" width="150px">
+                    <el-table-column fixed="right" label="操作" width="180px">
                         <template slot-scope="scope">
-                            <el-button size="mini" type="primary" @click="settingData(scope.$index)">编辑</el-button>
+                            <el-button v-show="!scope.row.ised" size="mini" type="primary"
+                                @click="settingData(scope.$index)">编辑</el-button>
+
+                            <el-button v-show="scope.row.ised" size="mini" type="primary"
+                                @click="savesetData(scope.$index)">保存</el-button>
+
                             <el-button size="mini" type="danger" @click="deleteData(scope.$index)">删除</el-button>
                         </template>
                     </el-table-column>
@@ -198,6 +208,9 @@ export default {
         getStudentScore() {
             api.get("/student/" + this.currentId + "/getFinalScoreStudent", "", (resp) => {
                 if (resp.data.flag) {
+                    for (let index = 0; index < resp.data.data.length; index++) {
+                        resp.data.data[index].ised = false;
+                    }
                     this.tableData = resp.data.data;
                     this.ischoose = true;
                     this.fullscreenLoading = false;
@@ -254,27 +267,28 @@ export default {
             }
             this.showdialog2 = !this.showdialog2;
         },
-        //打开编辑弹窗
+        //编辑开关
         settingData(index1) {
-            this.showdialog = true;
-            this.index = index1
-            this.setDataObj.id = this.tableData[index1].id;
-            this.setDataObj.studentNumber = this.tableData[index1].studentNumber;
-            this.setDataObj.studentName = this.tableData[index1].studentName;
-            this.setDataObj.className = this.tableData[index1].className;
-            this.setDataObj.courseId = this.tableData[index1].courseId;
-            this.setDataObj.finalScoreId = this.tableData[index1].finalScoreId;
-            this.setDataObj.studentId = this.tableData[index1].studentId;
-            this.setDataObj.score = this.tableData[index1].score;
+            this.tableData[index1].ised = !this.tableData[index1].ised;
+            // this.showdialog = true;
+            // this.index = index1;
+            // this.setDataObj.id = this.tableData[index1].id;
+            // this.setDataObj.studentNumber = this.tableData[index1].studentNumber;
+            // this.setDataObj.studentName = this.tableData[index1].studentName;
+            // this.setDataObj.className = this.tableData[index1].className;
+            // this.setDataObj.courseId = this.tableData[index1].courseId;
+            // this.setDataObj.finalScoreId = this.tableData[index1].finalScoreId;
+            // this.setDataObj.studentId = this.tableData[index1].studentId;
+            // this.setDataObj.score = this.tableData[index1].score;
 
-            if (this.tableData[index1].scoreResponse.length > 0) {
-                this.setDataObj.scoreResponse = this.tableData[index1].scoreResponse;
-            } else {
-                this.setDataObj.scoreResponse = [];
-                for (let i = 0; i < this.examPper.length; i++) {
-                    this.setDataObj.scoreResponse.push([]);
-                }
-            }
+            // if (this.tableData[index1].scoreResponse.length > 0) {
+            //     this.setDataObj.scoreResponse = this.tableData[index1].scoreResponse;
+            // } else {
+            //     this.setDataObj.scoreResponse = [];
+            //     for (let i = 0; i < this.examPper.length; i++) {
+            //         this.setDataObj.scoreResponse.push([]);
+            //     }
+            // }
         },
 
         //添加数据
@@ -318,73 +332,52 @@ export default {
         },
 
         //修改数据
-        savesetData() {
-            this.$confirm('是否提交 ?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                api.put("/student/updateStudent", this.setDataObj, (resp) => {
-                    if (resp.data.flag) {
-                        this.setDataObj.scoreDetails = JSON.stringify(this.setDataObj.scoreResponse);
-                        this.setDataObj.studentId = this.setDataObj.id;
-                        if (this.setDataObj.finalScoreId) {
-                            api.put("/student/updateStudentFinalScore", this.setDataObj, (resp2) => {
-                                if (resp2.data.flag) {
-                                    this.$message({
-                                        type: 'success',
-                                        message: '修改成功!'
-                                    });
-                                    this.getStudentScore();
-                                } else {
-                                    this.$message({
-                                        type: 'error',
-                                        message: resp2.data.message
-                                    });
-                                }
-                            })
-                        } else {
-                            api.post("/student/addFinalScore", this.setDataObj, (response) => {
-                                if (response.data.flag) {
-                                    this.$message({
-                                        type: 'success',
-                                        message: '添加成功!'
-                                    });
-                                    this.getStudentScore();
-                                } else {
-                                    this.$message({
-                                        type: 'error',
-                                        message: "发生错误！！"
-                                    });
-                                }
-                            })
-                        }
+        savesetData(index) {
+            this.setDataObj = this.tableData[index];
+
+            this.setDataObj.scoreDetails = JSON.stringify(this.setDataObj.scoreResponse);
+            this.setDataObj.studentId = this.setDataObj.id;
+            if (this.setDataObj.finalScoreId) {
+                api.put("/student/updateStudentFinalScore", this.setDataObj, (resp2) => {
+                    if (resp2.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '修改成功!'
+                        });
+                        this.getStudentScore();
                     } else {
                         this.$message({
                             type: 'error',
-                            message: resp.data.message
+                            message: resp2.data.message
+                        });
+                    }
+                })
+            } else {
+                api.post("/student/addFinalScore", this.setDataObj, (response) => {
+                    if (response.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '添加成功!'
+                        });
+                        this.getStudentScore();
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: "发生错误！！"
                         });
                     }
                 })
             }
-            ).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消'
-                });
-            });
-            this.showdialog = false
         },
 
         //删除数据
         deleteData(index) {
-            this.$confirm('是否提交 ?', '提示', {
+            this.$confirm('是否删除 ?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.del("/student/deleteStudent", this.tableData[index], (resp) => {
-                    // api.del("/student/deleteStudentFinalScore", this.tableData[index], (resp) => {
+                api.del("/student/deleteStudentFinalScore", this.tableData[index], (resp) => {
                     if (resp.data.flag) {
                         this.$message({
                             type: 'success',
@@ -461,4 +454,17 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.input {
+    width: 20px;
+    padding: 8px;
+    margin: 0;
+    border: 1px solid rgb(207, 207, 207);
+    border-radius: 5px;
+    outline: none;
+}
+
+.input:focus {
+    border: 1px solid rgb(0, 132, 255);
+}
+</style>

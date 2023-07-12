@@ -346,6 +346,7 @@ export default {
         //选择框值选择后
         getCurrentCourseExam() {
             localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
+            localStorage.setItem('courseName', this.courseList[this.currentCourse].courseName);
             this.currentId = this.courseList[this.currentCourse].id;
             this.ischoose = true;
             this.init();

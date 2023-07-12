@@ -17,8 +17,8 @@
 
         <el-main v-if="ischoose">
 
-            <el-button style="margin-bottom: 1vw;" type="primary" @click="addData">添加学生成绩</el-button>
-            <el-button style="margin-bottom: 1vw;" type="primary" @click="showUpload = !showUpload">上传文件导入成绩</el-button>
+            <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载模板</el-button>
+            <el-button style="margin-bottom: 1vw;" type="primary" @click="showUpload = !showUpload">上传xls文件导入成绩</el-button>
             <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件导出成绩</el-button>
 
             <div v-if="!isEmpty">
@@ -40,9 +40,9 @@
                     <!-- 遍历表格列 -->
                     <el-table-column v-for="item, index in examMethods" :label="item" :key="index">
                         <template slot-scope="scope">
-                            <span v-if="scope.row.scoreResponse != null">
-                                {{ scope.row.scoreResponse[index] }}
-                            </span>
+                            <span v-if="scope.row.scoreResponse != null" v-show="!scope.row.ised">
+                                {{ scope.row.scoreResponse[index] }}</span>
+                            <el-input v-model="scope.row.scoreResponse[index]" v-show="scope.row.ised"></el-input>
                         </template>
                     </el-table-column>
 
@@ -55,8 +55,11 @@
 
                     <el-table-column label="操作" width="200px" fixed="right">
                         <template slot-scope="scope">
-                            <el-button type="primary" style="margin-left: 1vw ;" size="mini"
+                            <el-button v-show="!scope.row.ised" type="primary" style="margin-left: 1vw ;" size="mini"
                                 @click="setting(scope.$index)">编辑</el-button>
+
+                            <el-button v-show="scope.row.ised" type="success" style="margin-left: 1vw ;" size="mini"
+                                @click="saveData(scope.$index)">保存</el-button>
 
                             <el-button type="danger" style="margin-left: 1vw ;" size="mini"
                                 @click="delectData(scope.$index)">删除</el-button>
@@ -74,49 +77,6 @@
                     <input type="file" @change="handleFileUpload" />
                     <button type="submit" @click.prevent="uploadFile">点击上传</button>
                 </form>
-            </el-dialog>
-
-            <el-dialog v-if="isShow" title="编辑" :visible.sync="isShow">
-                <el-form :model="setDataObj">
-                    <el-form-item label="学号" prop="studentNumber">
-                        <el-input v-model="setDataObj.studentNumber"></el-input>
-                    </el-form-item>
-                    <el-form-item label="学生姓名" prop="studentName">
-                        <el-input v-model="setDataObj.studentName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="班级" prop="className">
-                        <el-input v-model="setDataObj.className"></el-input>
-                    </el-form-item>
-                    <el-form-item v-for="item, j in examMethods" :label="item" :key="j">
-                        <el-input v-model="setDataObj.scoreResponse[j]"></el-input>
-                    </el-form-item>
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button type="success" style="margin: 1vh ;" @click="saveData(tableData[index])">保存</el-button>
-                    <el-button type="danger" style="margin: 1vh ;" @click="isShow = false">取消</el-button>
-                </div>
-            </el-dialog>
-
-            <el-dialog v-if="isShow1" title="添加" :visible.sync="isShow1">
-                <el-form :model="dataObj">
-                    <el-form-item label="学号" prop="studentNumber">
-                        <el-input v-model="dataObj.studentNumber"></el-input>
-                    </el-form-item>
-                    <el-form-item label="学生姓名" prop="studentName">
-                        <el-input v-model="dataObj.studentName"></el-input>
-                    </el-form-item>
-                    <el-form-item label="班级" prop="className">
-                        <el-input v-model="dataObj.className"></el-input>
-                    </el-form-item>
-                    <el-form-item v-for="item, index in examMethods" :label="item" :key="index">
-                        <el-input v-model="dataObj.scoreDetails[index]"></el-input>
-                    </el-form-item>
-
-                </el-form>
-                <div slot="footer" class="dialog-footer">
-                    <el-button type="success" style="margin: 1vh ;" @click="insertData()">保存</el-button>
-                    <el-button type="danger" style="margin: 1vh ;" @click="isShow1 = false">取消</el-button>
-                </div>
             </el-dialog>
 
         </el-main>
@@ -147,8 +107,6 @@ export default {
             dataObj: { studentNumber: "", studentName: "", className: "", scoreDetails: [], courseId: "" },
             setDataObj: { studentNumber: "", studentName: "", className: "", scoreResponse: [], courseId: "" },
 
-            isShow: false,
-            isShow1: false,
             index: 0,
             //考核方式列表遍历表格列
             examMethods: [],
@@ -189,11 +147,13 @@ export default {
                         type: 'success',
                         message: response.data.message
                     });
+                    loadingInstance.close();
                 } else {
                     this.$message({
                         type: 'error',
                         message: response.data.message
                     });
+                    loadingInstance.close();
                 }
             }).catch(error => {
                 this.$message({
@@ -201,11 +161,6 @@ export default {
                     message: error.data.message
                 });
             });
-
-            setTimeout(() => {
-                loadingInstance.close();
-            }, 1000);
-
         },
 
         //表格标题字体居中
@@ -237,10 +192,7 @@ export default {
 
             localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
             localStorage.setItem('courseName', this.courseList[this.currentCourse].courseName);
-
-            setTimeout(() => {
-                this.fullscreenLoading = false;
-            }, 2000);
+            this.fullscreenLoading = false;
 
         },
 
@@ -254,94 +206,58 @@ export default {
         //获取学生平时成绩信息
         getStudentScore() {
             api.get("/student/" + this.currentId + "/getUsualStudent", "", (resp) => {
+                for (let index = 0; index < resp.data.data.length; index++) {
+                    resp.data.data[index].ised = false;
+                }
                 this.tableData = resp.data.data;
                 this.fullscreenLoading = false;
             })
         },
 
-        //打开添加弹窗
-        addData() {
-            this.isShow1 = !this.isShow1
-        },
-
+        //编辑模式
         setting(index1) {
-            this.isShow = !this.isShow;
-            this.index = index1;
-            this.setDataObj.id = this.tableData[index1].id;
-            this.setDataObj.studentNumber = this.tableData[index1].studentNumber;
-            this.setDataObj.studentName = this.tableData[index1].studentName;
-            this.setDataObj.className = this.tableData[index1].className;
-            this.setDataObj.courseId = this.tableData[index1].courseId;
-            this.setDataObj.usualScoreId = this.tableData[index1].usualScoreId;
-            this.setDataObj.studentId = this.tableData[index1].studentId;
-            this.setDataObj.score = this.tableData[index1].score;
-
-            if (this.tableData[index1].scoreResponse.length > 0) {
-                this.setDataObj.scoreResponse = this.tableData[index1].scoreResponse;
-            } else {
-                this.setDataObj.scoreResponse = [];
-                for (let i = 0; i < this.examMethods.length; i++) {
-                    this.setDataObj.scoreResponse.push("");
-                }
-            }
+            this.tableData[index1].ised = true;
         },
 
-        //修改数据
-        saveData() {
-            this.$confirm('是否提交 ?', '提示', {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-            }).then(() => {
-                this.isShow = !this.isShow;
-                api.put("/student/updateStudent", this.setDataObj, (resp) => {
-                    if (resp.data.flag) {
-                        this.setDataObj.scoreDetails = JSON.stringify(this.setDataObj.scoreResponse);
-                        this.setDataObj.studentId = this.setDataObj.id;
-                        if (this.setDataObj.usualScoreId) {
-                            api.put("/student/updateStudentUsualScore", this.setDataObj, (respanse) => {
-                                if (respanse.data.flag) {
-                                    this.$message({
-                                        type: 'success',
-                                        message: '成功!'
-                                    });
-                                    this.getStudentScore();
-                                } else {
-                                    this.$message({
-                                        type: 'error',
-                                        message: resp.data.message
-                                    });
-                                }
-                            })
-                        } else {
-                            api.post("/student/addUsualScore", this.setDataObj, (respanse) => {
-                                if (respanse.data.flag) {
-                                    this.$message({
-                                        type: 'success',
-                                        message: '成功!'
-                                    });
-                                } else {
-                                    this.$message({
-                                        type: 'error',
-                                        message: resp.data.message
-                                    });
-                                }
-                            })
-                        }
+        //编辑保存
+        saveData(index) {
+            this.tableData[index].studentId = this.tableData[index].id;
+            this.tableData[index].scoreDetails = JSON.stringify(this.tableData[index].scoreResponse);
+
+            api.post("/student/addUsualScore", this.dataObj, (respanse) => { })
+            if (this.tableData[index].usualScoreId) {
+                api.put("/student/updateStudentUsualScore", this.tableData[index], (respanse) => {
+                    if (respanse.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '修改成功!'
+                        });
+                        this.getStudentScore();
                     } else {
                         this.$message({
                             type: 'error',
-                            message: resp.data.message
+                            message: "修改失败"
+                        });
+                    }
+                })
+            } else {
+                api.post("/student/addUsualScore", this.tableData[index], (respanse) => {
+                    if (respanse.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '添加成功!'
+                        });
+                        this.getStudentScore();
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '添加失败'
                         });
                     }
                 })
             }
-            ).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消'
-                });
-            });
+
+
         },
 
         //添加数据
@@ -381,18 +297,17 @@ export default {
 
         //删除数据
         delectData(index) {
-            this.$confirm('是否提交 ?', '提示', {
+            this.$confirm('是否删除 ?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.del("/student/deleteStudent", this.tableData[index], (resp) => {
+                api.del("/student/deleteStudentUsualScore", this.tableData[index], (resp) => {
                     if (resp.data.flag) {
                         this.$message({
                             type: 'success',
                             message: '成功!'
                         });
-                        this.tableData.splice(index, 1);
                         this.getStudentScore();
                     }
                 })

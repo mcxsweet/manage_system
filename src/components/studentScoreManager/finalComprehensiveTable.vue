@@ -114,6 +114,7 @@ export default {
       this.ischoose = true;
       if (this.getId == "") {
         localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
+        localStorage.setItem('courseName', this.courseList[this.currentCourse].courseName);
       }
       setTimeout(() => {
         this.fullscreenLoading = false;
