@@ -86,6 +86,7 @@
 import api from '@/api/api';
 import axios from 'axios';
 import { Loading } from 'element-ui';
+import global from '@/script/global';
 
 export default {
     name: "studentInfo",
@@ -149,7 +150,7 @@ export default {
             let loadingInstance = Loading.service({ fullscreen: true });
             const formData = new FormData()
             formData.append('file', this.selectedFile)
-            axios.post("/student/" + this.currentId + "/studentInfo", formData, {
+            axios.post(global.runTiemPath + "/student/" + this.currentId + "/studentInfo", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -192,13 +193,13 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                console.log(item);
                 api.del("/student/deleteStudent", item, (resp) => {
                     if (resp.data.flag) {
                         this.$message({
                             type: 'success',
                             message: '删除成功!'
                         });
+                        this.getStudentInfo();
                     } else {
                         this.$message({
                             type: 'error',

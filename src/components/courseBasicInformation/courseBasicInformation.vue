@@ -406,7 +406,7 @@ export default {
                 this.FormData.teacherId = localStorage.getItem("UserId");
 
                 this.FormData.indicatorPoints = JSON.stringify(this.FormData.indicatorPoints);
-                this.FormData.className = this.FormData.major + this.FormData.classNameClass
+                this.FormData.className = this.FormData.major + this.FormData.classNameClass;
                 // console.log(this.FormData);
                 api.post("/courseInfo", this.FormData, (resp) => {
                     if (resp.data.flag) {

@@ -159,7 +159,9 @@
                                     <el-menu-item-group>
                                         <el-menu-item index="1-1"
                                             @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
-                                        <el-menu-item index="1-2" @click="goto('analysisTable')">课程分析报告</el-menu-item>
+                                        <el-menu-item index="1-2" @click="goto('editAnalyseReport')">编辑试卷分析报告</el-menu-item>
+                                        <el-menu-item index="1-3" @click="goto('editTeachingSummary')">编辑教学小结表</el-menu-item>
+                                        <el-menu-item index="1-4" @click="goto('analysisTable')">导出课程分析报告</el-menu-item>
                                         <!-- <el-menu-item index="4-3" @click="goto('programTable')">课程分析报告导出</el-menu-item> -->
                                     </el-menu-item-group>
                                 </el-submenu>

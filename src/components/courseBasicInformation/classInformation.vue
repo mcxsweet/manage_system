@@ -195,7 +195,7 @@ export default {
         }
 
     },
-   
+
     mounted() {
         this.initDataOptions();
         this.getIndicators();

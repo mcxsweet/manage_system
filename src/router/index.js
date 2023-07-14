@@ -19,8 +19,7 @@ import welcome from '@/components/welcome'
 import finalPaperSetting from '@/components/courseExamMethods/finalPaperSetting'
 
 import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
-import analysisTable from '@/components/analysePage/analysisTable'
-import programTable from '@/components/analysePage/programTable'
+
 
 import ChoicePage from '@/pages/ChoicePage'
 import Questionnaires from '@/components/attainmentSurvey/Questionnaires'
@@ -40,6 +39,12 @@ import syllabus from '@/components/courseSyllabus/syllabus'
 
 //教学大纲设置
 import unUse from '@/components/courseSyllabus/courseSyllabusSetting/unUse'
+
+//分析报告
+import analysisTable from '@/components/analysePage/analysisTable'
+import programTable from '@/components/analysePage/programTable'
+import editAnalyseReport from '@/components/analysePage/editAnalyseReport'
+import editTeachingSummary from '@/components/analysePage/editTeachingSummary'
 
 
 import { Message } from "element-ui";
@@ -156,6 +161,16 @@ const router = new VueRouter({
                 {
                     path: 'unUse',  //教学大纲
                     component: unUse
+                },
+
+                //分析报告
+                {
+                    path: 'editAnalyseReport',  //分析报告编辑
+                    component: editAnalyseReport
+                },
+                {
+                    path: 'editTeachingSummary',  //教学小结编辑
+                    component: editTeachingSummary
                 },
             ]
         },
