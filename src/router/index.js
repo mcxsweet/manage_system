@@ -18,7 +18,6 @@ import basicInformationTable from '@/components/courseExamMethods/basicInformati
 import welcome from '@/components/welcome'
 import finalPaperSetting from '@/components/courseExamMethods/finalPaperSetting'
 
-import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
 
 
 import ChoicePage from '@/pages/ChoicePage'
@@ -31,6 +30,10 @@ import homePage from '@/pages/homePage'
 import studentInfo from '@/components/studentScoreManager/studentInfo'
 import usualPreformanceTable from '@/components/studentScoreManager/usualPreformanceTable'
 import finalStatisticsTable from '@/components/studentScoreManager/finalStatisticsTable'
+
+//调查问卷
+import surveySetting from '@/components/attainmentSurvey/surveySetting'
+import surveyCheck from '@/components/attainmentSurvey/surveyCheck'
 
 //专业材料查看
 import educationProgram from '@/components/courseSyllabus/educationProgram'
@@ -45,6 +48,7 @@ import analysisTable from '@/components/analysePage/analysisTable'
 import programTable from '@/components/analysePage/programTable'
 import editAnalyseReport from '@/components/analysePage/editAnalyseReport'
 import editTeachingSummary from '@/components/analysePage/editTeachingSummary'
+import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
 
 
 import { Message } from "element-ui";
@@ -84,22 +88,6 @@ const router = new VueRouter({
                 {
                     path: 'finalStatisticsTable',
                     component: finalStatisticsTable
-                },
-                {
-                    path: 'studentInfo',
-                    component: studentInfo
-                },
-                {
-                    path: 'finalComprehensiveTable',
-                    component: finalComprehensiveTable
-                },
-                {
-                    path: 'finalPaperSetting',
-                    component: finalPaperSetting
-                },
-                {
-                    path: 'usualPreformanceTable',
-                    component: usualPreformanceTable
                 },
                 {
                     path: 'basicInformationTable',
@@ -161,6 +149,32 @@ const router = new VueRouter({
                 {
                     path: 'unUse',  //教学大纲
                     component: unUse
+                },
+                //学生成绩管理
+                {
+                    path: 'studentInfo',
+                    component: studentInfo
+                },
+                {
+                    path: 'finalComprehensiveTable',
+                    component: finalComprehensiveTable
+                },
+                {
+                    path: 'finalPaperSetting',
+                    component: finalPaperSetting
+                },
+                {
+                    path: 'usualPreformanceTable',
+                    component: usualPreformanceTable
+                },
+                //调查问卷
+                {
+                    path: 'surveySetting',
+                    component: surveySetting
+                },
+                {
+                    path: 'surveyCheck',
+                    component: surveyCheck
                 },
 
                 //分析报告

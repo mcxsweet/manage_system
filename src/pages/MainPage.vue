@@ -145,6 +145,15 @@
                                             @click="goto('finalStatisticsTable')">期末试卷成绩统计</el-menu-item>
                                     </el-menu-item-group>
                                 </el-submenu>
+                                <el-submenu index="3">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>调查问卷</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="3-1"
+                                            @click="goto('surveySetting')">调查问卷设置</el-menu-item>
+                                        <el-menu-item index="3-2"
+                                            @click="goto('surveyCheck')">调查问卷查看</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
                             </el-menu-item-group>
                         </el-submenu>
 
@@ -160,7 +169,8 @@
                                         <el-menu-item index="1-1"
                                             @click="goto('finalComprehensiveTable')">期末综合成绩统计表</el-menu-item>
                                         <el-menu-item index="1-2" @click="goto('editAnalyseReport')">编辑试卷分析报告</el-menu-item>
-                                        <el-menu-item index="1-3" @click="goto('editTeachingSummary')">编辑教学小结表</el-menu-item>
+                                        <el-menu-item index="1-3"
+                                            @click="goto('editTeachingSummary')">编辑教学小结表</el-menu-item>
                                         <el-menu-item index="1-4" @click="goto('analysisTable')">导出课程分析报告</el-menu-item>
                                         <!-- <el-menu-item index="4-3" @click="goto('programTable')">课程分析报告导出</el-menu-item> -->
                                     </el-menu-item-group>

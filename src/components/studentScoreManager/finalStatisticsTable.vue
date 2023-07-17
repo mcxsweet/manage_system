@@ -42,12 +42,10 @@
 
                     <el-table-column label="试卷">
                         <el-table-column v-for="item, index in examPper" :key="index" :label="item.message">
-                            <el-table-column align="center" v-for="item2, index2 in item.data" :key="index2" :label="item2"
-                                width="50px">
+                            <el-table-column align="center" v-for="item2, index2 in item.data" :key="index2" :label="item2">
                                 <template slot-scope="scope">
                                     <span v-show="!scope.row.ised" v-if="scope.row.scoreDetails != null">
                                         {{ scope.row.scoreResponse[index][index2] }}</span>
-
                                     <input class="input" v-if="scope.row.ised"
                                         v-model="scope.row.scoreResponse[index][index2]">
                                 </template>
@@ -241,22 +239,23 @@ export default {
                         type: 'success',
                         message: response.data.message
                     });
+                    loadingInstance.close();
                 } else {
                     this.$message({
                         type: 'error',
                         message: response.data.message
                     });
+                    loadingInstance.close();
+
                 }
             }).catch(error => {
                 this.$message({
                     type: 'error',
                     message: error.data.message
                 });
-            })
-
-            setTimeout(() => {
                 loadingInstance.close();
-            }, 1000);
+
+            })
         },
         //打开添加弹窗
         addData() {
