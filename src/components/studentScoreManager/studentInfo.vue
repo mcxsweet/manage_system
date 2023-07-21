@@ -46,7 +46,7 @@
                 </div>
             </el-dialog>
 
-            <el-table v-loading="loading" :data="tableData" border style="width: 100%">
+            <el-table v-loading="loading" :data="tableData" border style="width: 100%" height="600">
                 <el-table-column label="序号" width="50px">
                     <template slot-scope="scope">
                         <span>{{ scope.$index + 1 }}</span>
@@ -161,12 +161,14 @@ export default {
                         type: 'success',
                         message: response.data.message
                     });
+                    loadingInstance.close();
                     this.getStudentInfo();
                 } else {
                     this.$message({
                         type: 'error',
                         message: response.data.message
                     });
+                    loadingInstance.close();
                 }
             }).catch(error => {
                 this.$message({
@@ -174,7 +176,6 @@ export default {
                     message: error.data.message
                 });
             })
-            loadingInstance.close();
         },
         //添加学生信息
         addStudent() {

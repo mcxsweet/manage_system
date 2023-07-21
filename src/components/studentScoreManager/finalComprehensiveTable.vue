@@ -36,7 +36,7 @@
           </div>
         </el-drawer>
 
-        <el-table border="true" :header-cell-style="tableHeader" :data="tableData">
+        <el-table border="true" :header-cell-style="tableHeader" :data="tableData" height="600">
           <el-table-column label="序号" width="50px">
             <template slot-scope="scope">
               <span>{{ scope.$index + 1 }}</span>

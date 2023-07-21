@@ -220,6 +220,9 @@ export default {
       examItemId: "",
       itemShow: false,
       itemArrary: [],
+
+      //自动添加期末考核试卷选项所用的对象
+      AutoAddExamMethod: {},
     }
   },
   methods: {
@@ -319,6 +322,7 @@ export default {
       } else {
         this.examItemArray[index].itemScore = 100;
 
+        //sb人写sb代码
         if (this.currentId) {
           this.examItemArray[index].courseId = this.currentId;
           this.examItemArray[index].courseName = this.currentCourse;
@@ -332,23 +336,44 @@ export default {
         //添加
         if (!this.examItemArray[index].id) {
           api.post("/courseExam/courseExamineMethods", this.examItemArray[index], (resp) => {
+            this.examItemArray[index].id = resp.data.data;
             if (resp.data.flag) {
-              api.get("/courseExam/courseExamineMethods/" + this.addid, "", (resp2) => {
-                this.examItemArray[index].id = resp2.data.data[index].id
-              })
-              if (resp.data.flag) {
-                this.$message({
-                  type: 'success',
-                  message: '添加成功!'
-                });
-              } else {
-                this.$message({
-                  type: 'error',
-                  message: '添加失败!'
-                });
+              if (this.examItemArray[index].examineItem == "期末考核成绩") {
+                this.AutoAddExamMethod.examineChildItem = "试卷";
+                this.AutoAddExamMethod.childPercentage = 100;
+                this.AutoAddExamMethod.childScore = 100;
+                var courseTarget = [];
+                for (let index = 0; index < this.courseTargetList.length; index++) {
+                  courseTarget.push(this.courseTargetList[index].targetName);
+                }
+                this.AutoAddExamMethod.courseTarget = JSON.stringify(courseTarget);
+                this.AutoAddExamMethod.indicatorPointsDetail = JSON.stringify(this.indicators);
+
+                //添加
+                this.AutoAddExamMethod.courseExamineMethodsId = this.examItemArray[index].id;
+                api.post("/courseExam/courseExamineChildMethods", this.AutoAddExamMethod, (resp) => {
+                  if (resp.data.flag) {
+                    this.$message({
+                      type: 'success',
+                      message: '添加成功!'
+                    });
+                  } else {
+                    this.$message({
+                      type: 'error',
+                      message: resp.data.message
+                    });
+                  }
+                })
               }
+            } else {
+              this.$message({
+                type: 'error',
+                message: '添加失败!'
+              });
             }
           })
+
+
         }
         //修改
         else {
@@ -545,20 +570,13 @@ export default {
     },
   },
   mounted() {
+    this.getMessage();
     this.isadmin = localStorage.getItem('Isadmin');
     this.getId = localStorage.getItem('courseId');
     if (this.getId != "") {
       this.ischoose = true;
-      this.courseId = this.getId
+      this.courseId = this.getId;
       this.init();
-    }
-    this.getMessage();
-    if (this.$route.query.id) {
-      localStorage.setItem('courseId', this.$route.query.id);
-      this.getId = localStorage.getItem('courseId');
-      this.isReturn = true;
-      this.currentId = this.$route.query.id;
-      this.getCurrentCourseExam();
     }
   },
 }

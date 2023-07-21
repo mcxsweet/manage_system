@@ -26,7 +26,7 @@
                     @click="showUpload = !showUpload">上传xls文件导入成绩</el-button>
                 <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件导出成绩</el-button>
 
-                <el-table boder="true" :header-cell-style="tableHeader" :data="tableData">
+                <el-table boder="true" :header-cell-style="tableHeader" :data="tableData" height="600">
                     <el-table-column label="序号" width="50px">
                         <template slot-scope="scope">
                             <span>{{ scope.$index + 1 }}</span>
