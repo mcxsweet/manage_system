@@ -41,15 +41,18 @@
                                     <el-input v-model="search" placeholder="输入关键字搜索" />
                                 </template>
                                 <template slot-scope="scope">
-                                    <el-upload :action="uploadPath" :show-file-list="false" :file-list="fileList"
-                                        :data="uploadData" :on-success="handleSuccess" :before-upload="beforeUpload"
-                                        :on-error="handleError" :accept="'application/pdf'">
-                                        <el-button style="width: 150px;"
-                                            v-if="user == scope.row.uploadUser || user == '阳光伟'" icon="el-icon-upload"
-                                            slot="trigger" type="primary" @click="upload(scope.row)">教学大纲更新</el-button>
-                                    </el-upload>
-                                    <el-button style="margin-top: 10px;width: 150px;" type="primary"
-                                        @click="getSyllabusPDF(scope.row)">教学大纲展示</el-button>
+                                    <div style="display: flex;flex-wrap: nowrap;">
+                                        <el-upload :action="uploadPath" :show-file-list="false" :file-list="fileList"
+                                            :data="uploadData" :on-success="handleSuccess" :before-upload="beforeUpload"
+                                            :on-error="handleError" :accept="'application/pdf'">
+                                            <el-button style="width: 150px;"
+                                                v-if="user == scope.row.uploadUser || user == '阳光伟'" icon="el-icon-upload"
+                                                slot="trigger" type="primary" @click="upload(scope.row)">教学大纲更新</el-button>
+                                        </el-upload>
+                                        <el-button style="margin-left: 10px;width: 150px;" type="primary"
+                                            @click="getSyllabusPDF(scope.row)">教学大纲展示</el-button>
+                                    </div>
+
                                 </template>
                             </el-table-column>
                         </el-table>
