@@ -148,10 +148,8 @@
                                 <el-submenu index="3">
                                     <template slot="title"><i class="el-icon-caret-right"></i>调查问卷</template>
                                     <el-menu-item-group>
-                                        <el-menu-item index="3-1"
-                                            @click="goto('surveySetting')">调查问卷设置</el-menu-item>
-                                        <el-menu-item index="3-2"
-                                            @click="goto('surveyCheck')">调查问卷查看</el-menu-item>
+                                        <el-menu-item index="3-1" @click="goto('surveyCheck')">调查问卷查看</el-menu-item>
+                                        <el-menu-item index="3-2" @click="goto('surveySetting')">调查问卷设置</el-menu-item>
                                     </el-menu-item-group>
                                 </el-submenu>
                             </el-menu-item-group>

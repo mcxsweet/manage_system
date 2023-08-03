@@ -13,41 +13,6 @@
             <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
         <el-main v-show="ischoose">
-            <el-card>
-                <!-- <el-descriptions direction="vertical" :column="5" border>
-                    <el-descriptions-item label="子问题">
-                        <p style="width: 500px;"></p>
-                    </el-descriptions-item>
-                    <el-descriptions-item label="A.完全达成" :span="1">7(99%)</el-descriptions-item>
-                    <el-descriptions-item label="B.较好达成" :span="1">苏州市</el-descriptions-item>
-                    <el-descriptions-item label="C.基本达成" :span="1">苏州市</el-descriptions-item>
-                    <el-descriptions-item label="D.未达成" :span="1"> 1188 号</el-descriptions-item>
-                    
-                </el-descriptions> -->
-                <el-table border="true" :data="tableData">
-                    <el-table-column label="子问题" >
-                        <template slot-scope="scope">
-                            <span>{{ scope.row.name }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="A.完全达成" width="100px">
-                        <template slot-scope="scope">
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="B.较好达成" width="100px">
-                        <template slot-scope="scope">
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="C.基本达成" width="100px">
-                        <template slot-scope="scope">
-                        </template>
-                    </el-table-column>
-                    <el-table-column label="D.未达成" width="100px">
-                        <template slot-scope="scope">
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </el-card>
         </el-main>
     </el-container>
 </template>
@@ -65,8 +30,6 @@ export default {
             currentCourse: "",
             courseList: [],
             ischoose: false,
-
-            tableData: [{ name: "理解信息量、信道容量和系统的有效性、可靠性的概念、传输速率及信息量的计算方法" }, { name: "理解信息量、信道容量和系统的有效性、可靠性的概念、传输速率及信息量的计算方法" }]
         }
     },
     methods: {
