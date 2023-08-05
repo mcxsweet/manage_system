@@ -12,62 +12,64 @@
         </el-header>
 
         <div v-show="ischoose">
+            <el-card>
+                <el-collapse accordion @change="handleChange" style="margin: 20px;">
 
-            <el-collapse accordion @change="handleChange" style="margin: 20px;">
+                    <div v-for="item, index in courseType" :key="index">
+                        <el-collapse-item :name="item.value">
+                            <template slot="title">
+                                <el-row style="font-size: large;">
+                                    {{ item.name }}
+                                </el-row>
+                            </template>
 
-                <div v-for="item, index in courseType" :key="index">
-                    <el-collapse-item :name="item.value">
-                        <template slot="title">
-                            <el-row style="font-size: large;">
-                                {{ item.name }}
-                            </el-row>
+                            <el-table
+                                :data="tableData.filter(data => !search || data.courseName.toLowerCase().includes(search.toLowerCase()))"
+                                style="width: 100%">
+                                <el-table-column label="课程名称" width="400" prop="courseName">
+                                </el-table-column>
+                                <el-table-column label="负责人" prop="uploadUser">
+                                </el-table-column>
+                                <el-table-column label="有无上传" prop="fileAddress">
+                                    <template slot-scope="scope">
+                                        <P style="color: red;" v-if="!scope.row.fileAddress">无</P>
+                                        <p><a style="color: green;" v-if="scope.row.fileAddress">有</a></p>
+                                    </template>
+                                </el-table-column>
+                                <el-table-column align="right" width="400">
+                                    <template slot="header" slot-scope="scope">
+                                        <el-input v-model="search" placeholder="输入关键字搜索" />
+                                    </template>
+                                    <template slot-scope="scope">
+                                        <div style="display: flex;flex-wrap: nowrap;">
+                                            <el-upload :action="uploadPath" :show-file-list="false" :file-list="fileList"
+                                                :data="uploadData" :on-success="handleSuccess" :before-upload="beforeUpload"
+                                                :on-error="handleError" :accept="'application/pdf'">
+                                                <el-button style="width: 150px;"
+                                                    v-if="user == scope.row.uploadUser || user == '阳光伟'"
+                                                    icon="el-icon-upload" slot="trigger" type="primary"
+                                                    @click="upload(scope.row)">教学大纲更新</el-button>
+                                            </el-upload>
+                                            <el-button style="margin-left: 10px;width: 150px;" type="primary"
+                                                @click="getSyllabusPDF(scope.row)">教学大纲展示</el-button>
+                                        </div>
+
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                        </el-collapse-item>
+                    </div>
+                </el-collapse>
+
+                <el-drawer title="教学大纲展示" :visible.sync="isShowPDF" direction="btt" size="90%">
+                    <embed v-if="pdfUrl" :src="pdfUrl" type="application/pdf" width="100%" height="100%" />
+                    <el-result v-if="!pdfUrl" icon="error" title="暂无数据" subTitle="请先上传教学大纲">
+                        <template slot="extra">
+                            <el-button type="primary" size="medium" @click="isShowPDF = !isShowPDF">返回</el-button>
                         </template>
-
-                        <el-table
-                            :data="tableData.filter(data => !search || data.courseName.toLowerCase().includes(search.toLowerCase()))"
-                            style="width: 100%">
-                            <el-table-column label="课程名称" width="400" prop="courseName">
-                            </el-table-column>
-                            <el-table-column label="负责人" prop="uploadUser">
-                            </el-table-column>
-                            <el-table-column label="有无上传" prop="fileAddress">
-                                <template slot-scope="scope">
-                                    <P style="color: red;" v-if="!scope.row.fileAddress">无</P>
-                                    <p><a style="color: green;" v-if="scope.row.fileAddress">有</a></p>
-                                </template>
-                            </el-table-column>
-                            <el-table-column align="right" width="400">
-                                <template slot="header" slot-scope="scope">
-                                    <el-input v-model="search" placeholder="输入关键字搜索" />
-                                </template>
-                                <template slot-scope="scope">
-                                    <div style="display: flex;flex-wrap: nowrap;">
-                                        <el-upload :action="uploadPath" :show-file-list="false" :file-list="fileList"
-                                            :data="uploadData" :on-success="handleSuccess" :before-upload="beforeUpload"
-                                            :on-error="handleError" :accept="'application/pdf'">
-                                            <el-button style="width: 150px;"
-                                                v-if="user == scope.row.uploadUser || user == '阳光伟'" icon="el-icon-upload"
-                                                slot="trigger" type="primary" @click="upload(scope.row)">教学大纲更新</el-button>
-                                        </el-upload>
-                                        <el-button style="margin-left: 10px;width: 150px;" type="primary"
-                                            @click="getSyllabusPDF(scope.row)">教学大纲展示</el-button>
-                                    </div>
-
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </el-collapse-item>
-                </div>
-            </el-collapse>
-
-            <el-drawer title="教学大纲展示" :visible.sync="isShowPDF" direction="btt" size="90%">
-                <embed v-if="pdfUrl" :src="pdfUrl" type="application/pdf" width="100%" height="100%" />
-                <el-result v-if="!pdfUrl" icon="error" title="暂无数据" subTitle="请先上传教学大纲">
-                    <template slot="extra">
-                        <el-button type="primary" size="medium" @click="isShowPDF = !isShowPDF">返回</el-button>
-                    </template>
-                </el-result>
-            </el-drawer>
+                    </el-result>
+                </el-drawer>
+            </el-card>
         </div>
 
     </el-container>

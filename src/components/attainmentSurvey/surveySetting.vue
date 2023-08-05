@@ -13,6 +13,7 @@
             <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
         </el-header>
         <el-main v-show="ischoose">
+            <h2>暂不开放</h2>
         </el-main>
     </el-container>
 </template>

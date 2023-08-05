@@ -18,56 +18,58 @@
     </el-header>
 
     <el-main v-show="ischoose">
-      <el-table :data="examItemArray" class="table" :border="true" style="width: 100%" default-expand-all="true"
-        :header-cell-style="tableHeader">
+      <el-card>
+        <el-table :data="examItemArray" class="table" :border="true" style="width: 100%" default-expand-all="true"
+          :header-cell-style="tableHeader">
 
 
-        <el-table-column label="考核项目" width="200px">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%" allow-create="true"
-              filterable="true" v-show="!scope.row.isExamineItem">
-              <el-option value="平时考核成绩"></el-option>
-              <!-- <el-option value="实验考核成绩"></el-option> -->
-              <el-option value="期末考核成绩"></el-option>
-            </el-select>
-            <p style="text-align: center;padding: 10px 20px;font-size: 18px;" v-show="scope.row.isExamineItem">{{
-              scope.row.examineItem }}</p>
-          </template>
-        </el-table-column>
+          <el-table-column label="考核项目" width="200px">
+            <template slot-scope="scope">
+              <el-select v-model="scope.row.examineItem" placeholder="请选择" style="width:100%" allow-create="true"
+                filterable="true" v-show="!scope.row.isExamineItem">
+                <el-option value="平时考核成绩"></el-option>
+                <!-- <el-option value="实验考核成绩"></el-option> -->
+                <el-option value="期末考核成绩"></el-option>
+              </el-select>
+              <p style="text-align: center;padding: 10px 20px;font-size: 18px;" v-show="scope.row.isExamineItem">{{
+                scope.row.examineItem }}</p>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="项目百分比" width="150">
-          <template slot-scope="scope">
-            <div style="text-align: center;">
-              <el-input type="number" v-model="scope.row.percentage" v-show="!scope.row.isPercentage">
-                <template slot="append">%</template>
-              </el-input>
-              <!-- <el-tag type="danger" style="font-weight: 200px" v-show="scope.row.isPercentage">
+          <el-table-column label="项目百分比" width="150">
+            <template slot-scope="scope">
+              <div style="text-align: center;">
+                <el-input type="number" v-model="scope.row.percentage" v-show="!scope.row.isPercentage">
+                  <template slot="append">%</template>
+                </el-input>
+                <!-- <el-tag type="danger" style="font-weight: 200px" v-show="scope.row.isPercentage">
                 {{ scope.row.percentage }} %
               </el-tag> -->
-              <p style="text-align: center;padding: 10px 20px;font-size: 18px;" v-show="scope.row.isPercentage">{{
-                scope.row.percentage }} %</p>
-            </div>
-          </template>
-        </el-table-column>
+                <p style="text-align: center;padding: 10px 20px;font-size: 18px;" v-show="scope.row.isPercentage">{{
+                  scope.row.percentage }} %</p>
+              </div>
+            </template>
+          </el-table-column>
 
-        <!-- 考核子项目 -->
-        <el-table-column label="考核子项目 (必填)">
-          <template slot-scope="scope1">
-            <div style="text-align: center;">
-              <el-button @click="getChildItem(scope1.row)" type="success" plain round>子项目设置</el-button>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="300">
-          <template slot-scope="scope">
-            <el-button type="primary" @click="editExamItem(scope.$index)">编辑</el-button>
-            <el-button type="success" @click="saveExamItem(scope.$index)">保存</el-button>
-            <el-button type="danger" @click="delectExamItem(scope.$index)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-button icon="el-icon-plus" type="primary" @click="addExamItem()">添加考核方式</el-button>
-      <el-divider></el-divider>
+          <!-- 考核子项目 -->
+          <el-table-column label="考核子项目 (必填)">
+            <template slot-scope="scope1">
+              <div style="text-align: center;">
+                <el-button @click="getChildItem(scope1.row)" type="success" plain round>子项目设置</el-button>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" width="300">
+            <template slot-scope="scope">
+              <el-button type="primary" @click="editExamItem(scope.$index)">编辑</el-button>
+              <el-button type="success" @click="saveExamItem(scope.$index)">保存</el-button>
+              <el-button type="danger" @click="delectExamItem(scope.$index)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-button icon="el-icon-plus" type="primary" @click="addExamItem()">添加考核方式</el-button>
+      </el-card>
+
     </el-main>
 
     <el-dialog :title="itemTitle" v-if="itemShow" :visible.sync="itemShow" width="90%" append-to-body>

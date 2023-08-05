@@ -9,41 +9,44 @@
         </el-header>
 
         <el-main>
-            <el-table :data="tableData" stripe height="73vh" border="true">
-                <el-table-column align="left" width="150" label="课程操作">
-                    <template slot-scope="scope">
-                        <!-- <el-button size="mini" type="primary" round
+            <el-card>
+                <el-table :data="tableData" stripe height="73vh" border="true">
+                    <el-table-column align="left" width="150" label="课程操作">
+                        <template slot-scope="scope">
+                            <!-- <el-button size="mini" type="primary" round
                             @click="goto('classInformation', scope.row.id)">设置</el-button>
                         <el-button size="mini" type="info" @click="handleExport(scope.$index, scope.row)">导出</el-button> -->
-                        <!-- <el-button size="mini" type="warning"
+                            <!-- <el-button size="mini" type="warning"
                             @click="handleOperation(scope.$index, scope.row)">操作</el-button> -->
-                        <el-button size="mini" type="warning" @click="goto('classInformation', scope.row.id)">编辑</el-button>
-                        <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="courseName" label="课程名称" width="200">
-                </el-table-column>
-                <el-table-column prop="major" label="开设专业" width="200">
-                </el-table-column>
-                <el-table-column prop="theoreticalHours" label="理论学时" width="100">
-                </el-table-column>
-                <el-table-column prop="labHours" label="实验学时" width="100">
-                </el-table-column>
-                <el-table-column prop="className" label="班级名称" width="200">
-                </el-table-column>
-                <el-table-column label="学期" width="140">
-                    <template slot-scope="scope">
-                        {{ scope.row.termStart }}-{{ scope.row.termEnd }}.{{ scope.row.term }}
-                    </template>
-                </el-table-column>
-                <el-table-column prop="studentsNum" label="学生人数" width="100">
-                </el-table-column>
-                <el-table-column prop="courseNature" label="课程性质" width="140">
-                </el-table-column>
-                <el-table-column prop="courseType" label="课程类别" width="140">
-                </el-table-column>
+                            <el-button size="mini" type="warning"
+                                @click="goto('classInformation', scope.row.id)">编辑</el-button>
+                            <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="courseName" label="课程名称" width="200">
+                    </el-table-column>
+                    <el-table-column prop="major" label="开设专业" width="200">
+                    </el-table-column>
+                    <el-table-column prop="theoreticalHours" label="理论学时" width="100">
+                    </el-table-column>
+                    <el-table-column prop="labHours" label="实验学时" width="100">
+                    </el-table-column>
+                    <el-table-column prop="className" label="班级名称" width="200">
+                    </el-table-column>
+                    <el-table-column label="学期" width="140">
+                        <template slot-scope="scope">
+                            {{ scope.row.termStart }}-{{ scope.row.termEnd }}.{{ scope.row.term }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="studentsNum" label="学生人数" width="100">
+                    </el-table-column>
+                    <el-table-column prop="courseNature" label="课程性质" width="140">
+                    </el-table-column>
+                    <el-table-column prop="courseType" label="课程类别" width="140">
+                    </el-table-column>
 
-            </el-table>
+                </el-table>
+            </el-card>
         </el-main>
 
         <!-- 添加弹出框 -->

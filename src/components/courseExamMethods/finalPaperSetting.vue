@@ -16,215 +16,227 @@
         </el-header>
 
         <el-main v-if="ischoose">
-            <el-divider content-position="center">试卷设置</el-divider>
+            <el-card>
 
-            <!-- 展示小题和指标点关系文档 -->
-            <el-dialog v-if="isShowDoc" title="展示试卷和指标点关系矩阵" :visible.sync="isShowDoc" width="100%" append-to-body>
-                <el-button type="primary" @click="exportPDF()" style="margin: 1vh;">导出PDF</el-button>
-                <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
-                <div v-loading="loading2">
-                    <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
+                <el-divider content-position="center">试卷设置</el-divider>
+
+                <!-- 展示小题和指标点关系文档 -->
+                <el-dialog v-if="isShowDoc" title="展示试卷和指标点关系矩阵" :visible.sync="isShowDoc" width="100%" append-to-body>
+                    <el-button type="primary" @click="exportPDF()" style="margin: 1vh;">导出PDF</el-button>
+                    <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
+                    <div v-loading="loading2">
+                        <embed :src="pdfUrl" type="application/pdf" width="100%" height="500px" />
+                    </div>
+                </el-dialog>
+
+                <!-- 试卷设置 -->
+                <div v-if="workSpace">
+                    <div>
+                        <el-button style="margin-left: 1vw;margin-bottom: 1vw;" type="primary"
+                            @click="isAddPaperItem = true">题型添加</el-button>
+                        <el-button style="margin-left: 1vw;" type="success" @click="updateItem()">题型修改</el-button>
+                        <el-button style="margin-left: 1vw;" type="danger" @click="deleteItem()">题型删除</el-button>
+                    </div>
+
+                    <el-card>
+                        <div style="margin-bottom: 20px;">
+                            <el-result icon="warning" title="当前数据为空" subTitle="请添加数据或返回" v-if="finllPaper.length == 0">
+                            </el-result>
+                            <el-collapse accordion @change="handleChange">
+                                <div v-for="item, index in finllPaper" :key="index">
+                                    <el-row>
+                                        <el-col :span="23">
+                                            <el-collapse-item :name="item.id">
+                                                <template slot="title">
+                                                    <el-row style="font-size: large;">
+                                                        {{ item.itemName }} <i class="el-icon-edit"></i>
+                                                    </el-row>
+                                                </template>
+
+                                                <el-table v-loading="loading" :data="tableData" border stripe
+                                                    style="width: 100%;" height="500">
+                                                    <el-table-column label="题号" width="50">
+                                                        <template slot-scope="scope">
+                                                            <p>{{ scope.row.titleNumber }}</p>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="分值" width="180">
+                                                        <template slot-scope="scope">
+                                                            <p v-show="!scope.row.isshow">{{ scope.row.score }}</p>
+                                                            <el-input v-model="scope.row.score"
+                                                                v-show="scope.row.isshow"></el-input>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="指标点">
+                                                        <template slot-scope="scope">
+                                                            <div v-for="item1, index in scope.row.indicatorPoints"
+                                                                :key="index" v-show="!scope.row.isshow">
+                                                                <p>{{ item1 }}</p>
+                                                            </div>
+                                                            <el-select v-model="scope.row.indicatorPoints"
+                                                                style="width:100% ;" v-show="scope.row.isshow"
+                                                                multiple="true">
+                                                                <el-option
+                                                                    v-for="item, index in currentExamineItem.indicatorPointsDetail"
+                                                                    :key="index" :value="item">
+                                                                    <span style="float: left">{{ item }}</span>
+                                                                </el-option>
+                                                            </el-select>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="课程目标">
+                                                        <template slot-scope="scope">
+                                                            <div v-for="item, index in scope.row.courseTarget" :key="index"
+                                                                v-show="!scope.row.isshow">
+                                                                <p>{{ item }}</p>
+                                                            </div>
+                                                            <el-select v-model="scope.row.courseTarget" multiple="true"
+                                                                style="width:100% ;" v-show="scope.row.isshow">
+                                                                <el-option
+                                                                    v-for="item, index in currentExamineItem.courseTarget"
+                                                                    :key="index" :value="item">
+                                                                    <span style="float: left">{{ item }}</span>
+                                                                </el-option>
+                                                            </el-select>
+                                                        </template>
+                                                    </el-table-column>
+                                                    <el-table-column label="操作" width="210px">
+                                                        <template slot-scope="scope">
+                                                            <el-button style="margin-top:8px ;" type="primary" size="mini"
+                                                                @click="popUpUpdate(scope.row)">修改</el-button>
+                                                            <el-button style="margin-top:8px ;" type="success" size="mini"
+                                                                @click="saveItem(scope.row, scope.$index)">保存</el-button>
+                                                            <el-button style="margin-top:8px ;" type="danger" size="mini"
+                                                                @click="deleteDetail(scope.row.id)">删除</el-button>
+                                                        </template>
+                                                    </el-table-column>
+
+                                                </el-table>
+                                                <el-button style="margin-top:8px ;" type="primary" size="mini"
+                                                    @click="isAddDetail = !isAddDetail">添加</el-button>
+                                                <!-- <el-button type="primary" size="mini" @click="add1()">自动添加小题</el-button> -->
+                                                <el-button @click="svaeAll()" type="success" size="mini"
+                                                    align="right">全部保存</el-button>
+                                            </el-collapse-item>
+                                        </el-col>
+                                        <el-col :span="1">
+                                            <el-button v-if="isDeletePaperItem" style="margin-top:8px ;" type="danger"
+                                                size="mini" @click="deletePaperItem(item.id)">删除</el-button>
+                                            <el-button v-if="isUpdatePaperItem" style="margin-top:8px ;" type="primary"
+                                                size="mini" @click="updateFormUp(item)">修改</el-button>
+                                        </el-col>
+                                    </el-row>
+                                </div>
+                            </el-collapse>
+
+                            <!-- 添加题型 -->
+                            <el-dialog title="添加" :visible.sync="isAddPaperItem" width="40%" append-to-body>
+                                <el-form :model="addForm">
+                                    <el-form-item label="名称">
+                                        <el-input v-model="addForm.itemName"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="总分">
+                                        <el-input v-model="addForm.itemScore"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="题数">
+                                        <el-input v-model="addForm.itemNum"></el-input>
+                                    </el-form-item>
+                                </el-form>
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button @click="isAddPaperItem = false">取 消</el-button>
+                                    <el-button type="primary" @click="addPaperItem()">确 定</el-button>
+                                </div>
+                            </el-dialog>
+                            <!-- 修改 -->
+                            <el-dialog title="修改" :visible.sync="isUpdateForm" width="40%" append-to-body>
+                                <el-form :model="updateForm">
+                                    <el-form-item label="名称">
+                                        <el-input v-model="updateForm.itemName"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="总分">
+                                        <el-input v-model="updateForm.itemScore"></el-input>
+                                    </el-form-item>
+                                </el-form>
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button @click="isUpdateForm = false">取 消</el-button>
+                                    <el-button type="primary" @click="updatePaperItem()">确 定</el-button>
+                                </div>
+                            </el-dialog>
+                            <!-- 修改小题 -->
+                            <el-dialog title="修改小题" :visible.sync="isUpdateDetail" width="40%" append-to-body>
+                                <el-form :model="updateDetailForm">
+                                    <el-form-item label="小题序号">
+                                        <el-input type="number" v-model="updateDetailForm.titleNumber"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="分值">
+                                        <el-input type="number" v-model="updateDetailForm.score"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="指标点">
+                                        <el-select v-model="updateDetailForm.indicatorPoints" :multiple="true"
+                                            style="width:100% ;">
+                                            <el-option v-for="item, index in currentExamineItem.indicatorPointsDetail"
+                                                :key="index" :value="item">
+                                                <span style="float: left">{{ item }}</span>
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="课程目标">
+                                        <el-select v-model="updateDetailForm.courseTarget" :multiple="true"
+                                            style="width:100% ;">
+                                            <el-option v-for="item, index in currentExamineItem.courseTarget" :key="index"
+                                                :value="item">
+                                                <span style="float: left">{{ item }}</span>
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button type="danger" @click="isUpdateDetail = false">取 消</el-button>
+                                    <el-button type="primary" @click="updateDetail()">确 定</el-button>
+                                </div>
+                            </el-dialog>
+                            <!-- 添加小题 -->
+                            <el-dialog title="添加" :visible.sync="isAddDetail" width="40%" append-to-body>
+                                <el-form :model="addDetailForm">
+                                    <el-form-item label="题号">
+                                        <el-input v-model="addDetailForm.titleNumber"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="分值">
+                                        <el-input v-model="addDetailForm.score"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="指标点">
+                                        <el-select v-model="addDetailForm.indicatorPoints" :multiple="true"
+                                            style="width:100% ;">
+                                            <el-option v-for="item, index in currentExamineItem.indicatorPointsDetail"
+                                                :key="index" :value="item">
+                                                <span style="float: left">{{ item }}</span>
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                    <el-form-item label="课程目标">
+                                        <el-select v-model="addDetailForm.courseTarget" :multiple="true"
+                                            style="width:100% ;">
+                                            <el-option v-for="item, index in currentExamineItem.courseTarget" :key="index"
+                                                :value="item">
+                                                <span style="float: left">{{ item }}</span>
+                                            </el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button @click="isAddDetail = false">取 消</el-button>
+                                    <el-button type="primary" @click="addDetail()">确 定</el-button>
+                                </div>
+                            </el-dialog>
+
+                        </div>
+                    </el-card>
+                    <el-button type="primary" @click="openDoc()" style="margin: 1vh;">展示试卷和指标点关系矩阵</el-button>
                 </div>
-            </el-dialog>
+                <el-result icon="warning" title="当前数据为空" subTitle="请添加期末考核方式为试卷" v-if="!workSpace">
+                </el-result>
+            </el-card>
 
-            <!-- 试卷设置 -->
-            <div v-if="workSpace">
-                <div>
-                    <el-button style="margin-left: 1vw;margin-bottom: 1vw;" type="primary"
-                        @click="isAddPaperItem = true">题型添加</el-button>
-                    <el-button style="margin-left: 1vw;" type="success" @click="updateItem()">题型修改</el-button>
-                    <el-button style="margin-left: 1vw;" type="danger" @click="deleteItem()">题型删除</el-button>
-                </div>
-
-                <div style="margin-bottom: 20px;">
-                    <el-result icon="warning" title="当前数据为空" subTitle="请添加数据或返回" v-if="finllPaper.length == 0">
-                    </el-result>
-                    <el-collapse accordion @change="handleChange">
-                        <div v-for="item, index in finllPaper" :key="index">
-                            <el-row>
-                                <el-col :span="23">
-                                    <el-collapse-item :name="item.id">
-                                        <template slot="title">
-                                            <el-row style="font-size: large;">
-                                                {{ item.itemName }} <i class="el-icon-edit"></i>
-                                            </el-row>
-                                        </template>
-
-                                        <el-table v-loading="loading" :data="tableData" border stripe style="width: 100%;"
-                                            height="500">
-                                            <el-table-column label="题号" width="50">
-                                                <template slot-scope="scope">
-                                                    <p>{{ scope.row.titleNumber }}</p>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column label="分值" width="180">
-                                                <template slot-scope="scope">
-                                                    <p v-show="!scope.row.isshow">{{ scope.row.score }}</p>
-                                                    <el-input v-model="scope.row.score"
-                                                        v-show="scope.row.isshow"></el-input>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column label="指标点">
-                                                <template slot-scope="scope">
-                                                    <div v-for="item1, index in scope.row.indicatorPoints" :key="index"
-                                                        v-show="!scope.row.isshow">
-                                                        <p>{{ item1 }}</p>
-                                                    </div>
-                                                    <el-select v-model="scope.row.indicatorPoints" style="width:100% ;"
-                                                        v-show="scope.row.isshow" multiple="true">
-                                                        <el-option
-                                                            v-for="item, index in currentExamineItem.indicatorPointsDetail"
-                                                            :key="index" :value="item">
-                                                            <span style="float: left">{{ item }}</span>
-                                                        </el-option>
-                                                    </el-select>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column label="课程目标">
-                                                <template slot-scope="scope">
-                                                    <div v-for="item, index in scope.row.courseTarget" :key="index"
-                                                        v-show="!scope.row.isshow">
-                                                        <p>{{ item }}</p>
-                                                    </div>
-                                                    <el-select v-model="scope.row.courseTarget" multiple="true"
-                                                        style="width:100% ;" v-show="scope.row.isshow">
-                                                        <el-option v-for="item, index in currentExamineItem.courseTarget"
-                                                            :key="index" :value="item">
-                                                            <span style="float: left">{{ item }}</span>
-                                                        </el-option>
-                                                    </el-select>
-                                                </template>
-                                            </el-table-column>
-                                            <el-table-column label="操作" width="210px">
-                                                <template slot-scope="scope">
-                                                    <el-button style="margin-top:8px ;" type="primary" size="mini"
-                                                        @click="popUpUpdate(scope.row)">修改</el-button>
-                                                    <el-button style="margin-top:8px ;" type="success" size="mini"
-                                                        @click="saveItem(scope.row, scope.$index)">保存</el-button>
-                                                    <el-button style="margin-top:8px ;" type="danger" size="mini"
-                                                        @click="deleteDetail(scope.row.id)">删除</el-button>
-                                                </template>
-                                            </el-table-column>
-
-                                        </el-table>
-                                        <el-button style="margin-top:8px ;" type="primary" size="mini"
-                                            @click="isAddDetail = !isAddDetail">添加</el-button>
-                                        <!-- <el-button type="primary" size="mini" @click="add1()">自动添加小题</el-button> -->
-                                        <el-button @click="svaeAll()" type="success" size="mini"
-                                            align="right">全部保存</el-button>
-                                    </el-collapse-item>
-                                </el-col>
-                                <el-col :span="1">
-                                    <el-button v-if="isDeletePaperItem" style="margin-top:8px ;" type="danger" size="mini"
-                                        @click="deletePaperItem(item.id)">删除</el-button>
-                                    <el-button v-if="isUpdatePaperItem" style="margin-top:8px ;" type="primary" size="mini"
-                                        @click="updateFormUp(item)">修改</el-button>
-                                </el-col>
-                            </el-row>
-                        </div>
-                    </el-collapse>
-
-                    <!-- 添加题型 -->
-                    <el-dialog title="添加" :visible.sync="isAddPaperItem" width="40%" append-to-body>
-                        <el-form :model="addForm">
-                            <el-form-item label="名称">
-                                <el-input v-model="addForm.itemName"></el-input>
-                            </el-form-item>
-                            <el-form-item label="总分">
-                                <el-input v-model="addForm.itemScore"></el-input>
-                            </el-form-item>
-                            <el-form-item label="题数">
-                                <el-input v-model="addForm.itemNum"></el-input>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button @click="isAddPaperItem = false">取 消</el-button>
-                            <el-button type="primary" @click="addPaperItem()">确 定</el-button>
-                        </div>
-                    </el-dialog>
-                    <!-- 修改 -->
-                    <el-dialog title="修改" :visible.sync="isUpdateForm" width="40%" append-to-body>
-                        <el-form :model="updateForm">
-                            <el-form-item label="名称">
-                                <el-input v-model="updateForm.itemName"></el-input>
-                            </el-form-item>
-                            <el-form-item label="总分">
-                                <el-input v-model="updateForm.itemScore"></el-input>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button @click="isUpdateForm = false">取 消</el-button>
-                            <el-button type="primary" @click="updatePaperItem()">确 定</el-button>
-                        </div>
-                    </el-dialog>
-                    <!-- 修改小题 -->
-                    <el-dialog title="修改小题" :visible.sync="isUpdateDetail" width="40%" append-to-body>
-                        <el-form :model="updateDetailForm">
-                            <el-form-item label="小题序号">
-                                <el-input type="number" v-model="updateDetailForm.titleNumber"></el-input>
-                            </el-form-item>
-                            <el-form-item label="分值">
-                                <el-input type="number" v-model="updateDetailForm.score"></el-input>
-                            </el-form-item>
-                            <el-form-item label="指标点">
-                                <el-select v-model="updateDetailForm.indicatorPoints" :multiple="true" style="width:100% ;">
-                                    <el-option v-for="item, index in currentExamineItem.indicatorPointsDetail" :key="index"
-                                        :value="item">
-                                        <span style="float: left">{{ item }}</span>
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="课程目标">
-                                <el-select v-model="updateDetailForm.courseTarget" :multiple="true" style="width:100% ;">
-                                    <el-option v-for="item, index in currentExamineItem.courseTarget" :key="index"
-                                        :value="item">
-                                        <span style="float: left">{{ item }}</span>
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button type="danger" @click="isUpdateDetail = false">取 消</el-button>
-                            <el-button type="primary" @click="updateDetail()">确 定</el-button>
-                        </div>
-                    </el-dialog>
-                    <!-- 添加小题 -->
-                    <el-dialog title="添加" :visible.sync="isAddDetail" width="40%" append-to-body>
-                        <el-form :model="addDetailForm">
-                            <el-form-item label="题号">
-                                <el-input v-model="addDetailForm.titleNumber"></el-input>
-                            </el-form-item>
-                            <el-form-item label="分值">
-                                <el-input v-model="addDetailForm.score"></el-input>
-                            </el-form-item>
-                            <el-form-item label="指标点">
-                                <el-select v-model="addDetailForm.indicatorPoints" :multiple="true" style="width:100% ;">
-                                    <el-option v-for="item, index in currentExamineItem.indicatorPointsDetail" :key="index"
-                                        :value="item">
-                                        <span style="float: left">{{ item }}</span>
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                            <el-form-item label="课程目标">
-                                <el-select v-model="addDetailForm.courseTarget" :multiple="true" style="width:100% ;">
-                                    <el-option v-for="item, index in currentExamineItem.courseTarget" :key="index"
-                                        :value="item">
-                                        <span style="float: left">{{ item }}</span>
-                                    </el-option>
-                                </el-select>
-                            </el-form-item>
-                        </el-form>
-                        <div slot="footer" class="dialog-footer">
-                            <el-button @click="isAddDetail = false">取 消</el-button>
-                            <el-button type="primary" @click="addDetail()">确 定</el-button>
-                        </div>
-                    </el-dialog>
-
-                </div>
-                <el-button type="primary" @click="openDoc()" style="margin: 1vh;">展示试卷和指标点关系矩阵</el-button>
-            </div>
-            <el-result icon="warning" title="当前数据为空" subTitle="请添加期末考核方式为试卷" v-if="!workSpace">
-            </el-result>
         </el-main>
 
     </el-container>

@@ -17,78 +17,80 @@
     </el-header>
 
     <el-main v-show="ischoose">
-      <el-table :data="tableData1" border style="width: 100%">
-        <el-table-column label="操作" width="220">
-          <template slot-scope="scope">
-            <el-button type="primary" size="mini" @click="editta(scope.row)">编辑</el-button>
-            <el-button type="success" size="mini" @click="saveta(scope.row, scope.$index)">保存</el-button>
-            <el-button type="danger" size="mini" @click="delect(scope.row, scope.$index)">删除</el-button>
-          </template>
+      <el-card>
 
-        </el-table-column>
-        <el-table-column prop="index" label="序号" width="118">
-          <template slot-scope="scope">
-            <el-input v-model="scope.row.targetName" v-show="scope.row.ised"></el-input>
-            <span v-show="!scope.row.ised">{{ scope.row.targetName }}</span>
-          </template>
-        </el-table-column>
+        <el-table :data="tableData1" border style="width: 100%">
+          <el-table-column label="操作" width="220">
+            <template slot-scope="scope">
+              <el-button type="primary" size="mini" @click="editta(scope.row)">编辑</el-button>
+              <el-button type="success" size="mini" @click="saveta(scope.row, scope.$index)">保存</el-button>
+              <el-button type="danger" size="mini" @click="delect(scope.row, scope.$index)">删除</el-button>
+            </template>
 
-        <el-table-column prop="courseTarget" label="课程目标" width="300">
-          <template slot-scope="scope">
-            <el-input type="textarea" autosize v-model="scope.row.courseTarget" v-show="scope.row.ised"
-              placeholder="教学大纲中的课程目标文字描述"></el-input>
-            <span v-show="!scope.row.ised">{{ scope.row.courseTarget }}</span>
-          </template>
-        </el-table-column>
+          </el-table-column>
+          <el-table-column prop="index" label="序号" width="118">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.targetName" v-show="scope.row.ised"></el-input>
+              <span v-show="!scope.row.ised">{{ scope.row.targetName }}</span>
+            </template>
+          </el-table-column>
 
-        <el-table-column prop="weight" label="支撑权重" width="100">
-          <template slot-scope="scope">
-            <el-input v-model="scope.row.weight" v-show="scope.row.ised"></el-input>
-            <span v-show="!scope.row.ised">{{ scope.row.weight }}</span>
-          </template>
-        </el-table-column>
+          <el-table-column prop="courseTarget" label="课程目标" width="300">
+            <template slot-scope="scope">
+              <el-input type="textarea" autosize v-model="scope.row.courseTarget" v-show="scope.row.ised"
+                placeholder="教学大纲中的课程目标文字描述"></el-input>
+              <span v-show="!scope.row.ised">{{ scope.row.courseTarget }}</span>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="毕业要求指标点" width="150">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.indicatorPoints" :filterable="true" :multiple="true" placeholder="请选择"
-              v-show="scope.row.ised">
-              <el-option v-for="item in indicators" :key="item" :value="item">
-              </el-option>
-            </el-select>
+          <el-table-column prop="weight" label="支撑权重" width="100">
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.weight" v-show="scope.row.ised"></el-input>
+              <span v-show="!scope.row.ised">{{ scope.row.weight }}</span>
+            </template>
+          </el-table-column>
 
-            <div v-for="(item, index) in scope.row.indicatorPoints" :key="index" v-show="!scope.row.ised">
-              <template boder="true"><span>{{ item }}</span></template>
-            </div>
-          </template>
-        </el-table-column>
+          <el-table-column label="毕业要求指标点" width="150">
+            <template slot-scope="scope">
+              <el-select v-model="scope.row.indicatorPoints" :filterable="true" :multiple="true" placeholder="请选择"
+                v-show="scope.row.ised">
+                <el-option v-for="item in indicators" :key="item" :value="item">
+                </el-option>
+              </el-select>
 
-        <el-table-column prop="pathWays" label="达成途径" width="300">
-          <template slot-scope="scope">
-            <el-input type="textarea" autosize v-model="scope.row.pathWays" v-show="scope.row.ised"></el-input>
-            <span v-show="!scope.row.ised">{{ scope.row.pathWays }}</span>
-          </template>
-        </el-table-column>
+              <div v-for="(item, index) in scope.row.indicatorPoints" :key="index" v-show="!scope.row.ised">
+                <template boder="true"><span>{{ item }}</span></template>
+              </div>
+            </template>
+          </el-table-column>
 
-        <el-table-column label="请选择评价依据" width="150">
-          <template slot-scope="scope">
-            <el-select v-model="scope.row.evaluationMethod" multiple placeholder="评价依据" v-show="scope.row.ised"
-              allow-create="true" filterable="true">
-              <el-option label="考试" value="考试"></el-option>
-              <el-option label="作业" value="作业"></el-option>
-              <el-option label="报告" value="报告"></el-option>
-              <el-option label="论文" value="论文"></el-option>
-              <el-option label="答辩" value="答辩"></el-option>
-              <el-option label="实验" value="实验"></el-option>
-            </el-select>
-            <div v-for="(item2, index) in scope.row.evaluationMethod" :key="index" v-show="!scope.row.ised">
-              <span>{{ item2 }}</span>
-            </div>
-          </template>
-        </el-table-column>
+          <el-table-column prop="pathWays" label="达成途径" width="300">
+            <template slot-scope="scope">
+              <el-input type="textarea" autosize v-model="scope.row.pathWays" v-show="scope.row.ised"></el-input>
+              <span v-show="!scope.row.ised">{{ scope.row.pathWays }}</span>
+            </template>
+          </el-table-column>
 
-      </el-table>
-      <el-button icon="el-icon-plus" type="primary" @click="add" style="margin: 10px;">添加课程目标</el-button>
+          <el-table-column label="请选择评价依据" width="150">
+            <template slot-scope="scope">
+              <el-select v-model="scope.row.evaluationMethod" multiple placeholder="评价依据" v-show="scope.row.ised"
+                allow-create="true" filterable="true">
+                <el-option label="考试" value="考试"></el-option>
+                <el-option label="作业" value="作业"></el-option>
+                <el-option label="报告" value="报告"></el-option>
+                <el-option label="论文" value="论文"></el-option>
+                <el-option label="答辩" value="答辩"></el-option>
+                <el-option label="实验" value="实验"></el-option>
+              </el-select>
+              <div v-for="(item2, index) in scope.row.evaluationMethod" :key="index" v-show="!scope.row.ised">
+                <span>{{ item2 }}</span>
+              </div>
+            </template>
+          </el-table-column>
 
+        </el-table>
+        <el-button icon="el-icon-plus" type="primary" @click="add" style="margin: 10px;">添加课程目标</el-button>
+      </el-card>
     </el-main>
   </el-container>
 </template>
