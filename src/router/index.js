@@ -50,6 +50,11 @@ import editAnalyseReport from '@/components/analysePage/editAnalyseReport'
 import editTeachingSummary from '@/components/analysePage/editTeachingSummary'
 import finalComprehensiveTable from '@/components/studentScoreManager/finalComprehensiveTable'
 
+//教学管理
+import collegeLevel from '@/components/teachingManagement/collegeLevel'
+import departmentHeadLevel from '@/components/teachingManagement/departmentHeadLevel'
+import teachingSecretaryLevel from '@/components/teachingManagement/teachingSecretaryLevel'
+
 
 import { Message } from "element-ui";
 import cookie from "vue-cookies"
@@ -185,6 +190,20 @@ const router = new VueRouter({
                 {
                     path: 'editTeachingSummary',  //教学小结编辑
                     component: editTeachingSummary
+                },
+
+                //教学管理
+                {
+                    path: 'collegeLevel',  //学院层面
+                    component: collegeLevel
+                },
+                {
+                    path: 'departmentHeadLevel',  //系主任层面
+                    component: departmentHeadLevel
+                },
+                {
+                    path: 'teachingSecretaryLevel',  //教学秘书层面
+                    component: teachingSecretaryLevel
                 },
             ]
         },
