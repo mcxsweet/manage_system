@@ -3,31 +3,38 @@
 
         <el-header>
             <el-row>
-                <el-col :span="7">
+                <el-col :span="6">
                     <div style="display: flex;align-items: center;height: 60px;">
 
                         <p style="font-family: STXingkai;font-size: 30px;color: white;">工程教育专业认证系统</p>
                     </div>
                 </el-col>
-                <el-col :span="13">
+                <el-col :span="16">
                     <div>
                         <button @click="handleSelect(1, 'homePage')" class="tableBarButton">首页</button>
                         <button @click="handleSelect(1, 'educationProgram')" class="tableBarButton">专业材料</button>
                         <button @click="handleSelect(2, 'courseBasicInformation')" class="tableBarButton">课程管理</button>
                         <button @click="handleSelect(3, 'studentInfo')" class="tableBarButton">学生成绩管理</button>
                         <button @click="handleSelect(4, 'finalComprehensiveTable')" class="tableBarButton">课程分析报告</button>
+                        <button @click="handleSelect(5, 'finalComprehensiveTable')" class="tableBarButton">教学管理</button>
                     </div>
                 </el-col>
-                <el-col :span="4">
+                <el-col :span="2">
                     <div style="font-size: 20px;text-align: right;">
-                        <el-dropdown @command="handleCommand" trigger="click">
-                            <el-button icon="el-icon-user" size="mini" style="margin-right: 15px;"></el-button>
+                        <el-dropdown size="medium" @command="handleCommand" trigger="click">
+                            <span style="color: white;">
+                                <i class="el-icon-user-solid" style="margin-right: 15px;"></i>
+                                {{ teacherName }}
+                            </span>
+
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item>个人信息</el-dropdown-item>
                                 <el-dropdown-item command="signOut">退出</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                        <span style="color: white;">{{ teacherName }}</span>
+                        <span style="color: white;;">
+                            <i class="el-icon-switch-button" style="margin-left: 15px;" @click="signOut()"></i>
+                        </span>
                     </div>
                 </el-col>
             </el-row>
@@ -177,6 +184,36 @@
                         </el-submenu>
 
                     </div>
+
+                    <!-- 教学管理 -->
+                    <div v-show="activeIndex == 5">
+                        <el-submenu index="1">
+                            <template slot="title"><i class="el-icon-menu"></i>教学管理</template>
+                            <el-menu-item-group>
+                                <el-submenu index="1-1">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>学院工作</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="1-1" @click="goto('editAnalyseReport')">查看完成情况</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
+
+                                <el-submenu index="1-2">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>教学秘书工作</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="1-2" @click="goto('editAnalyseReport')">查看完成情况</el-menu-item>
+                                        <el-menu-item index="1-2-1" @click="goto('editAnalyseReport')">导出相关材料</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
+
+                                <el-submenu index="1-3">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>系主任工作</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="1-3" @click="goto('editAnalyseReport')">查看完成情况</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
+                            </el-menu-item-group>
+                        </el-submenu>
+                    </div>
                 </el-menu>
 
             </el-aside>
@@ -222,7 +259,22 @@ export default {
             this.$router.push({ path: '/MainPage/' + url });
         },
         signOut() {
-            this.$store.dispatch('user/logout')
+            this.$confirm('是否退出登录 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                this.$message({
+                    type: 'success',
+                    message: '退出登录'
+                });
+                this.$store.dispatch('user/logout');
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
         },
         handleCommand(command) {
             if (command == "signOut") {
