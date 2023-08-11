@@ -3,5 +3,6 @@ const getters = {
   username: state => state.user.name,
   isadmin: state => state.user.isAdmin,
   teacherName: state => state.user.teacherName,
+  department: state => state.user.department,
 }
 export default getters

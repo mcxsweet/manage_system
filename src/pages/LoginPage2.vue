@@ -65,7 +65,7 @@ export default {
                 let { flag, data } = resp.data
                 if (flag == true) {
                     let { identity, info } = data
-                    console.log(identity, info);
+                    // console.log(identity, info);
                     if (identity === "0") {
                         localStorage.clear();
                         sessionStorage.setItem("token", this.$cookies.get("token"));

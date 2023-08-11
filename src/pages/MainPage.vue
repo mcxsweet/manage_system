@@ -16,7 +16,7 @@
                         <button @click="handleSelect(2, 'courseBasicInformation')" class="tableBarButton">课程管理</button>
                         <button @click="handleSelect(3, 'studentInfo')" class="tableBarButton">学生成绩管理</button>
                         <button @click="handleSelect(4, 'finalComprehensiveTable')" class="tableBarButton">课程分析报告</button>
-                        <button @click="handleSelect(5, 'finalComprehensiveTable')" class="tableBarButton">教学管理</button>
+                        <button v-show="isadmin != 0" @click="handleSelect(5, '')" class="tableBarButton">教学管理</button>
                     </div>
                 </el-col>
                 <el-col :span="2">
@@ -197,14 +197,14 @@
                                     </el-menu-item-group>
                                 </el-submenu>
 
-                                <el-submenu index="1-2">
+                                <!-- <el-submenu index="1-2">
                                     <template slot="title"><i class="el-icon-caret-right"></i>教学秘书工作</template>
                                     <el-menu-item-group>
                                         <el-menu-item index="1-2"
                                             @click="goto('teachingSecretaryLevel')">查看完成情况</el-menu-item>
                                         <el-menu-item index="1-2-1" @click="goto('editAnalyseReport')">导出相关材料</el-menu-item>
                                     </el-menu-item-group>
-                                </el-submenu>
+                                </el-submenu> -->
 
                                 <el-submenu index="1-3">
                                     <template slot="title"><i class="el-icon-caret-right"></i>系主任工作</template>

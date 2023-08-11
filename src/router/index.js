@@ -195,15 +195,24 @@ const router = new VueRouter({
                 //教学管理
                 {
                     path: 'collegeLevel',  //学院层面
-                    component: collegeLevel
+                    component: collegeLevel,
+                    meta: {
+                        isAdmin: 2
+                    }
                 },
                 {
                     path: 'departmentHeadLevel',  //系主任层面
-                    component: departmentHeadLevel
+                    component: departmentHeadLevel,
+                    meta: {
+                        isAdmin: 1
+                    }
                 },
                 {
                     path: 'teachingSecretaryLevel',  //教学秘书层面
-                    component: teachingSecretaryLevel
+                    component: teachingSecretaryLevel,
+                    meta: {
+                        isAdmin: 2 
+                    }
                 },
             ]
         },
@@ -225,7 +234,7 @@ router.beforeEach(async (to, from, next) => {
                     使用方法请见 /pages/MainPage.vue
                 */
                 let user = await store.dispatch('user/getInfo')
-                console.log(user);
+                // console.log(user);
                 if (user.isAdmin != null) {
                     if (to.path === '/ChoicePage') {
                         if (user.isAdmin <= 2) {
@@ -239,7 +248,7 @@ router.beforeEach(async (to, from, next) => {
                         if (!to.meta.isAdmin) {
                             next()
                         } else {
-                            if (user.isAdmin === to.meta.isAdmin) {
+                            if (user.isAdmin >= to.meta.isAdmin) {
                                 next()
                             } else {
                                 Message.warning('对不起您没有权限访问此页面')
