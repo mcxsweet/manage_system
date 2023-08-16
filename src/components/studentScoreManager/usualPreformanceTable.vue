@@ -34,7 +34,7 @@
                     </el-table-column>
                     <el-table-column label="姓名" prop="studentName">
                     </el-table-column>
-                    <el-table-column label="班级" prop="className">
+                    <el-table-column label="班级" prop="className" width="200px">
                     </el-table-column>
 
                     <!-- 遍历表格列 -->

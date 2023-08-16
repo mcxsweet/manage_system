@@ -29,6 +29,11 @@
                     @click="handleExportReport('analyse3')">课程试卷分析报告</el-button>
                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
                     @click="handleExportReport('analyse4')">课程教学小结表</el-button>
+
+                <p class="title">分析报告完成情况确认</p>
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                    @click="updateStatus()">分析报告完成情况确认</el-button>
+
             </div>
 
             <el-drawer :visible.sync="showPDF" direction="btt" size="90%">
@@ -45,6 +50,8 @@
 import api from '@/api/api';
 import axios from 'axios';
 import global from '@/script/global';
+import { Loading } from 'element-ui';
+
 
 export default {
     data() {
@@ -116,7 +123,39 @@ export default {
         handleShowPDF(type) {
             this.showPDF = true;
             this.getPDF(type);
+        },
+
+        //分析报告生成情况确认
+        updateStatus() {
+            this.$confirm('请确认该课程分析报告生成状态 ?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                let loadingInstance = Loading.service({ fullscreen: true });
+                api.get("/report/" + this.currentId + "/updateStatus", "", (resp) => {
+                    if (resp.data.flag) {
+                        this.$message({
+                            type: 'success',
+                            message: '状态保存成功'
+                        });
+                        loadingInstance.close();
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: '出错了，请确认文档是否正确生成！'
+                        });
+                        loadingInstance.close();
+                    }
+                })
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消'
+                });
+            });
         }
+
 
     },
     mounted() {

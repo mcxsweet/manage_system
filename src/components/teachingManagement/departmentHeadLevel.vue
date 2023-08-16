@@ -54,12 +54,18 @@
                     </el-table-column>
                     <el-table-column label="教师" width="100" prop="classroomTeacher" sortable>
                     </el-table-column>
-                    <el-table-column label="学期" width="100">
+                    <el-table-column label="学期" width="120">
                         <template slot-scope="scope">
                             <p>{{ scope.row.termStart }}-{{ scope.row.termStart }}.{{ scope.row.term }}</p>
                         </template>
                     </el-table-column>
-                    <el-table-column label="相关文件导出">
+                    <el-table-column label="完成情况" width="100">
+                        <template slot-scope="scope">
+                            <p v-if="scope.row.accomplish" style="color: green;">已完成</p>
+                            <p v-if="!scope.row.accomplish" style="color: red;">未完成</p>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="相关文件导出" width="700">
                         <template slot-scope="scope">
 
                             <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
@@ -111,7 +117,7 @@ export default {
         },
         //获取当前用户的管理专业的所有课程名称
         getCourseByMajor() {
-            api.get("/manager/" + this.department + "/getCourseByMajor", "", (resp) => {
+            api.post("/manager/getCourseByMajor", { major: this.department }, (resp) => {
                 this.tableData = resp.data.data;
             })
         },
@@ -119,13 +125,13 @@ export default {
         getMajor() {
             var department = this.$store.state.user.department;
             switch (department) {
-                case "计算机科学与工程":
+                case "计算机科学与工程系":
                     this.department = "计算机科学与技术";
                     break;
-                case "数据科学与工程":
+                case "数据科学与工程系":
                     this.department = "数据科学与大数据技术";
                     break;
-                case "信息与智能工程":
+                case "信息与智能工程系":
                     this.department = "电子信息工程";
                     break;
                 default:

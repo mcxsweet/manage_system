@@ -12,12 +12,16 @@
                 <el-empty v-if="!ischoose" description="请先选择专业"></el-empty>
             </el-header>
 
-            <el-main v-show="ischoose">
+            <el-main v-if="ischoose">
                 <el-card>
                     <h3>{{ major }} 教学管理</h3>
-                    <el-input style="margin: 5px;width: 300px;" v-model="search" placeholder="输入课程名进行搜索" />
-                    <el-table :data="tableData.filter(data => !search || data.courseName.includes(search))"
-                        style="width: 100%">
+                    <!-- <el-input style="margin: 5px;width: 300px;" v-model="search" placeholder="输入课程名进行搜索" />
+                    <el-input style="margin: 5px;width: 300px;" v-model="search2" placeholder="输入课程名进行搜索" /> -->
+                    <el-table
+                        :data="tableData.filter(data => !search && !search2 && !search3 || data.courseName.includes(search) && data.classroomTeacher.includes(search2) && data.accomplish == search3)"
+                        style="width: 100%" tooltip-effect="dark" @selection-change="handleSelectionChange">
+                        <el-table-column type="selection" width="50">
+                        </el-table-column>
                         <el-table-column type="expand">
                             <template slot-scope="props">
                                 <el-form label-position="left" inline class="demo-table-expand">
@@ -52,16 +56,38 @@
                                 </el-form>
                             </template>
                         </el-table-column>
-                        <el-table-column label="课程名称" width="200" prop="courseName" sortable>
+                        <el-table-column label="课程名称" width="200" prop="courseName" align="center">
+                            <template slot="header">
+                                <p>课程名称</p>
+                                <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+                            </template>
                         </el-table-column>
-                        <el-table-column label="教师" width="100" prop="classroomTeacher" sortable>
+                        <el-table-column label="教师" width="100" prop="classroomTeacher" align="center">
+                            <template slot="header">
+                                <p>教师</p>
+                                <el-input v-model="search2" size="mini" placeholder="输入搜索" />
+                            </template>
                         </el-table-column>
-                        <el-table-column label="学期" width="100">
+                        <el-table-column label="学期" width="120" align="center">
                             <template slot-scope="scope">
                                 <p>{{ scope.row.termStart }}-{{ scope.row.termStart }}.{{ scope.row.term }}</p>
                             </template>
                         </el-table-column>
-                        <el-table-column label="相关文件导出">
+                        <el-table-column label="完成情况" width="120" align="center">
+                            <template slot="header">
+                                <p>完成情况</p>
+                                <el-select v-model="search3" size="mini" placeholder="请选择">
+                                    <el-option v-for="item in isAccomplish" :key="item.value" :label="item.label"
+                                        :value="item.value">
+                                    </el-option>
+                                </el-select>
+                            </template>
+                            <template slot-scope="scope">
+                                <p v-if="scope.row.accomplish == 'true'" style="color: green;">已完成</p>
+                                <p v-if="scope.row.accomplish == 'false'" style="color: red;">未完成</p>
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="相关文件导出" width="700">
                             <template slot-scope="scope">
 
                                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
@@ -116,7 +142,18 @@ export default {
             //表格数据
             tableData: [],
             //表格数据筛选控件
+            isAccomplish: [
+                {
+                    value: 'true',
+                    label: '已完成'
+                }, {
+                    value: 'false',
+                    label: '未完成'
+                }
+            ],
             search: "",
+            search2: "",
+            search3: "",
 
         }
     },
@@ -133,7 +170,6 @@ export default {
         //点击课程选择框
         focusOnSelect() {
             this.ischoose = false;
-            this.currentCourse = "";
         },
         getCurrentCourseExam() {
             // this.fullscreenLoading = true;
@@ -142,7 +178,7 @@ export default {
         },
         //获取当前用户的管理专业的所有课程名称
         getCourseByMajor() {
-            api.get("/manager/" + this.major + "/getCourseByMajor", "", (resp) => {
+            api.post("/manager/getCourseByMajor", { major: this.major }, (resp) => {
                 this.tableData = resp.data.data;
             })
         },
@@ -150,6 +186,11 @@ export default {
         handleExportReport(courseId, type) {
             window.location.href = global.BaseUrl + "/report/" + courseId + "/1/" + type;
         },
+
+        //多选事件
+        handleSelectionChange(a) {
+            console.log(a);
+        }
     },
     mounted() {
 

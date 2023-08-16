@@ -32,9 +32,9 @@
                                 <el-dropdown-item command="signOut">退出</el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
-                        <span style="color: white;;">
+                        <!-- <span style="color: white;;">
                             <i class="el-icon-switch-button" style="margin-left: 15px;" @click="signOut()"></i>
-                        </span>
+                        </span> -->
                     </div>
                 </el-col>
             </el-row>
@@ -231,8 +231,6 @@ export default {
     name: "MainPage",
     data() {
         return {
-            currentCourse: "",
-            getId: "",
             activeIndex: 1,
         }
     },
@@ -250,11 +248,6 @@ export default {
             if (goto) {
                 this.goto(goto);
             }
-        },
-        getCourse() {
-            api.get("/courseInfo/" + this.getId, "", (resp1) => {
-                this.currentCourse = resp1.data.data.courseName;
-            })
         },
         goto(url) {
             this.$router.push({ path: '/MainPage/' + url });
@@ -287,12 +280,6 @@ export default {
         }
     },
     mounted() {
-        this.getId = localStorage.getItem('courseId')
-        this.getCourse();
-        // this.username = localStorage.getItem("TeacherName");
-        // this.id = localStorage.getItem('isadmin')
-        // // this.$router.push({ path: '/MainPage/welcome' });
-        // this.isadmin = localStorage.getItem('Isadmin');
     },
 
 }

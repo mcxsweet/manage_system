@@ -52,6 +52,7 @@ export default {
             let url = global.runTiemPath + "/courseInfo/" + this.major + "/indicatorsPDF";
             axios.get(url, { responseType: "blob" }).then((response) => {
                 if (!response.headers['content-type'].includes("application/pdf")) {
+                    this.fullscreenLoading = false;
                     return;
                 }
                 this.showPDF = true
