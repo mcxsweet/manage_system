@@ -56,6 +56,11 @@
                                 </el-form>
                             </template>
                         </el-table-column>
+                        <el-table-column label="操作" width="100" align="center">
+                            <template slot-scope="scope">
+                                <el-button type="primary" @click="downloadZip(scope.row.id)">导出</el-button>
+                            </template>
+                        </el-table-column>
                         <el-table-column label="课程名称" width="200" prop="courseName" align="center">
                             <template slot="header">
                                 <p>课程名称</p>
@@ -89,13 +94,12 @@
                         </el-table-column>
                         <el-table-column label="相关文件导出" width="700">
                             <template slot-scope="scope">
-
                                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                                    @click="handleExportReport(scope.row.id, 'analyse')">课程目标达成评价分析报告</el-button>
+                                    @click="showPDFOnline(scope.row.id, 1)">课程目标达成评价分析报告</el-button>
                                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                                    @click="handleExportReport(scope.row.id, 'analyse3')">课程试卷分析报告</el-button>
+                                    @click="showPDFOnline(scope.row.id, 2)">课程试卷分析报告</el-button>
                                 <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                                    @click="handleExportReport(scope.row.id, 'analyse4')">课程教学小结表</el-button>
+                                    @click="showPDFOnline(scope.row.id, 3)">课程教学小结表</el-button>
                             </template>
 
                         </el-table-column>
@@ -107,6 +111,12 @@
             <el-result style="width: 100vw;height: 300px;" icon="warning" title="权限不足访问拦截" subTitle="请返回">
             </el-result>
         </el-container>
+
+        <el-drawer :visible.sync="showPDF" direction="btt" size="90%">
+            <div v-loading="loading" style="height: 100vh;">
+                <embed :src="pdfUrl" type="application/pdf" width="100%" height="100%" />
+            </div>
+        </el-drawer>
 
     </el-container>
 </template>
@@ -155,6 +165,10 @@ export default {
             search2: "",
             search3: "",
 
+            //展示pdf
+            showPDF: false,
+            loading: true,
+
         }
     },
     computed: {
@@ -190,7 +204,31 @@ export default {
         //多选事件
         handleSelectionChange(a) {
             console.log(a);
-        }
+        },
+        showPDFOnline(courseId, type) {
+            this.showPDF = true;
+            this.getPDF(courseId, type);
+        },
+
+        //获取pdf
+        getPDF(courseId, type) {
+            this.loading = true;
+            let url = global.runTiemPath + "/manager/" + courseId + "/" + type + "/file";
+            axios.get(url, { responseType: 'blob' })
+                .then((response) => {
+                    // 将响应数据转换为Blob对象
+                    const text = new Blob([response.data], { type: 'application/pdf' });
+
+                    // 生成URL，将其分配给嵌入元素的src属性
+                    this.pdfUrl = URL.createObjectURL(text);
+                    this.loading = false;
+                });
+        },
+
+        // 下载zip
+        downloadZip(courseId) {
+            window.location.href = global.BaseUrl + "/manager/" + courseId + "/downloadZip";
+        },
     },
     mounted() {
 

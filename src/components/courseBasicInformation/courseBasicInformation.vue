@@ -2,7 +2,7 @@
     <el-container>
         <el-header style="background-color: #fff;height: 50px;">
             <el-row>
-                <el-button type="primary" @click="isShow = !isShow" v-if="isadmin == 0">添加课程</el-button>
+                <el-button type="primary" @click="isShow = !isShow">添加课程</el-button>
                 <el-button type="success" plain @click="isShowSearch = !isShowSearch">筛选</el-button>
                 <el-button type="primary" @click="over()" v-show="isover">筛选完毕</el-button>
             </el-row>
@@ -90,8 +90,6 @@
                         <el-option value="专业必修课"></el-option>
                     </el-select>
                 </el-form-item>
-
-
                 <el-form-item label="理论学时" prop="theoreticalHours">
                     <el-input v-model="FormData.theoreticalHours"></el-input>
                 </el-form-item>
@@ -298,7 +296,7 @@ export default {
         //初始化学期表格
         initDataOptions() {
             for (let i = 0; i < 10; i++) {
-                this.DataOptions.push(new Date().getFullYear() - 3 + i);
+                this.DataOptions.push(new Date().getFullYear() - 5 + i);
             }
         },
         //跳转函数
@@ -321,7 +319,6 @@ export default {
                 }
             })
         },
-
         //点击搜索内容
         search() {
             this.isShowSearch = !this.isShowSearch;
@@ -425,6 +422,7 @@ export default {
                         });
                     }
                 })
+                this.FormData.indicatorPoints = JSON.parse(this.FormData.indicatorPoints);
             }).catch(() => {
                 this.$message({
                     type: 'info',
@@ -453,6 +451,7 @@ export default {
         //自动填充选择的课程的基本信息
         autoGenerate() {
             api.get("/courseInfo/" + this.FormData.courseName + "/autoGenerate", "", (resp) => {
+                resp.data.data.id = "";
                 this.FormData = resp.data.data;
                 this.FormData.classroomTeacher = localStorage.getItem("TeacherName");
             })

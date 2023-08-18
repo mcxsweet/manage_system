@@ -19,6 +19,8 @@
 
     <el-main v-show="ischoose">
       <el-card>
+        <span style="color:red">* 注意: 若课程基本信息的指标点编号有变动，则必须同步修改课程考核评价方式子项目设置中对应的指标点。</span>
+
         <el-table :data="examItemArray" class="table" :border="true" style="width: 100%" default-expand-all="true"
           :header-cell-style="tableHeader">
 

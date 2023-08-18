@@ -82,6 +82,8 @@
                     </el-select>
                 </el-form-item>
             </el-form>
+            <span style="color:red">* 注意: 如需修改指标点编号，则必须同步修改课程考核评价方式子项目设置中对应的指标点。</span>
+
 
         </el-main>
         <el-footer>
@@ -134,7 +136,7 @@ export default {
     methods: {
         initDataOptions() {
             for (let i = 0; i < 10; i++) {
-                this.DataOptions.push(new Date().getFullYear() - 3 + i);
+                this.DataOptions.push(new Date().getFullYear() - 5 + i);
             }
         },
         goto(url) {

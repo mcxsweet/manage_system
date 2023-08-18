@@ -770,21 +770,14 @@ export default {
     mounted() {
         this.getMessage();
         this.getId = localStorage.getItem('courseId');
-        if (this.getId != "") {
-            this.currentId = this.getId;
-            api.get("/courseInfo/" + this.getId, "", (resp) => {
-                this.currentCourse = resp.data.data.courseName;
-            })
+
+        this.currentId = this.getId;
+        this.currentCourse = localStorage.getItem('courseName');
+        if (this.currentId && this.currentCourse) {
             this.ischoose = true;
-            this.init();
         }
-        if (this.$route.query.id) {
-            localStorage.setItem('courseId', this.$route.query.id);
-            this.getId = localStorage.getItem('courseId');
-            this.currentId = this.$route.query.id;
-            this.getCurrentCourseExam();
-            this.isReturn = true
-        }
+        this.init();
+
     },
 }
 </script>
