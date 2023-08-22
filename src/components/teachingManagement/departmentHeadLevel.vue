@@ -42,7 +42,7 @@
                                     <span>{{ props.row.className }}</span>
                                 </el-form-item>
                                 <el-form-item label="学期">
-                                    <span>{{ props.row.termStart }}-{{ props.row.termStart }}.{{ props.row.term }}</span>
+                                    <span>{{ props.row.termStart }}-{{ props.row.termEnd }}.{{ props.row.term }}</span>
                                 </el-form-item>
                                 <el-form-item label="所选教材">
                                     <span>{{ props.row.textBook }}</span>

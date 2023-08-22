@@ -75,7 +75,7 @@
                         </el-table-column>
                         <el-table-column label="学期" width="120" align="center">
                             <template slot-scope="scope">
-                                <p>{{ scope.row.termStart }}-{{ scope.row.termStart }}.{{ scope.row.term }}</p>
+                                <p>{{ scope.row.termStart }}-{{ scope.row.termEnd }}.{{ scope.row.term }}</p>
                             </template>
                         </el-table-column>
                         <el-table-column label="完成情况" width="120" align="center">

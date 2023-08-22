@@ -99,10 +99,7 @@
             <template slot-scope="scope2">
               <el-select v-model="scope2.row.courseTarget" :multiple="true" v-show="!scope2.row.isCourseTarget">
                 <el-option v-for="item in courseTargetList" :key="item.id" :value="item.targetName">
-                  <span style="float: left">{{ item.targetName }}</span>
-                  <span style="margin-left: 1vh; float: left; color: #8492a6; font-size: 13px">
-                    {{ item.courseTarget }}
-                  </span>
+                  <span style=" float: left">{{ item.targetName }}</span>
                 </el-option>
               </el-select>
               <div v-for="(item, index) in scope2.row.courseTarget" :key="index" v-show="scope2.row.isCourseTarget">
