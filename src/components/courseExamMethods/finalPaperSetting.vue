@@ -297,7 +297,7 @@ export default {
             //添加小题表单控件
             isAddDetail: false,
             //添加小题表单
-            addDetailForm: { titleNumber: 0, score: 0, isshow: false },
+            addDetailForm: { titleNumber: "", score: "", isshow: false },
             //修改小题表单控件
 
             //修改小题表单
