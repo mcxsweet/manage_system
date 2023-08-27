@@ -18,7 +18,7 @@
                     <!-- <el-input style="margin: 5px;width: 300px;" v-model="search" placeholder="输入课程名进行搜索" />
                     <el-input style="margin: 5px;width: 300px;" v-model="search2" placeholder="输入课程名进行搜索" /> -->
                     <el-table
-                        :data="tableData.filter(data => !search && !search2 && !search3 || data.courseName.includes(search) && data.classroomTeacher.includes(search2) && data.accomplish == search3)"
+                        :data="tableData.filter(data => !search && !search2 && !search3 || data.courseName.includes(search) && data.classroomTeacher.includes(search2) && (data.accomplish == search3 || !search3))"
                         style="width: 100%" tooltip-effect="dark" @selection-change="handleSelectionChange">
                         <el-table-column type="selection" width="50">
                         </el-table-column>
@@ -81,7 +81,7 @@
                         <el-table-column label="完成情况" width="120" align="center">
                             <template slot="header">
                                 <p>完成情况</p>
-                                <el-select v-model="search3" size="mini" placeholder="请选择">
+                                <el-select v-model="search3" size="mini" clearable placeholder="请选择">
                                     <el-option v-for="item in isAccomplish" :key="item.value" :label="item.label"
                                         :value="item.value">
                                     </el-option>
