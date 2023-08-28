@@ -14,7 +14,7 @@
         </el-header>
         <el-main v-show="ischoose">
             <el-card>
-                <h2>教学秘书管理</h2>
+                <h2>教学大纲管理</h2>
             </el-card>
         </el-main>
     </el-container>

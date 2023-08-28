@@ -53,7 +53,8 @@ import finalComprehensiveTable from '@/components/studentScoreManager/finalCompr
 //教学管理
 import collegeLevel from '@/components/teachingManagement/collegeLevel'
 import departmentHeadLevel from '@/components/teachingManagement/departmentHeadLevel'
-import teachingSecretaryLevel from '@/components/teachingManagement/teachingSecretaryLevel'
+import teacherManage from '@/components/teachingManagement/teacherManage'
+import syllabusManage from '@/components/teachingManagement/syllabusManage'
 
 
 import { Message } from "element-ui";
@@ -201,17 +202,24 @@ const router = new VueRouter({
                     }
                 },
                 {
+                    path: 'teacherManage', //教师管理
+                    component: teacherManage,
+                    meta: {
+                        isAdmin: 2
+                    }
+                },
+                {
+                    path: 'syllabusManage', //教学大纲管理
+                    component: syllabusManage,
+                    meta: {
+                        isAdmin: 2
+                    }
+                },
+                {
                     path: 'departmentHeadLevel',  //系主任层面
                     component: departmentHeadLevel,
                     meta: {
                         isAdmin: 1
-                    }
-                },
-                {
-                    path: 'teachingSecretaryLevel',  //教学秘书层面
-                    component: teachingSecretaryLevel,
-                    meta: {
-                        isAdmin: 2 
                     }
                 },
             ]

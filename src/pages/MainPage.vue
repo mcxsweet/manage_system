@@ -194,22 +194,14 @@
                                     <template slot="title"><i class="el-icon-caret-right"></i>学院工作</template>
                                     <el-menu-item-group>
                                         <el-menu-item index="1-1" @click="goto('collegeLevel')">查看完成情况</el-menu-item>
+                                        <el-menu-item index="1-2" @click="goto('teacherManage')">教师管理</el-menu-item>
+                                        <el-menu-item index="1-3" @click="goto('syllabusManage')">教学大纲管理</el-menu-item>
                                     </el-menu-item-group>
                                 </el-submenu>
-
-                                <!-- <el-submenu index="1-2">
-                                    <template slot="title"><i class="el-icon-caret-right"></i>教学秘书工作</template>
-                                    <el-menu-item-group>
-                                        <el-menu-item index="1-2"
-                                            @click="goto('teachingSecretaryLevel')">查看完成情况</el-menu-item>
-                                        <el-menu-item index="1-2-1" @click="goto('editAnalyseReport')">导出相关材料</el-menu-item>
-                                    </el-menu-item-group>
-                                </el-submenu> -->
-
                                 <el-submenu index="1-3">
                                     <template slot="title"><i class="el-icon-caret-right"></i>系主任工作</template>
                                     <el-menu-item-group>
-                                        <el-menu-item index="1-3" @click="goto('departmentHeadLevel')">查看完成情况</el-menu-item>
+                                        <el-menu-item index="1-4" @click="goto('departmentHeadLevel')">查看完成情况</el-menu-item>
                                     </el-menu-item-group>
                                 </el-submenu>
                             </el-menu-item-group>
