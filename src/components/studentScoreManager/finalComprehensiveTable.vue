@@ -17,9 +17,15 @@
 
       <!-- 表格展示 -->
       <div>
-        <el-button type="primary" @click="open()" style="margin: 1vh;">成绩分析</el-button>
-        <el-button type="primary" @click="openAchievement()" style="margin: 1vh;">课程目标达成情况</el-button>
-        <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
+        <el-button type="danger" @click="open()" style="margin: 1vh;">成绩分析</el-button>
+        <span style="color: red;">
+          <i class="el-icon-back"></i>
+          (必须操作)在期末成绩成功录入后点击
+        </span>
+        <div>
+          <el-button type="primary" @click="openAchievement()" style="margin: 1vh;">课程目标达成情况</el-button>
+          <el-button type="primary" @click="exportXLS()" style="margin: 1vh;">导出XLS</el-button>
+        </div>
 
         <el-drawer title="成绩分析" :visible.sync="isShow" direction="btt" size="90%">
           <div v-loading="loading2 | loading" style="margin-top: 2vw;">

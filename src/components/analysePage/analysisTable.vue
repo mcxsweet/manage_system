@@ -31,8 +31,12 @@
                     @click="handleExportReport('analyse4')">课程教学小结表</el-button>
 
                 <p class="title">分析报告完成情况确认</p>
-                <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
+                <el-button class="BottonStyle" style="margin-left: 10px;" type="danger"
                     @click="updateStatus()">分析报告完成情况确认</el-button>
+                <span style="color: red;">
+                    <i class="el-icon-back"></i>
+                    (必须操作)操作后学院才能看到结果
+                </span>
 
             </div>
 
