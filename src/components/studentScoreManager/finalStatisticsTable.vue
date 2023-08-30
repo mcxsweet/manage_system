@@ -191,6 +191,8 @@ export default {
             api.get("/student/" + this.currentId + "/getFinalExamPaper", "", (resp) => {
                 if (resp.data.data == null) {
                     this.isEmpty = true;
+                } else if (!resp.data.flag) {
+                    this.isEmpty = true;
                 } else {
                     this.isEmpty = false;
                     for (let i = 0; i < resp.data.data.length; i++) {
@@ -209,7 +211,6 @@ export default {
                         resp.data.data[index].ised = false;
                     }
                     this.tableData = resp.data.data;
-                    this.ischoose = true;
                 }
                 this.fullscreenLoading = false;
             })
@@ -442,6 +443,7 @@ export default {
 
         if (this.getId != "") {
             this.fullscreenLoading = true;
+            this.ischoose = true;
 
             this.examPper = [];
             this.getExamPaper();
