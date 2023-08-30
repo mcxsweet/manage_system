@@ -1,7 +1,7 @@
 <template>
     <el-container>
         <el-header style="background-color: #fff;height: 50px;">
-            <el-select v-if="reload" v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
+            <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
                 <el-option v-for="(item, index) in courseList" :key="item.id" :label="item.courseName" :value="index">
                     <span style="float: left">{{ item.courseName }}</span>
                     <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">
@@ -176,7 +176,6 @@ export default {
             showdialog: false,
             showdialog2: false,
             showUpload: false,
-            reload: false,
 
             //试卷列
             examPper: [],
@@ -211,8 +210,8 @@ export default {
                     }
                     this.tableData = resp.data.data;
                     this.ischoose = true;
-                    this.fullscreenLoading = false;
                 }
+                this.fullscreenLoading = false;
             })
         },
         tableHeader({ row, column, rowIndex, columnIndex }) {
@@ -448,7 +447,6 @@ export default {
             this.getExamPaper();
             this.getStudentScore();
         }
-        this.reload = true;
     }
 }
 </script>
