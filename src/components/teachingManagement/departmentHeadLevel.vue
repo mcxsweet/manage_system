@@ -1,22 +1,14 @@
 <template>
     <el-container>
-        <!-- <el-header style="background-color: #fff;height: 50px;">
-            <el-select v-model="currentCourse" placeholder="请选择课程" @focus="focusOnSelect()">
-                <el-option v-for="(item, index) in courseList" :key="index" :label="item.courseName" :value="index">
-                    <span style="float: left">{{ item.courseName }}</span>
-                    <span style="margin-left: 1vh; float: right; color: #8492a6; font-size: 13px">
-                        {{ item.termStart }}-{{ item.termEnd }}.{{ item.term }}</span>
-                </el-option>
-            </el-select>
-            <el-button icon="el-icon-search" style="margin: 10px" @click="showCurrentCourse()">确定</el-button>
-
-            <el-empty v-if="!ischoose" description="请先选择课程"></el-empty>
-        </el-header> -->
         <el-main v-show="ischoose">
             <el-card>
                 <h3>{{ department }} 教学管理</h3>
-                <el-input style="margin: 5px;width: 300px;" v-model="search" placeholder="输入课程名进行搜索" />
-                <el-table :data="tableData.filter(data => !search || data.courseName.includes(search))" style="width: 100%">
+
+                <el-table
+                    :data="tableData.filter(data => !search && !search2 && !search3 || data.courseName.includes(search) && data.classroomTeacher.includes(search2) && (data.accomplish == search3 || !search3))"
+                    style="width: 100%" tooltip-effect="dark" @selection-change="handleSelectionChange">
+                    <el-table-column type="selection" width="50">
+                    </el-table-column>
                     <el-table-column type="expand">
                         <template slot-scope="props">
                             <el-form label-position="left" inline class="demo-table-expand">
@@ -42,7 +34,8 @@
                                     <span>{{ props.row.className }}</span>
                                 </el-form-item>
                                 <el-form-item label="学期">
-                                    <span>{{ props.row.termStart }}-{{ props.row.termEnd }}.{{ props.row.term }}</span>
+                                    <span>{{ props.row.termStart }}-{{ props.row.termStart }}.{{ props.row.term
+                                    }}</span>
                                 </el-form-item>
                                 <el-form-item label="所选教材">
                                     <span>{{ props.row.textBook }}</span>
@@ -50,36 +43,62 @@
                             </el-form>
                         </template>
                     </el-table-column>
-                    <el-table-column label="课程名称" width="200" prop="courseName" sortable>
-                    </el-table-column>
-                    <el-table-column label="教师" width="100" prop="classroomTeacher" sortable>
-                    </el-table-column>
-                    <el-table-column label="学期" width="120">
+                    <el-table-column label="操作" width="100" align="center">
                         <template slot-scope="scope">
-                            <p>{{ scope.row.termStart }}-{{ scope.row.termStart }}.{{ scope.row.term }}</p>
+                            <el-button type="primary" @click="downloadZip(scope.row.id)">导出</el-button>
                         </template>
                     </el-table-column>
-                    <el-table-column label="完成情况" width="100">
+                    <el-table-column label="课程名称" width="200" prop="courseName" align="center">
+                        <template slot="header">
+                            <p>课程名称</p>
+                            <el-input v-model="search" size="mini" placeholder="输入关键字搜索" />
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="教师" width="100" prop="classroomTeacher" align="center">
+                        <template slot="header">
+                            <p>教师</p>
+                            <el-input v-model="search2" size="mini" placeholder="输入搜索" />
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="学期" width="120" align="center">
                         <template slot-scope="scope">
-                            <p v-if="scope.row.accomplish" style="color: green;">已完成</p>
-                            <p v-if="!scope.row.accomplish" style="color: red;">未完成</p>
+                            <p>{{ scope.row.termStart }}-{{ scope.row.termEnd }}.{{ scope.row.term }}</p>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="完成情况" width="120" align="center">
+                        <template slot="header">
+                            <p>完成情况</p>
+                            <el-select v-model="search3" size="mini" clearable placeholder="请选择">
+                                <el-option v-for="item in isAccomplish" :key="item.value" :label="item.label"
+                                    :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </template>
+                        <template slot-scope="scope">
+                            <p v-if="scope.row.accomplish == 'true'" style="color: green;">已完成</p>
+                            <p v-if="scope.row.accomplish == 'false'" style="color: red;">未完成</p>
                         </template>
                     </el-table-column>
                     <el-table-column label="相关文件导出" width="700">
                         <template slot-scope="scope">
-
                             <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                                @click="handleExportReport(scope.row.id, 'analyse')">课程目标达成评价分析报告</el-button>
+                                @click="showPDFOnline(scope.row.id, 1)">课程目标达成评价分析报告</el-button>
                             <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                                @click="handleExportReport(scope.row.id, 'analyse3')">课程试卷分析报告</el-button>
+                                @click="showPDFOnline(scope.row.id, 2)">课程试卷分析报告</el-button>
                             <el-button class="BottonStyle" style="margin-left: 10px;" type="success"
-                                @click="handleExportReport(scope.row.id, 'analyse4')">课程教学小结表</el-button>
+                                @click="showPDFOnline(scope.row.id, 3)">课程教学小结表</el-button>
                         </template>
 
                     </el-table-column>
                 </el-table>
             </el-card>
         </el-main>
+
+        <el-drawer :visible.sync="showPDF" direction="btt" size="90%">
+            <div v-loading="loading" style="height: 100vh;">
+                <embed :src="pdfUrl" type="application/pdf" width="100%" height="100%" />
+            </div>
+        </el-drawer>
     </el-container>
 </template>
 
@@ -100,7 +119,22 @@ export default {
             //表格数据
             tableData: [],
             //表格数据筛选控件
+            isAccomplish: [
+                {
+                    value: 'true',
+                    label: '已完成'
+                }, {
+                    value: 'false',
+                    label: '未完成'
+                }
+            ],
             search: "",
+            search2: "",
+            search3: "",
+
+            //展示pdf
+            showPDF: false,
+            loading: true,
         }
     },
     methods: {
@@ -138,17 +172,28 @@ export default {
                     break;
             }
         },
-        //导出相关报告
-        handleExportReport(courseId, type) {
-            window.location.href = global.BaseUrl + "/report/" + courseId + "/1/" + type;
-            // api.get("/report/" + courseId + "/1/" + type, "", (resp) => {
-            //     if (resp.data.flag) {
-            //         this.$message({
-            //             type: 'success',
-            //             message: resp.data.message
-            //         });
-            //     }
-            // })
+        // 下载该课程相关资料zip
+        downloadZip(courseId) {
+            window.location.href = global.BaseUrl + "/manager/" + courseId + "/downloadZip";
+        },
+        showPDFOnline(courseId, type) {
+            this.showPDF = true;
+            this.getPDF(courseId, type);
+        },
+
+        //获取pdf
+        getPDF(courseId, type) {
+            this.loading = true;
+            let url = global.runTiemPath + "/manager/" + courseId + "/" + type + "/file";
+            axios.get(url, { responseType: 'blob' })
+                .then((response) => {
+                    // 将响应数据转换为Blob对象
+                    const text = new Blob([response.data], { type: 'application/pdf' });
+
+                    // 生成URL，将其分配给嵌入元素的src属性
+                    this.pdfUrl = URL.createObjectURL(text);
+                    this.loading = false;
+                });
         },
     },
     mounted() {
