@@ -23,3 +23,6 @@ pnpm-debug.log*
 *.sw?
 
 testPage/**
+
+package-lock.json
+package.json
