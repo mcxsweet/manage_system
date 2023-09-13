@@ -8,15 +8,15 @@
                     </el-option>
                 </el-select>
 
-                <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()">确定</el-button>
+                <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentMajor()">确定</el-button>
                 <el-empty v-if="!ischoose" description="请先选择专业"></el-empty>
             </el-header>
 
             <el-main v-if="ischoose">
                 <el-card>
                     <h3>{{ major }} 教学管理</h3>
-                    <!-- <el-input style="margin: 5px;width: 300px;" v-model="search" placeholder="输入课程名进行搜索" />
-                    <el-input style="margin: 5px;width: 300px;" v-model="search2" placeholder="输入课程名进行搜索" /> -->
+                    <el-button type="primary" style="margin-left: 10px;margin-top: 10px;"
+                        @click="batchDownload()">批量导出</el-button>
                     <el-table
                         :data="tableData.filter(data => !search && !search2 && !search3 || data.courseName.includes(search) && data.classroomTeacher.includes(search2) && (data.accomplish == search3 || !search3))"
                         style="width: 100%" tooltip-effect="dark" @selection-change="handleSelectionChange">
@@ -169,6 +169,9 @@ export default {
             showPDF: false,
             loading: true,
 
+            //当前选中的数据的数组
+            SelectedArray: [],
+
         }
     },
     computed: {
@@ -185,10 +188,11 @@ export default {
         focusOnSelect() {
             this.ischoose = false;
         },
-        getCurrentCourseExam() {
+        getCurrentMajor() {
             // this.fullscreenLoading = true;
             this.getCourseByMajor();
             this.ischoose = true;
+            localStorage.setItem("currentMajor", this.major);
         },
         //获取当前用户的管理专业的所有课程名称
         getCourseByMajor() {
@@ -203,7 +207,8 @@ export default {
 
         //多选事件
         handleSelectionChange(a) {
-            console.log(a);
+            this.SelectedArray = a;
+            console.log(this.SelectedArray);
         },
         showPDFOnline(courseId, type) {
             this.showPDF = true;
@@ -229,9 +234,22 @@ export default {
         downloadZip(courseId) {
             window.location.href = global.BaseUrl + "/manager/" + courseId + "/downloadZip";
         },
+
+        batchDownload() {
+            for (let i = 0; i < this.SelectedArray.length; i++) {
+                const element = this.SelectedArray[i];
+
+                setTimeout(() => {
+                    this.downloadZip(element.id);
+                }, 20000);
+            }
+        }
     },
     mounted() {
-
+        this.major = localStorage.getItem("currentMajor");
+        if (this.major) {
+            this.getCurrentMajor();
+        }
     },
 }
 </script>
