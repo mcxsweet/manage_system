@@ -3,19 +3,10 @@
     <!-- <el-header style="background-color: #fff; height: 50px"> </el-header> -->
 
     <el-main>
-      <el-button
-        class="ButtonStyle"
-        type="primary"
-        @click="isShowAdd = !isShowAdd"
-        >添加用户</el-button
-      >
+      <el-button class="ButtonStyle" type="primary" @click="isShowAdd = !isShowAdd">添加用户</el-button>
 
       <!-- 添加用户信息 -->
-      <el-dialog
-        title="添加用户信息"
-        :visible.sync="isShowAdd"
-        style="text-align: center"
-      >
+      <el-dialog title="添加用户信息" :visible.sync="isShowAdd" style="text-align: center">
         <el-form label-width="150px" class="demo-ruleForm">
           <el-form-item label="账号名称">
             <el-input v-model="addFormData.name"></el-input>
@@ -53,107 +44,56 @@
         </div>
       </el-dialog>
 
-      <el-table
-        v-loading="loading"
-        :data="
-          tableData.filter(
-            (data) =>
-              !search || data.name.toLowerCase().includes(search.toLowerCase())
-          )
-        "
-        stripe
-        border
-        style="width: 100%"
-        height="400"
-      >
+      <el-table v-loading="loading" :data="tableData.filter((data) =>
+        !search || data.name.toLowerCase().includes(search.toLowerCase()))" stripe border style="width: 100%"
+        height="800">
         <el-table-column>
-          // eslint-disable-next-line vue/no-unused-vars, vue/no-unused-vars
           <template slot="header">
-            <el-input
-              v-model="search"
-              size="mini"
-              placeholder="请输入账号名称"
-            />
+            <el-input v-model="search" size="mini" placeholder="请输入账号名称" />
           </template>
           <el-table-column label="序号" width="50px" fixed>
             <template slot-scope="scope">
               <span>{{ scope.$index + 1 }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="ID" width="60px">
-            <template slot-scope="scope">
-              <el-input
-                v-model="scope.row.id"
-                v-show="scope.row.ised"
-              ></el-input>
-              <span v-show="!scope.row.ised">{{ scope.row.id }}</span>
-            </template>
-          </el-table-column>
           <el-table-column label="账号名称" width="150">
             <template slot-scope="scope">
-              <el-input
-                v-model="scope.row.name"
-                v-show="scope.row.ised"
-              ></el-input>
+              <el-input v-model="scope.row.name" v-show="scope.row.ised"></el-input>
               <span v-show="!scope.row.ised">{{ scope.row.name }}</span>
             </template>
           </el-table-column>
           <el-table-column label="账号密码" width="150">
             <template slot-scope="scope">
-              <el-input
-                v-model="scope.row.password"
-                v-show="scope.row.ised"
-              ></el-input>
+              <el-input v-model="scope.row.password" v-show="scope.row.ised"></el-input>
               <span v-show="!scope.row.ised">{{ scope.row.password }}</span>
             </template>
           </el-table-column>
           <el-table-column label="教师姓名" width="100">
             <template slot-scope="scope">
-              <el-input
-                v-model="scope.row.teacherName"
-                v-show="scope.row.ised"
-              ></el-input>
+              <el-input v-model="scope.row.teacherName" v-show="scope.row.ised"></el-input>
               <span v-show="!scope.row.ised">{{ scope.row.teacherName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="权限" width="200">
             <template slot-scope="scope">
-              <el-input
-                v-model="scope.row.isAdmin"
-                v-show="scope.row.ised"
-              ></el-input>
-              <span v-show="!scope.row.ised">{{ scope.row.isAdmin }}</span>
+              <el-select v-model="scope.row.isAdmin" v-show="scope.row.ised" placeholder="请选择专业">
+                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                </el-option>
+              </el-select>
+              <span v-show="!scope.row.ised">{{ options[scope.row.isAdmin].label }}</span>
             </template>
           </el-table-column>
           <el-table-column label="所属院系" width="220">
             <template slot-scope="scope">
-              <el-input
-                v-model="scope.row.department"
-                v-show="scope.row.ised"
-              ></el-input>
+              <el-input v-model="scope.row.department" v-show="scope.row.ised"></el-input>
               <span v-show="!scope.row.ised">{{ scope.row.department }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="220" fixed="right">
             <template slot-scope="scope">
-              <el-button
-                type="primary"
-                size="mini"
-                @click="editUser(scope.$index)"
-                >编辑</el-button
-              >
-              <el-button
-                type="success"
-                size="mini"
-                @click="saveUser(scope.$index)"
-                >保存</el-button
-              >
-              <el-button
-                type="danger"
-                size="mini"
-                @click="deleteUser(scope.row)"
-                >删除</el-button
-              >
+              <el-button type="primary" size="mini" @click="editUser(scope.$index)">编辑</el-button>
+              <el-button type="success" size="mini" @click="saveUser(scope.$index)">保存</el-button>
+              <el-button type="danger" size="mini" @click="deleteUser(scope.row)">删除</el-button>
             </template>
           </el-table-column>
         </el-table-column>
@@ -181,6 +121,21 @@ export default {
       //表格数据
       tableData: [],
       loading: false,
+
+      options: [
+        {
+          value: '0',
+          label: '教师'
+        },
+        {
+          value: '1',
+          label: '系主任'
+        },
+        {
+          value: '2',
+          label: '学院领导'
+        }
+      ]
     };
   },
   methods: {
