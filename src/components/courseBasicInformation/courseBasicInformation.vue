@@ -62,6 +62,7 @@
                         <el-option value="计算机科学与技术"></el-option>
                         <el-option value="电子信息工程"></el-option>
                         <el-option value="数据科学与大数据技术"></el-option>
+                        <el-option value="通信工程"></el-option>
                     </el-select>
                 </el-form-item>
 
