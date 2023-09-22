@@ -66,7 +66,11 @@ export default {
             }, {
                 value: 'DataScienceAndDataTechnology',
                 label: '数据科学与大数据技术'
-            }],
+            }, {
+                value: 'CommunicationEngineering',
+                label: '通信工程'
+            }
+            ],
 
             major: "",
             uploadData: {
