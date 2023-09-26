@@ -42,7 +42,11 @@ export default {
             }, {
                 value: '数据科学与大数据技术',
                 label: '数据科学与大数据技术'
-            }],
+            }, {
+                value: '通信工程',
+                label: '通信工程'
+            }
+            ],
             major: "",
         }
 

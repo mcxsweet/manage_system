@@ -4,12 +4,12 @@
         <el-header>
             <el-row>
                 <el-col :span="6">
-                    <div style="display: flex;align-items: center;height: 60px;">
+                    <div style="align-items: center;height: 60px; min-width: 100px;">
 
                         <p style="font-family: STXingkai;font-size: 30px;color: white;">工程教育专业认证系统</p>
                     </div>
                 </el-col>
-                <el-col :span="16">
+                <el-col :span="16" style="white-space: nowrap; /* 防止文本换行 */overflow-x: scroll;overflow: hidden;">
                     <div>
                         <button @click="handleSelect(1, 'homePage')" class="tableBarButton">首页</button>
                         <button @click="handleSelect(1, 'educationProgram')" class="tableBarButton">专业材料</button>
@@ -20,7 +20,7 @@
                     </div>
                 </el-col>
                 <el-col :span="2">
-                    <div style="font-size: 20px;text-align: right;">
+                    <div style="font-size: 20px;text-align: right;float: ;">
                         <el-dropdown size="medium" @command="handleCommand" trigger="click">
                             <span style="color: white;">
                                 <i class="el-icon-user-solid" style="margin-right: 15px;"></i>
