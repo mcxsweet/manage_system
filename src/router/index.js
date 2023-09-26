@@ -55,6 +55,7 @@ import collegeLevel from '@/components/teachingManagement/collegeLevel'
 import departmentHeadLevel from '@/components/teachingManagement/departmentHeadLevel'
 import teacherManage from '@/components/teachingManagement/teacherManage'
 import syllabusManage from '@/components/teachingManagement/syllabusManage'
+import syllabusManagement from '@/components/teachingManagement/syllabusManagement'
 
 
 import { Message } from "element-ui";
@@ -62,8 +63,7 @@ import cookie from "vue-cookies"
 import store from "@/store";
 
 const router = new VueRouter({
-    routes: [
-        {
+    routes: [{
             path: "/",
             component: LoginPage
         },
@@ -78,8 +78,7 @@ const router = new VueRouter({
         {
             path: "/MainPage",
             component: MainPage,
-            children: [
-                {
+            children: [{
                     path: 'homePage',
                     component: homePage
                 },
@@ -135,25 +134,25 @@ const router = new VueRouter({
                     component: classInformation,
                 },
                 {
-                    path: 'programObjective',  //课程目标设置
+                    path: 'programObjective', //课程目标设置
                     component: programObjective
                 },
                 //专业材料查看
                 {
-                    path: 'educationProgram',  //培养方案
+                    path: 'educationProgram', //培养方案
                     component: educationProgram
                 },
                 {
-                    path: 'indicators',  //指标点
+                    path: 'indicators', //指标点
                     component: indicators
                 },
                 {
-                    path: 'syllabus',  //教学大纲
+                    path: 'syllabus', //教学大纲
                     component: syllabus
                 },
                 //教学大纲设置
                 {
-                    path: 'unUse',  //教学大纲
+                    path: 'unUse', //教学大纲
                     component: unUse
                 },
                 //学生成绩管理
@@ -185,23 +184,23 @@ const router = new VueRouter({
 
                 //分析报告
                 {
-                    path: 'editAnalyseReport',  //分析报告编辑
+                    path: 'editAnalyseReport', //分析报告编辑
                     component: editAnalyseReport
                 },
                 {
-                    path: 'editTeachingSummary',  //教学小结编辑
+                    path: 'editTeachingSummary', //教学小结编辑
                     component: editTeachingSummary
                 },
 
                 //教学管理
                 {
-                    path: 'collegeLevel',  //学院层面
+                    path: 'collegeLevel', //学院层面
                     component: collegeLevel,
                     meta: {
                         isAdmin: 2
                     }
                 },
-      
+
                 {
                     path: 'teacherManage', //教师管理
                     component: teacherManage,
@@ -217,7 +216,14 @@ const router = new VueRouter({
                     }
                 },
                 {
-                    path: 'departmentHeadLevel',  //系主任层面
+                    path: 'syllabusManagement', //教学大纲管理
+                    component: syllabusManagement,
+                    meta: {
+                        isAdmin: 2
+                    }
+                },
+                {
+                    path: 'departmentHeadLevel', //系主任层面
                     component: departmentHeadLevel,
                     meta: {
                         isAdmin: 1
@@ -228,7 +234,7 @@ const router = new VueRouter({
     ]
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach(async(to, from, next) => {
     const token = cookie.get('satoken')
 
     if (token) {
@@ -243,7 +249,7 @@ router.beforeEach(async (to, from, next) => {
                     使用方法请见 /pages/MainPage.vue
                 */
                 let user = await store.dispatch('user/getInfo')
-                // console.log(user);
+                    // console.log(user);
                 if (user.isAdmin != null) {
                     if (to.path === '/ChoicePage') {
                         if (user.isAdmin <= 2) {
@@ -295,22 +301,20 @@ export default router
 //保存原型对象的Push
 let originPush = VueRouter.prototype.push
 let originReplace = VueRouter.prototype.replace
-//重写push方法
-VueRouter.prototype.push = function (location, res, rej) {
-  if (res && rej) {
-    originPush.call(this, location, res, rej)
-  }
-  else {
-    originPush.call(this, location, () => { }, () => { })
-  }
- 
-}
-//重写replace方法
-VueRouter.prototype.replace = function (location, res, rej) {
-  if (res && rej) {
-    originReplace.call(this, location, res, rej)
-  }
-  else {
-    originReplace.call(this, location, () => { }, () => { })
-  }
+    //重写push方法
+VueRouter.prototype.push = function(location, res, rej) {
+        if (res && rej) {
+            originPush.call(this, location, res, rej)
+        } else {
+            originPush.call(this, location, () => {}, () => {})
+        }
+
+    }
+    //重写replace方法
+VueRouter.prototype.replace = function(location, res, rej) {
+    if (res && rej) {
+        originReplace.call(this, location, res, rej)
+    } else {
+        originReplace.call(this, location, () => {}, () => {})
+    }
 }
