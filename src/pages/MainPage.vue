@@ -203,6 +203,12 @@
                                     <el-menu-item-group>
                                         <el-menu-item index="1-4" @click="goto('departmentHeadLevel')">查看完成情况</el-menu-item>
                                     </el-menu-item-group>
+                                    <el-submenu index="1-5">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>专业材料管理</template>
+                                    <el-menu-item-group>
+                                      <el-menu-item index="1-6" @click="goto('syllabusManagement')">教学大纲管理</el-menu-item>
+                                    </el-menu-item-group>
+                                  </el-submenu>
                                 </el-submenu>
                             </el-menu-item-group>
                         </el-submenu>
