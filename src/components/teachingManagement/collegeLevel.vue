@@ -236,12 +236,14 @@ export default {
         },
 
         batchDownload() {
-            const object = [];
-            for (const i in this.SelectedArray) {
-                const s = this.SelectedArray[i].id;
-                object.push(s)
+            if (this.SelectedArray.length > 0) {
+                const object = [];
+                for (const i in this.SelectedArray) {
+                    const s = this.SelectedArray[i].id;
+                    object.push(s)
+                }
+                window.location.href = global.BaseUrl + "/manager/downloadZip?id="+object.toString();   
             }
-            window.location.href = global.BaseUrl + "/manager/downloadZip?id="+object.toString();
         }
     },
     mounted() {
