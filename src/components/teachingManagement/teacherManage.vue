@@ -3,9 +3,11 @@
   <el-container>
     <el-main>
       <el-button class="ButtonStyle" type="primary" @click="isShowAdd = !isShowAdd">添加用户</el-button>
+                  <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载导入模板</el-button>
       <el-button class="ButtonStyle" @click="showUpload = true" type="primary"
-        >导入教师名单</el-button
-      >
+        >导入教师名单</el-button>
+          <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoad()">下载文件导出用户名单</el-button>
+
       <!-- 上传学生名单 -->
       <el-dialog
         title="上传xls文件"
