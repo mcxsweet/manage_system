@@ -192,37 +192,38 @@
 
           </div>
 
-          <!-- 教学管理 -->
-          <div v-show="activeIndex == 5">
-            <el-submenu index="1">
-              <template slot="title"><i class="el-icon-menu"></i>教学管理</template>
-              <el-menu-item-group>
-                <el-submenu index="1-1">
-                  <template slot="title"><i class="el-icon-caret-right"></i>学院工作</template>
-                  <el-menu-item-group>
-                    <el-menu-item index="1-1" @click="goto('collegeLevel')">查看完成情况</el-menu-item>
-                    <el-menu-item index="1-2" @click="goto('teacherManage')">教师管理</el-menu-item>
-                    <el-menu-item index="1-3" @click="goto('syllabusManage')">教学大纲管理</el-menu-item>
-                  </el-menu-item-group>
-                </el-submenu>
-                <el-submenu index="1-3">
-                  <template slot="title"><i class="el-icon-caret-right"></i>系主任工作</template>
-                  <el-menu-item-group>
-                    <el-menu-item index="1-4" @click="goto('departmentHeadLevel')">查看完成情况</el-menu-item>
-                    <el-menu-item index="1-5" @click="goto('indicatorsSettings')">修改毕业要求指标点</el-menu-item>
-                  </el-menu-item-group>
-                  <el-submenu index="1-5">
-                    <template slot="title"><i class="el-icon-caret-right"></i>专业材料管理</template>
-                    <el-menu-item-group>
-                      <el-menu-item index="1-6" @click="goto('syllabusManagement')">教学大纲管理</el-menu-item>
-                    </el-menu-item-group>
-                  </el-submenu>
-                </el-submenu>
-              </el-menu-item-group>
-            </el-submenu>
-          </div>
-        </el-menu>
+                    <!-- 教学管理 -->
+                    <div v-show="activeIndex == 5">
+                        <el-submenu index="1">
+                            <template slot="title"><i class="el-icon-menu"></i>教学管理</template>
+                            <el-menu-item-group>
+                                <el-submenu index="1-1">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>学院工作</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="1-1" @click="goto('collegeLevel')">查看完成情况</el-menu-item>
+                                        <el-menu-item index="1-2" @click="goto('teacherManage')">教师管理</el-menu-item>
+                                        <el-menu-item index="1-3" @click="goto('syllabusManage')">教学大纲管理</el-menu-item>
+                                    </el-menu-item-group>
+                                </el-submenu>
+                                <el-submenu index="1-3">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>系主任工作</template>
+                                    <el-menu-item-group>
+                                        <el-menu-item index="1-4" @click="goto('departmentHeadLevel')">查看完成情况</el-menu-item>
 
+
+                                    </el-menu-item-group>
+                                    <el-submenu index="1-5">
+                                    <template slot="title"><i class="el-icon-caret-right"></i>专业材料管理</template>
+                                    <el-menu-item-group>
+                                      <el-menu-item index="1-6" @click="goto('syllabusManagement')">教学大纲管理</el-menu-item>
+                                      <el-menu-item index="1-5" @click="goto('educationProgramManagement')">专业培养方案管理</el-menu-item>
+                                    </el-menu-item-group>
+                                  </el-submenu>
+                                </el-submenu>
+                            </el-menu-item-group>
+                        </el-submenu>
+                    </div>
+                </el-menu>
       </el-aside>
       <!-- <h1 style="font-size: 50px; justify-content: space-between;text-align: center;height: 200px;">欢迎使用</h1> -->
       <router-view class="main"></router-view>

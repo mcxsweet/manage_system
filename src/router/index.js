@@ -62,6 +62,7 @@ import syllabusManagement from '@/components/teachingManagement/syllabusManageme
 import { Message } from "element-ui";
 import cookie from "vue-cookies"
 import store from "@/store";
+import educationProgramManagement from "@/components/teachingManagement/educationProgramManagement.vue";
 
 const router = new VueRouter({
     routes: [{
@@ -231,12 +232,21 @@ const router = new VueRouter({
                     }
                 },
                 {
+
+                    path:'educationProgramManagement',//系主任层面
+                    component:educationProgramManagement,
+                    meta:{
+                        isAdmin: 1
+                    }
+                }
+
                     path: 'indicatorsSettings', //系主任层面
                     component: indicatorsSettings,
                     meta: {
                         isAdmin: 1
                     }
                 },
+
             ]
         },
     ]
