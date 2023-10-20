@@ -127,6 +127,7 @@ import api from '@/api/api';
 import axios from 'axios';
 import { Loading } from 'element-ui';
 import global from '@/script/global';
+
 export default {
     data() {
         return {
@@ -208,7 +209,6 @@ export default {
         //多选事件
         handleSelectionChange(a) {
             this.SelectedArray = a;
-            console.log(this.SelectedArray);
         },
         showPDFOnline(courseId, type) {
             this.showPDF = true;
@@ -236,12 +236,13 @@ export default {
         },
 
         batchDownload() {
-            for (let i = 0; i < this.SelectedArray.length; i++) {
-                const element = this.SelectedArray[i];
-
-                setTimeout(() => {
-                    this.downloadZip(element.id);
-                }, 20000);
+            if (this.SelectedArray.length > 0) {
+                const object = [];
+                for (const i in this.SelectedArray) {
+                    const s = this.SelectedArray[i].id;
+                    object.push(s)
+                }
+                window.location.href = global.BaseUrl + "/manager/downloadZip?id="+object.toString();   
             }
         }
     },
