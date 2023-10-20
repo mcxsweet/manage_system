@@ -3,9 +3,11 @@
   <el-container>
     <el-main>
       <el-button class="ButtonStyle" type="primary" @click="isShowAdd = !isShowAdd">添加用户</el-button>
+                  <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoadtemplate()">下载导入模板</el-button>
       <el-button class="ButtonStyle" @click="showUpload = true" type="primary"
-        >导入教师名单</el-button
-      >
+        >导入教师名单</el-button>
+          <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoadinformation()">下载文件导出用户名单</el-button>
+
       <!-- 上传学生名单 -->
       <el-dialog
         title="上传xls文件"
@@ -194,6 +196,34 @@ export default {
     };
   },
   methods: {
+ //下载文件
+        downLoadtemplate() {
+            window.location.href = global.BaseUrl + "/user/userInformation";
+        },
+        downLoadinformation() {
+            window.location.href = global.BaseUrl + "/user/outUserInformation";
+        },
+        
+        //初始化表格
+        getCurrentCourseItem() {
+            this.fullscreenLoading = true;
+
+            this.currentId = this.courseList[this.currentCourse].id;
+
+            this.getExamMethods();
+            this.getStudentScore();
+
+            if (this.tableData) {
+                this.ischoose = true;
+            }
+
+            localStorage.setItem('courseId', this.courseList[this.currentCourse].id);
+            localStorage.setItem('courseName', this.courseList[this.currentCourse].courseName);
+            this.fullscreenLoading = false;
+
+        },
+        
+
     getMessage() {
       api.get("/user", "", (resp) => {
         this.departmentList = resp.data.data.department;
