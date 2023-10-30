@@ -38,8 +38,11 @@
           <el-form-item label="教师权限">
             <el-input v-model="addFormData.isAdmin"></el-input>
           </el-form-item>
-          <el-form-item label="所属院系">
-            <el-input v-model="addFormData.department"></el-input>
+          <el-form-item label="所属院">
+            <el-input v-model="addFormData.college"></el-input>
+          </el-form-item>
+            <el-form-item label="所属系">
+            <el-input v-model="addFormData.collegeDepartment"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -48,8 +51,8 @@
         </div>
       </el-dialog>
 
-      <el-table v-loading="loading" :data="tableData.filter((data) =>!search1 && !search2 && !search3 && !search4 || 
-      data.name.includes(search1) && data.teacherName.includes(search2) && (data.isAdmin == search3 || !search3) && data.department.includes(search4))"
+      <el-table v-loading="loading" :data="tableData.filter((data) =>!search1 && !search2 && !search3 && !search4  && !search5 ||
+      data.name.includes(search1) && data.teacherName.includes(search2) && (data.isAdmin == search3 || !search3) && (data.collegeName == search4 || !search4) && (data.departmentName == search5 || !search5))"
       stripe border style="width: 100%"
         height="800">
  
@@ -74,8 +77,9 @@
           </el-table-column>
           <el-table-column label="账号密码" width="150" align="center">
             <template slot-scope="scope">
-              <el-input v-model="scope.row.password" v-show="scope.row.ised"></el-input>
-              <span v-show="!scope.row.ised">{{ scope.row.password }}</span>
+              <el-button type="primary" size="mini" @click="resetPassword(scope.$index)">重置</el-button>
+              <el-input v-model="scope.row.password" v-show="false"></el-input>
+              <span v-show="false">{{ scope.row.password }}</span>
             </template>
           </el-table-column>
          
@@ -90,7 +94,7 @@
             </template>
           </el-table-column>
           
-          <el-table-column label="教师权限" width="200" align="center">
+          <el-table-column label="教师权限" width="130" align="center">
             <template slot="header" slot-scope="scope">
               <p>教师权限</p>
               <el-select v-model="search3" size="mini" clearable placeholder="请选择教师权限">
@@ -105,14 +109,32 @@
               <span v-show="!scope.row.ised">{{ options[scope.row.isAdmin].label }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="所属院系" width="220" align="center">
+          <el-table-column label="所属院" width="200" align="center">
             <template slot="header" slot-scope="scope">
-              <p>所属院系</p>
-              <el-input v-model="search4" size="mini" placeholder="输入搜索" />
+              <p>所属院</p>
+               <el-select v-model="search4" size="mini" clearable placeholder="请选择所属院">
+                <el-option v-for="item in college" :key="item.value" :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
             </template>
             <template slot-scope="scope">
-              <el-input v-model="scope.row.department" v-show="scope.row.ised"></el-input>
-              <span v-show="!scope.row.ised">{{ scope.row.department }}</span>
+              <el-input v-model="scope.row.collegeName" v-show="scope.row.ised"></el-input>
+              <span v-show="!scope.row.ised">{{ scope.row.collegeName }}</span>
+            </template>
+          </el-table-column>
+           <el-table-column label="所属系" width="200" align="center">
+            <template slot="header" slot-scope="scope">
+              <p>所属系</p>
+               <el-select v-model="search5" size="mini" clearable placeholder="请选择所属系">
+                <el-option v-for="item in collegeDepartment" :key="item.value" :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </template>
+            <template slot-scope="scope">
+              <el-input v-model="scope.row.departmentName" v-show="scope.row.ised"></el-input>
+              <span v-show="!scope.row.ised">{{ scope.row.departmentName }}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="220" fixed="right" align="center">
@@ -142,6 +164,9 @@ export default {
       search2: '',
       search3: '',
       search4: '',
+      search5: '',
+      college:[],
+      collegeDepartment:[],
       isAccomplish: [
      {
               value: '0',
@@ -153,19 +178,6 @@ export default {
           }, {
               value: '2',
               label: '学院'
-          },{
-              value: '3',
-              label: '普通教师 系主任'
-          }, {
-              value: '4',
-              label: '普通教师 学院'
-          }, {
-              value: '5',
-              label: ' 系主任 学院'
-          }, 
-          {
-              value: '6',
-              label: '全部'
           }
       ],
 
@@ -325,6 +337,43 @@ export default {
     //编辑用户信息
     editUser(index) {
       this.tableData[index].ised = true;
+    },
+    //重置密码
+    resetPassword(index) {
+      this.$confirm("是否重置密码 ?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      },
+      ) .then(() => {
+        api.put("/user/resetPassword", this.tableData[index], (resp) => {
+          console.log("resetPassword被调用");
+          if (resp.data.flag) {
+            this.$message({
+              type: "success",
+              message: "重置密码成功!",
+            });
+            this.getUserinfo();
+          } else {
+            this.$message({
+              type: "error",
+              message: "重置密码失败!",
+            });
+              }
+            })
+            .catch(() => {
+              this.$message({
+                type: "info",
+                message: "已取消",
+              });
+            });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消",
+          });
+        });
     },
     //保存用户信息
     saveUser(index) {
