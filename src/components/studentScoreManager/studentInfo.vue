@@ -46,6 +46,7 @@
       <el-button class="ButtonStyle" @click="showUpload = true" type="primary"
         >导入学生名单</el-button
       >
+
       <!-- 上传学生名单 -->
       <el-dialog
         title="上传xls文件"
@@ -175,6 +176,7 @@ export default {
     };
   },
   methods: {
+    
     //获取用户课程信息
     getMessage() {
       api.get(
