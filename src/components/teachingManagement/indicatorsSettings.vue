@@ -3,14 +3,17 @@
 
     <el-main>
       <el-card>
-        <h3>修改毕业要求指标点</h3>
+        <h3>编辑毕业要求指标点</h3>
+
         <el-header style="background-color: #fff;height: 50px;margin-bottom: 10px;">
           <el-select v-model="major" placeholder="请选择专业">
             <el-option v-for="item in options" :key="item.value" :label="item.value" :value="item.value">
             </el-option>
           </el-select>
           <el-button icon="el-icon-search" style="margin: 10px" @click="getIndicatorsInfo()">确定</el-button>
+
         </el-header>
+
         <el-table :data="indicatorOutline" style="width: 100%">
 
           <el-table-column type="expand" class="warning-row">
@@ -51,11 +54,17 @@
                       <el-button type="primary" size="mini" @click="editIndicator(indicatorOutLineRow.row.name, item)">
                         编辑
                       </el-button>
-                      <el-button type="danger" size="mini" @click="delIndicator(item, key)" class="deleteButton">删除
-                      </el-button>
+                        <el-popover trigger="click" placement="top" width="200">
+                          <template>
+                            <p>此操作不可逆, 确定删除该项指标点吗？</p>
+                            <div style="text-align: right; margin: 0">
+                              <el-button size="mini" type="text" @click="cancelDelIndicator()">取消</el-button>
+                              <el-button type="danger" size="mini" @click="delIndicator(item, key)">确定</el-button>
+                            </div>
+                          </template>
+                          <el-button slot="reference" type="danger" size="mini" class="clickToToggleStatus">删除</el-button>
+                        </el-popover>
                     </el-col>
-
-
                   </el-row>
                 </template>
               </el-teble>
@@ -80,7 +89,8 @@
                 <el-input type="textarea" v-model="editIndicatorObj.indicatorContent"></el-input>
               </el-form-item>
               <el-form-item label="指标点课程" prop="courses">
-                <el-input type="textarea" v-model="editIndicatorObj.courses"></el-input>
+                <el-input type="textarea" v-model="editIndicatorObj.courses" :disabled="true"></el-input>
+                <el-button  type="primary" @click="showEditMajorIndicatorCoursesDialog()">点此按钮 获取和编辑{{major}}专业 全部课程数据</el-button>
               </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -102,7 +112,8 @@
                 <el-input type="textarea" v-model="saveIndicatorObj.indicatorContent"></el-input>
               </el-form-item>
               <el-form-item label="指标点课程" prop="courses">
-                <el-input type="textarea" v-model="saveIndicatorObj.courses"></el-input>
+                <el-input  type="textarea" v-model="saveIndicatorObj.courses" :disabled="true"></el-input>
+                <el-button  type="primary" @click="showMajorIndicatorCoursesDialog()">点此按钮 获取和添加{{major}}专业 全部课程数据</el-button>
               </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -112,6 +123,137 @@
           </el-dialog>
         </div>
 
+
+
+        <!--编辑指标点课程表单-->
+        <div>
+          <el-dialog title="此专业全部课程数据:" :visible.sync="editMajorIndicatorCoursesDialog" width="80%">
+            <el-row>{{ major }}专业 ➔ <strong>在输入框内手动编辑 或 点击选中即可添加课程:</strong>
+              <el-input type="textarea" v-model="editIndicatorObj.courses"></el-input>
+            </el-row>
+            <template>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[0]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox label="公共基础课程名称" border size="mini"
+                               :key="course" v-if="isPublicBasicCourse(course.courseType)" @change="editOrRemoveCourse($event, course.courseName)">{{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[1]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox label="专业基础课程名称" border size="mini"
+                               :key="course" v-if="isProfessionalBasicCourse(course.courseType)" @change="editOrRemoveCourse($event, course.courseName)">{{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[2]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox label="专业素质教育" border size="mini"
+                               :key="course" v-if="isQualityEducation(course.courseType)" @change="editOrRemoveCourse($event, course.courseName)">{{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[3]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox  label="专业核心课程名称" border size="mini"
+                                :key="course" v-if="isProfessionalCoreCourse(course.courseType)" @change="editOrRemoveCourse($event, course.courseName)">{{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[4]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox  label="专业特色课程名称" border size="mini"
+                                :key="course" v-if="isProfessionalDistinctiveCourse(course.courseType)" @change="editOrRemoveCourse($event, course.courseName)">
+                    {{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[5]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox  label="专业集中性实践教学" border size="mini"
+                                :key="course" v-if="isProfessionalCentralizedPracticalTeaching(course.courseType)" @change="editOrRemoveCourse($event, course.courseName)">
+                    {{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+            </template>
+            <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="editMajorIndicatorCoursesDialog = false">确 定</el-button>
+            </span>
+          </el-dialog>
+        </div>
+
+
+
+        <!--新增 指标点课程表单-->
+        <div>
+          <el-dialog title="此专业全部课程数据:" :visible.sync="majorIndicatorCoursesDialog" width="80%">
+            <el-row>{{ major }}专业 ➔ <strong>点击选中即可添加课程(或在输入框内编辑):</strong>
+              <el-input type="textarea" v-model="saveIndicatorObj.courses"></el-input>
+            </el-row>
+            <template>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[0]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox label="公共基础课程名称" border size="mini"
+                               :key="course" v-if="isPublicBasicCourse(course.courseType)" @change="addOrRemoveCourse($event, course.courseName)">{{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[1]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox label="专业基础课程名称" border size="mini"
+                               :key="course" v-if="isProfessionalBasicCourse(course.courseType)" @change="addOrRemoveCourse($event, course.courseName)">{{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[2]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox label="专业素质教育" border size="mini"
+                               :key="course" v-if="isQualityEducation(course.courseType)" @change="addOrRemoveCourse($event, course.courseName)">{{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[3]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox  label="专业核心课程名称" border size="mini"
+                               :key="course" v-if="isProfessionalCoreCourse(course.courseType)" @change="addOrRemoveCourse($event, course.courseName)">{{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[4]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox  label="专业特色课程名称" border size="mini"
+                               :key="course" v-if="isProfessionalDistinctiveCourse(course.courseType)" @change="addOrRemoveCourse($event, course.courseName)">
+                    {{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+              <div class="courseTypeBorder">
+                <strong>{{majorCourseType[5]}}</strong>
+                <template v-for="(course) in majorIndicatorCourses">
+                  <el-checkbox  label="专业集中性实践教学" border size="mini"
+                               :key="course" v-if="isProfessionalCentralizedPracticalTeaching(course.courseType)" @change="addOrRemoveCourse($event, course.courseName)">
+                    {{ course.courseName }}
+                  </el-checkbox>
+                </template>
+              </div>
+            </template>
+            <span slot="footer" class="dialog-footer">
+                    <el-button type="primary" @click="majorIndicatorCoursesDialog = false">确 定</el-button>
+            </span>
+          </el-dialog>
+        </div>
 
       </el-card>
     </el-main>
@@ -166,6 +308,34 @@ export default {
         ...indicator,
       },
 
+      // 指标点课程数据
+      editMajorIndicatorCoursesDialog: false,
+      majorIndicatorCoursesDialog: false,
+      majorIndicatorCourses: [],
+      majorCourseType: [
+        "公共基础课",
+        "专业基础课",
+        "专业素质教育",
+        "专业核心课",
+        "专业特色课",
+        "专业集中性实践教学",
+      ],
+      indicatorCourseObj: {
+        courseCode: '',
+        courseName: "",
+        courseNature: "",
+        courseType: "",
+        credit: '',
+        fileAddress: '',
+        id: '',
+        labHours: '',
+        major: "",
+        theoreticalHours: '',
+        uploadUser: '',
+      },
+      publicBasicChecked:false,
+      publicBasicCourses: [],
+
       formRules: {
         indicatorName: [
           {
@@ -201,6 +371,7 @@ export default {
 
 
   methods: {
+    //获取指标点大纲和指标点内容
     getIndicatorsInfo() {
       this.getIndicatorOutline();
       this.getIndicatorsByMajor();
@@ -220,14 +391,28 @@ export default {
       })
     },
 
+    // 获取专业全部课程
+    getMajorIndicatorCourse() {
+      api.post("/courseInfo/indicatorCourse", {major: this.major}, (response) => {
+        this.majorIndicatorCourses = response.data.data;
+      })
+    },
+
+    //修改指标点课程对话框
+    showEditMajorIndicatorCoursesDialog() {
+      this.editMajorIndicatorCoursesDialog = true;
+      this.getMajorIndicatorCourse();
+    },
+
+    //新增指标点课程对话框
+    showMajorIndicatorCoursesDialog() {
+      this.majorIndicatorCoursesDialog = true;
+      this.getMajorIndicatorCourse();
+    },
+
     //判断指标点在此条指标点指标概要内(共12条指标概要)
     judgementIndicatorsInMajor(indicatorOutLineRowId, indicatorIndex) {
       return indicatorOutLineRowId == indicatorIndex;
-    },
-
-    showObj(obj) {
-      console.log(obj)
-      return true
     },
 
     //编辑指标点对话框
@@ -272,6 +457,14 @@ export default {
 
     //新增指标点对话框
     saveIndicator(indicatorOutLineRowId, indicatorOutLineRowName) {
+      if ('' == this.major) {
+        this.$alert('点击下拉框选择专业后请点击确定以加载数据...', '未选择专业!', {
+          confirmButtonText: '好的',
+          // callback: () => location.reload()
+        });
+        return;
+      }
+
       Object.keys(this.saveIndicatorObj).forEach(key => this.saveIndicatorObj[key] = '');
       [this.saveIndicatorOutLineRowId,
         this.saveIndicatorOutLineName] = [
@@ -299,6 +492,12 @@ export default {
       this.saveIndicatorDialog = false;
     },
 
+    //取消删除指标点
+    cancelDelIndicator() {
+      document.querySelector(".clickToToggleStatus").click()
+      document.querySelector(".clickToToggleStatus").click()
+    },
+
     //删除指标点
     delIndicator(item, key) {
       if (item.id === "") {
@@ -310,6 +509,70 @@ export default {
               this.failNofify("指标点数据删除失败!")) === true ?
               this.$delete(this.indicatorsByMajor, key) : false;
         });
+      }
+    },
+
+    //判断是否为公共基础课
+    isPublicBasicCourse(courseType) {
+      return courseType == this.majorCourseType[0];
+    },
+
+    //判断是否为专业基础课
+    isProfessionalBasicCourse(courseType) {
+      return courseType == this.majorCourseType[1];
+    },
+
+    //判断是否为专业素质教育
+    isQualityEducation(courseType) {
+      return courseType == this.majorCourseType[2];
+    },
+
+    //判断是否为专业核心课
+    isProfessionalCoreCourse(courseType) {
+      return courseType == this.majorCourseType[3];
+    },
+
+    //判断是否为专业特色课
+    isProfessionalDistinctiveCourse(courseType) {
+      return courseType == this.majorCourseType[4];
+    },
+
+    //判断是否为专业集中性实践教学
+    isProfessionalCentralizedPracticalTeaching(courseType) {
+      return courseType == this.majorCourseType[5];
+    },
+
+    //根据复选框添加或移除输入框内课程
+    addOrRemoveCourse(checkBoxEvent, courseName) {
+      if (true === checkBoxEvent) {
+        if (0 == this.saveIndicatorObj.courses.length) {
+          this.saveIndicatorObj.courses += courseName;
+        } else {
+          this.saveIndicatorObj.courses += '、' + courseName
+        }
+      } else {
+        this.saveIndicatorObj.courses = this.saveIndicatorObj.courses.replace('、' + courseName, '');
+        this.saveIndicatorObj.courses = this.saveIndicatorObj.courses.replace(courseName, '');
+        if ('、' == this.saveIndicatorObj.courses[0]) {
+          this.saveIndicatorObj.courses = this.saveIndicatorObj.courses.replace('、', '');
+        }
+      }
+    },
+
+    //根据复选框编辑或移除输入框内课程
+    editOrRemoveCourse(checkBoxEvent, courseName) {
+      if (true === checkBoxEvent) {
+        if (0 == this.editIndicatorObj.courses.length) {
+          this.editIndicatorObj.courses += courseName;
+        } else {
+          this.editIndicatorObj.courses += '、' + courseName
+        }
+      } else {
+        this.editIndicatorObj.courses = this.editIndicatorObj.courses.replace('、' + courseName, '');
+        this.editIndicatorObj.courses = this.editIndicatorObj.courses.replace(courseName, '');
+        if ('、' == this.editIndicatorObj.courses[0]) {
+          this.editIndicatorObj.courses = this.editIndicatorObj.courses.replace('、', '');
+        }
       }
     },
 
@@ -340,12 +603,10 @@ export default {
 
     refreshToDel() {
       this.$alert('数据更新中, 点击确定继续...', '请在页面刷新后再次尝试!', {
-        confirmButtonText: '确定',
+        confirmButtonText: '好的',
         callback: () => location.reload()
       });
     },
-
-
   }
 }
 
@@ -396,6 +657,16 @@ export default {
 
 .deleteButton {
   margin-left: 32px;
+}
+
+.el-checkbox.is-bordered {
+  margin: 0 0 0 5px !important;
+}
+
+.courseTypeBorder {
+  background-color: #f3f3f8;
+  margin: 0 0 15px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
 }
 
 </style>
