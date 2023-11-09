@@ -238,8 +238,8 @@ const router = new VueRouter({
                     meta:{
                         isAdmin: 1
                     }
-                }
-
+                },
+{
                     path: 'indicatorsSettings', //系主任层面
                     component: indicatorsSettings,
                     meta: {
