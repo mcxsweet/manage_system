@@ -10,8 +10,7 @@
             <el-button icon="el-icon-search" style="margin: 10px" @click="getCurrentCourseExam()"
                 v-loading.fullscreen.lock="fullscreenLoading">查看培养方案</el-button>
 
-            <el-button v-show="isAdmin == 1" icon="el-icon-upload" style="margin: 10px"
-                @click="showUpload = !showUpload">上传培养方案</el-button>
+            <el-button icon="el-icon-upload" style="margin: 10px" @click="showUpload = !showUpload">上传培养方案</el-button>
 
             <el-empty v-if="!ischoose" description="请先选择专业"></el-empty>
         </el-header>
@@ -67,7 +66,11 @@ export default {
             }, {
                 value: 'DataScienceAndDataTechnology',
                 label: '数据科学与大数据技术'
-            }],
+            }, {
+                value: 'CommunicationEngineering',
+                label: '通信工程'
+            }
+            ],
 
             major: "",
             uploadData: {
