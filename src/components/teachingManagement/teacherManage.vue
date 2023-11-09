@@ -3,22 +3,16 @@
   <el-container>
     <el-main>
       <el-button class="ButtonStyle" type="primary" @click="isShowAdd = !isShowAdd">添加用户</el-button>
-                  <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoadtemplate()">下载导入模板</el-button>
+  <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoadtemplate()">下载导入模板</el-button>
       <el-button class="ButtonStyle" @click="showUpload = true" type="primary"
         >导入教师名单</el-button>
           <el-button style="margin-bottom: 1vw;" type="primary" @click="downLoadinformation()">下载文件导出用户名单</el-button>
 
       <!-- 上传学生名单 -->
-      <el-dialog
-        title="上传xls文件"
-        :visible.sync="showUpload"
-        style="text-align: center"
-      >
+      <el-dialog title="上传xls文件" :visible.sync="showUpload" style="text-align: center">
         <el-form>
           <input type="file" @change="handleFileUpload" />
-          <el-button type="submit" size="mini" @click.prevent="uploadFile()"
-            >上传文件</el-button
-          >
+          <el-button type="submit" size="mini" @click.prevent="uploadFile()">上传文件</el-button>
         </el-form>
       </el-dialog>
 
@@ -59,6 +53,7 @@
           <el-button type="primary" @click="addUser()">确 定</el-button>
         </div>
       </el-dialog>
+
 
       <el-table v-loading="loading" :data="tableData.filter((data) =>!search1 && !search2 && !search3 && !search4  && !search5 ||
       data.name.includes(search1) && data.teacherName.includes(search2) && (data.isAdmin == search3 || !search3) && (data.collegeName == search4 || !search4) && (data.department== search5 || !search5))"
@@ -161,6 +156,7 @@
             </template>
           </el-table-column>
      
+
       </el-table>
     </el-main>
   </el-container>
@@ -202,13 +198,14 @@ export default {
       //添加用户表单
       isShowAdd: false,
       addFormData: {},
-      departmentList: [],
       //表格数据
       tableData: [],
+
       userCollege:[],
       userDerpartment:[],
       loading: false,
       message:'',
+
       options: [
         {
           value: "0",
@@ -266,12 +263,12 @@ export default {
 
     //获取用户信息
     getUserinfo() {
-      this.loading = true;
-      api.get("/user/", "", (resp) => {
+      api.get("/user", "", (resp) => {
         for (let index = 0; index < resp.data.data.length; index++) {
           resp.data.data[index].ised = false;
         }
         this.tableData = resp.data.data;
+
         this.loading = false;
         for (let index = 0; index < resp.data.data2.length; index++) {
           resp.data.data2[index].ised = false;
@@ -281,7 +278,11 @@ export default {
           resp.data.data3[index].ised = false;
         }
         this.userDerpartment = resp.data.data3;
+
       });
+      setTimeout(() => {
+        this.loading = false;
+      }, 2000);
     },
 
     //选择上传文件
@@ -294,25 +295,25 @@ export default {
       let loadingInstance = Loading.service({ fullscreen: true });
       const formData = new FormData();
       formData.append("file", this.selectedFile);
-      axios
-        .post(global.runTiemPath + "/user/userInfo", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+      axios.post(global.runTiemPath + "/user/userInfo", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
         .then((response) => {
           if (response.data.flag) {
             this.showUpload = !this.showUpload;
             this.$message({
               type: "success",
-              messages: response.data.message,
+              message: response.data.message,
             });
             loadingInstance.close();
             this.getUserinfo();
+
           } else {
             this.$message({
               type: "error",
-              messages: response.data.message,
+              message: response.data.message,
             });
             loadingInstance.close();
           }
@@ -320,7 +321,7 @@ export default {
         .catch((error) => {
           this.$message({
             type: "error",
-            messages: error.data.message,
+            message: error.data.message,
           });
         });
     },
