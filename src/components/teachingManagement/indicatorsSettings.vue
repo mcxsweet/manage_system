@@ -18,7 +18,10 @@
             </el-option>
           </el-select>
           <el-button icon="el-icon-search" style="margin: 10px" @click="getIndicatorsInfo()">确定</el-button>
-<!--          <el-button type="primary" style="right: 100px" @click="exportAsWord()">导出为word文档</el-button>-->
+          <el-button type="primary" @click="exportAsWord()" :disabled="exportAsWordButton"
+                     :loading="exportAsWordLoading">
+            {{ exportAsWordText }}
+          </el-button>
 
         </el-header>
 
@@ -89,7 +92,7 @@
         <!--编辑指标点表单-->
         <div>
           <el-dialog title="编辑指标点数据:" :visible.sync="editIndicatorDialog" width="50%">
-            <el-row class="indicatorFormMsg">{{ major }}{{version}}级 ➔ {{ editIndicatorOutLineName }}</el-row>
+            <el-row class="indicatorFormMsg">{{ major }}{{ version }}级 ➔ {{ editIndicatorOutLineName }}</el-row>
             <el-form ref="form" :rules="formRules" :model="editIndicatorObj" label-width="100px">
               <el-form-item label="指标点" prop="indicatorName">
                 <el-input v-model="editIndicatorObj.indicatorName"></el-input>
@@ -114,7 +117,7 @@
         <!--新增指标点表单-->
         <div>
           <el-dialog title="新增指标点数据:" :visible.sync="saveIndicatorDialog" width="50%">
-            <el-row class="indicatorFormMsg">{{ major }}{{version}}级 ➔ {{ saveIndicatorOutLineName }}</el-row>
+            <el-row class="indicatorFormMsg">{{ major }}{{ version }}级 ➔ {{ saveIndicatorOutLineName }}</el-row>
             <el-form ref="form" :rules="formRules" :model="saveIndicatorObj" label-width="100px">
               <el-form-item label="指标点" prop="indicatorName">
                 <el-input v-model="saveIndicatorObj.indicatorName"></el-input>
@@ -285,6 +288,8 @@
 
 <script>
 import api from '@/api/api';
+import global from "@/script/global";
+import axios from "axios";
 
 export default {
   name: "indicatorsSettings",
@@ -365,6 +370,11 @@ export default {
       },
       publicBasicChecked: false,
       publicBasicCourses: [],
+
+      //导出word
+      exportAsWordText: "导出为word文档",
+      exportAsWordButton: false,
+      exportAsWordLoading: false,
 
       formRules: {
         indicatorName: [
@@ -498,6 +508,8 @@ export default {
       if ('' == this.major || ('' == this.version || '正在新增一个版本...' == this.version)) {
         this.$alert('点击下拉框选择专业和版本后请点击确定以加载数据...', '未选中专业和版本!', {
           confirmButtonText: '好的',
+        }).catch(() => {
+          window.location.reload()
         });
         return;
       }
@@ -623,8 +635,8 @@ export default {
         inputErrorMessage: '版本格式不正确()'
       }).then(({value}) => {
         this.versions.push({
-          value:value,
-          label:value
+          value: value,
+          label: value
         });
         this.getIndicatorsInfo()
         this.successNofity(this.major + '专业新增版本: ' + value)
@@ -633,10 +645,30 @@ export default {
       });
     },
 
-    //导出为word功能
-    // exportAsWord() {
-    //
-    // },
+    // 导出为word功能
+    exportAsWord() {
+      if ('' == this.major || ('' == this.version || '正在新增一个版本...' == this.version)) {
+        this.$alert('点击下拉框选择专业和版本后再次尝试...', '未选中专业和版本!', {
+          confirmButtonText: '好的',
+        }).catch(() => {
+          window.location.reload();
+        });
+        return;
+      }
+      [this.exportAsWordButton, this.exportAsWordLoading, this.exportAsWordText] = [true, true, "数据加载中..."]
+      axios.get(
+          global.BaseUrl + "/courseInfo/indicatorsWord/" + this.major + "/" + this.version,
+          {responseType: "blob"}
+      ).then((res) => {
+            const href = URL.createObjectURL(res.data)
+            const box = document.createElement('a')
+            box.download = this.major + "专业指标点.docx"
+            box.href = href
+            box.click()
+          }
+      );
+      [this.exportAsWordButton, this.exportAsWordLoading, this.exportAsWordText] = [false, false, "导出为word文档"]
+    },
 
     successNofity(msg) {
       this.$notify({
