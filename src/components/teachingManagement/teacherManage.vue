@@ -36,13 +36,22 @@
             <el-input v-model="addFormData.teacherName"></el-input>
           </el-form-item>
           <el-form-item label="教师权限">
-            <el-input v-model="addFormData.isAdmin"></el-input>
+            <el-select v-model="addFormData.isAdmin " placeholder="请选择教师权限" >
+                    <el-option v-for="item in isAccomplish" :key="item.value" :label="item.label" :value="item.value" >
+                    </el-option>
+                </el-select>
           </el-form-item>
           <el-form-item label="所属院">
-            <el-input v-model="addFormData.college"></el-input>
+            <el-select v-model="addFormData.collegeName" placeholder="请选择教师所属院" >
+                    <el-option v-for="item in userCollege" :key="item.id" :label="item.collegeName" :value="item.collegeName" >
+                    </el-option>
+                </el-select>
           </el-form-item>
             <el-form-item label="所属系">
-            <el-input v-model="addFormData.collegeDepartment"></el-input>
+             <el-select v-model="addFormData.department" placeholder="请选择教师所属系" >
+                    <el-option v-for="item in userDerpartment" :key="item.id" :label="item.departmentName" :value="item.departmentName" >
+                    </el-option>
+                </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -52,7 +61,7 @@
       </el-dialog>
 
       <el-table v-loading="loading" :data="tableData.filter((data) =>!search1 && !search2 && !search3 && !search4  && !search5 ||
-      data.name.includes(search1) && data.teacherName.includes(search2) && (data.isAdmin == search3 || !search3) && (data.collegeName == search4 || !search4) && (data.departmentName == search5 || !search5))"
+      data.name.includes(search1) && data.teacherName.includes(search2) && (data.isAdmin == search3 || !search3) && (data.collegeName == search4 || !search4) && (data.department== search5 || !search5))"
       stripe border style="width: 100%"
         height="800">
  
@@ -77,7 +86,7 @@
           </el-table-column>
           <el-table-column label="账号密码" width="150" align="center">
             <template slot-scope="scope">
-              <el-button type="primary" size="mini" @click="resetPassword(scope.$index)">重置</el-button>
+              <el-button type="danger" size="mini" @click="resetPassword(scope.$index)">重置</el-button>
               <el-input v-model="scope.row.password" v-show="false"></el-input>
               <span v-show="false">{{ scope.row.password }}</span>
             </template>
@@ -104,8 +113,10 @@
               </el-select>
             </template>
             <template slot-scope="scope">
-                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-                </el-option>
+                  <el-select v-model="scope.row.isAdmin" size="mini"  v-show="scope.row.ised" placeholder="请选择教师权限" >
+                    <el-option v-for="item in isAccomplish" :key="item.value" :label="item.label" :value="item.value">
+                    </el-option>
+                </el-select>
               <span v-show="!scope.row.ised">{{ options[scope.row.isAdmin].label }}</span>
             </template>
           </el-table-column>
@@ -113,28 +124,33 @@
             <template slot="header" slot-scope="scope">
               <p>所属院</p>
                <el-select v-model="search4" size="mini" clearable placeholder="请选择所属院">
-                <el-option v-for="item in college" :key="item.value" :label="item.label"
-                  :value="item.value">
-                </el-option>
+                      <el-option v-for="item in userCollege" :key="item.id" :label="item.collegeName" :value="item.collegeName" >
+                    </el-option>
               </el-select>
             </template>
             <template slot-scope="scope">
-              <el-input v-model="scope.row.collegeName" v-show="scope.row.ised"></el-input>
-              <span v-show="!scope.row.ised">{{ scope.row.collegeName }}</span>
+                 <el-select v-model="scope.row.collegeName" size="mini"  v-show="scope.row.ised" placeholder="请选择所属院" >
+                    <el-option v-for="item in userCollege" :key="item.collegeName" :label="item.collegeName" :value="item.collegeName" >
+                    </el-option>
+                </el-select>
+              <span v-show="!scope.row.ised">{{ scope.row.collegeName}}</span>
+
             </template>
           </el-table-column>
            <el-table-column label="所属系" width="200" align="center">
             <template slot="header" slot-scope="scope">
               <p>所属系</p>
                <el-select v-model="search5" size="mini" clearable placeholder="请选择所属系">
-                <el-option v-for="item in collegeDepartment" :key="item.value" :label="item.label"
-                  :value="item.value">
-                </el-option>
+                    <el-option v-for="item in userDerpartment" :key="item.id" :label="item.departmentName" :value="item.departmentName" >
+                    </el-option>
               </el-select>
             </template>
             <template slot-scope="scope">
-              <el-input v-model="scope.row.departmentName" v-show="scope.row.ised"></el-input>
-              <span v-show="!scope.row.ised">{{ scope.row.departmentName }}</span>
+                      <el-select v-model="scope.row.departmentName" size="mini"  v-show="scope.row.ised" placeholder="请选择所属系" >
+                    <el-option v-for="item in userDerpartment" :key="item.departmentName" :label="item.departmentName" :value="item.departmentName" >
+                    </el-option>
+                </el-select>
+              <span v-show="!scope.row.ised">{{ scope.row.department}}</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="220" fixed="right" align="center">
@@ -165,8 +181,6 @@ export default {
       search3: '',
       search4: '',
       search5: '',
-      college:[],
-      collegeDepartment:[],
       isAccomplish: [
      {
               value: '0',
@@ -178,7 +192,11 @@ export default {
           }, {
               value: '2',
               label: '学院'
-          }
+          },
+          {
+          value: "3",
+          label: "校领导与最高管理员",
+        }
       ],
 
       //添加用户表单
@@ -187,6 +205,8 @@ export default {
       departmentList: [],
       //表格数据
       tableData: [],
+      userCollege:[],
+      userDerpartment:[],
       loading: false,
       message:'',
       options: [
@@ -202,12 +222,20 @@ export default {
           value: "2",
           label: "学院领导",
         },
+        {
+          value: "3",
+          label: "校领导与最高管理员",
+        }
       ],
       //上传教师名单
       showUpload: false,
     };
   },
-  methods: {
+  methods: { 
+
+     focusOnSelect() {
+            this.ischoose = false;
+        },
  //下载文件
         downLoadtemplate() {
             window.location.href = global.BaseUrl + "/user/userInformation";
@@ -236,11 +264,6 @@ export default {
         },
         
 
-    getMessage() {
-      api.get("/user", "", (resp) => {
-        this.departmentList = resp.data.data.department;
-      });
-    },
     //获取用户信息
     getUserinfo() {
       this.loading = true;
@@ -250,6 +273,14 @@ export default {
         }
         this.tableData = resp.data.data;
         this.loading = false;
+        for (let index = 0; index < resp.data.data2.length; index++) {
+          resp.data.data2[index].ised = false;
+        }
+        this.userCollege = resp.data.data2;
+        for (let index = 0; index < resp.data.data3.length; index++) {
+          resp.data.data3[index].ised = false;
+        }
+        this.userDerpartment = resp.data.data3;
       });
     },
 
@@ -298,9 +329,9 @@ export default {
     addUser() {
       api.post("/user/addUser", this.addFormData, (resp) => {
         if (resp.data.flag) {
-          this.isShowAdd = false;
-          this.getUserinfo();
-        }
+          this.isShowAdd = false; 
+           location.reload();
+          }
       });
     },
     //删除用户信息
@@ -396,7 +427,6 @@ export default {
   },
   mounted() {
     this.getUserinfo();
-    this.getMessage();
   },
 };
 </script>
