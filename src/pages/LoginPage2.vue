@@ -74,7 +74,8 @@ export default {
                         localStorage.setItem("UserId", info.id);
                         localStorage.setItem("Isadmin", info.isAdmin);
                         localStorage.setItem("TeacherName", info.teacherName);
-                        localStorage.setItem("department", info.department);
+                        localStorage.setItem("collegeName", info.collegeName);
+                        localStorage.setItem("departmentName", info.department );
                         localStorage.setItem('courseId', "");
                         if (info.isAdmin <= 2) {
                             this.$router.push({ path: '/MainPage/homePage' });

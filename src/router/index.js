@@ -241,6 +241,7 @@ const router = new VueRouter({
         },
         {
 
+
             path: 'indicatorsSettings', //系主任层面
             component: indicatorsSettings,
             meta: {
